@@ -1,0 +1,37 @@
+name: Autoformat helper
+
+# The authoring environment cannot run the Dart SDK. Pushing a branch named
+# `format/<name>` runs `dart format` on a GitHub runner and pushes the
+# formatted result back to the same branch. Never runs on main/develop.
+
+on:
+  push:
+    branches: ['format/**']
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: '3.47.9'
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      - run: dart format lib test integration_test
+      - name: Push formatted code back
+        run: |
+          if git diff --quiet; then echo "Already formatted"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "style: dart format"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
