@@ -6,10 +6,12 @@ import 'package:ai_book_translator/features/engine/parser/book_parser.dart';
 import 'package:ai_book_translator/features/engine/parser/import_limits.dart';
 import 'package:ai_book_translator/features/engine/parser/parse_exception.dart';
 import 'package:ai_book_translator/features/engine/parser/safe_zip.dart';
+import 'package:ai_book_translator/features/engine/text/text_encoding.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../support/book_fixtures.dart';
+import '../../../support/encoding_fixtures.dart';
 
 Matcher throwsParse(ParseErrorCode code) =>
     throwsA(isA<ParseException>().having((e) => e.code, 'code', code));
@@ -270,6 +272,44 @@ void main() {
       expect(zip.readText('word/./document.xml'), 'abc');
       expect(zip.readText('word/missing.xml'), isNull);
       expect(utf8.decode(zip.readBytes('word/document.xml')!), 'abc');
+    });
+  });
+
+  group('M2b-1c: TXT encodings (RC-012)', () {
+    test('RC-012: UTF-16 LE/BE TXT with BOM is text, not binary', () {
+      for (final bytes in [utf16le(mixedText), utf16be(mixedText)]) {
+        expect(detectFormat(bytes), DetectedFormat.text);
+        final book = parser.parse(bytes, fileName: 'hindi.txt');
+        expect(book.format, SourceFormat.txt);
+        final all = book.chapters
+            .expand((c) => c.blocks)
+            .map((b) => b.text)
+            .join('\n');
+        expect(all, contains('भारत एक देश है।'));
+        expect(all, contains('क्\u200Dष'));
+      }
+    });
+
+    test('UTF-16 without BOM needs confirmation, then imports with override',
+        () {
+      final bytes = utf16le(mixedText, bom: false);
+      expect(detectFormat(bytes), DetectedFormat.text);
+      expect(
+        () => parser.parse(bytes),
+        throwsParse(ParseErrorCode.encodingNeedsConfirmation),
+      );
+      final book = parser.parse(bytes, textEncoding: TextEncoding.utf16le);
+      expect(book.chapters, isNotEmpty);
+    });
+
+    test('malformed UTF-16 TXT is refused, original bytes untouched', () {
+      final bytes = Uint8List.fromList([0xFF, 0xFE, 0x41, 0x00, 0x00, 0xD8]);
+      final copy = Uint8List.fromList(bytes);
+      expect(
+        () => parser.parse(bytes),
+        throwsParse(ParseErrorCode.invalidEncoding),
+      );
+      expect(bytes, copy);
     });
   });
 }

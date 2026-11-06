@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 
+import '../text/text_encoding.dart';
 import 'import_limits.dart';
 import 'parse_exception.dart';
 
@@ -106,16 +106,17 @@ class SafeZip {
     return data;
   }
 
-  /// UTF-8 text of [path] (BOM stripped), or null when missing.
+  /// Text of [path] (UTF-8 or UTF-16 with BOM, BOM stripped), or null when
+  /// missing. A part whose XML declaration names another encoding is
+  /// refused (EN06) instead of being decoded wrongly.
   String? readText(String path) {
     final data = readBytes(path);
     if (data == null) return null;
-    try {
-      final text = utf8.decode(data);
-      return text.startsWith('\uFEFF') ? text.substring(1) : text;
-    } on FormatException {
+    final text = decodeXmlPart(data);
+    if (text == null) {
       throw ParseException(ParseErrorCode.invalidEncoding, path);
     }
+    return text;
   }
 }
 

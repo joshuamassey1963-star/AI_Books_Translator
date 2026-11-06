@@ -23,6 +23,8 @@ dependencies:
   # M2b-1a PDF text engine (MIT; PDFium BSD-3/Apache-2.0, see docs/DEPENDENCIES.md)
   pdfrx: ^2.12.0
   pdfrx_engine: ^0.9.1
+  # M2b-1c Unicode NFC (MIT, Unicode 18 data, see docs/DEPENDENCIES.md)
+  unorm_dart: ^0.3.3
 
 dev_dependencies:
   flutter_test:
