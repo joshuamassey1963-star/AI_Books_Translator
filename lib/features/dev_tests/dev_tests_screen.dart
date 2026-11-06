@@ -77,7 +77,7 @@ class _SampleControls extends StatelessWidget {
   const _SampleControls({
     required this.controller,
     required this.sample,
-    required this.override,
+    required this.encodingOverride,
     required this.onSample,
     required this.onOverride,
     required this.prefix,
@@ -85,7 +85,7 @@ class _SampleControls extends StatelessWidget {
 
   final TextEditingController controller;
   final SampleBytes sample;
-  final TextEncoding? override;
+  final TextEncoding? encodingOverride;
   final ValueChanged<SampleBytes> onSample;
   final ValueChanged<TextEncoding?> onOverride;
   final String prefix;
@@ -118,7 +118,7 @@ class _SampleControls extends StatelessWidget {
         ),
         DropdownButtonFormField<TextEncoding?>(
           key: ValueKey('$prefix-override'),
-          initialValue: override,
+          initialValue: encodingOverride,
           decoration: const InputDecoration(
             labelText: 'Explicit encoding (override)',
           ),
@@ -164,7 +164,7 @@ class _EncodingTabState extends State<_EncodingTab> {
         _SampleControls(
           controller: _input,
           sample: _sample,
-          override: _override,
+          encodingOverride: _override,
           onSample: (v) => setState(() => _sample = v),
           onOverride: (v) => setState(() => _override = v),
           prefix: 'enc',
@@ -370,7 +370,7 @@ class _ParserTabState extends State<_ParserTab> {
         _SampleControls(
           controller: _input,
           sample: _sample,
-          override: _override,
+          encodingOverride: _override,
           onSample: (v) => setState(() => _sample = v),
           onOverride: (v) => setState(() => _override = v),
           prefix: 'txt',
