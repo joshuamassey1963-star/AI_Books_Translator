@@ -15,6 +15,12 @@ void main() {
   const source = PdfrxTextSource();
 
   setUpAll(() async {
+    // CI downloads PDFium and sets PDFIUM_PATH (see .github/workflows/ci.yml).
+    final pdfiumPath = Platform.environment['PDFIUM_PATH'];
+    if (pdfiumPath == null || !File(pdfiumPath).existsSync()) {
+      fail('PDFIUM_PATH must point to libpdfium for host tests (D-021).');
+    }
+    pdfrx.Pdfrx.pdfiumModulePath = pdfiumPath;
     pdfrx.Pdfrx.cacheDirectoryPath = Directory.systemTemp
         .createTempSync('pdfrx_test')
         .path;
