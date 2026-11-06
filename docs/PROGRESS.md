@@ -1,26 +1,28 @@
 # Progress
 
 - **Current version:** 0.1.0+1 (V1, pre-alpha)
-- **Current milestone:** M0 Foundation – **DONE** (CI green). Next: M1.
-- **Last verified commit:** `529643f` on `develop` – GitHub Actions run 42146771459: `flutter analyze` no issues, `flutter test` 14/14 passed, Android debug APK built (artifact `app-debug-apk`, 83 MB).
+- **Current milestone:** M1 Platform folders + CI – **DONE**. Next: M2 (P0 spike).
+- **Last verified code commit:** `0602b55` on `develop` – GitHub Actions run 42149165709: format check 0 changes, `flutter analyze` no issues, `flutter test` 14/14, Android debug APK built (artifact 13471217965), iOS debug `--no-codesign` build OK.
 
-## Completed (VERIFIED by CI)
+## VERIFIED (automated CI evidence)
 - V1-NAV-01 bottom navigation shell
-- V1-NAV-02 honest Planned placeholders (no dead buttons / fake progress – asserted in tests)
-- V1-CI-01 CI analyze + tests
-- V1-CI-02 CI Android debug APK
+- V1-NAV-02 honest Planned placeholders
+- V1-CI-01 CI analyze + tests (+ blocking format check)
+- V1-CI-02 Android debug APK in CI
 
 ## In progress
 - V1-NAV-03 Home (empty state only)
+- V1-CI-03 iOS build verified (debug, unsigned); release builds + SHA-256 checksums pending
 
-## Remaining
-- 96 PLANNED features – see FEATURE_MATRIX.md
+## Not verified yet
+- Nothing tested on a real phone or emulator; integration_test not run (V1-CI-04).
+- iOS app not run on simulator/device.
 
-## Blockers / known gaps
-1. Authoring sandbox cannot download the Flutter SDK (Google storage 403) – all compile/test evidence comes from GitHub Actions.
-2. `android/` and `ios/` not committed yet; CI generates them on each build.
-3. `dart format` would change 4 files (router.dart, theme.dart, both test files) – warning only.
-4. No real-device or iOS build yet; integration test not run.
+## Known gaps
+1. Authoring sandbox cannot run Flutter – all evidence is from GitHub Actions.
+2. Release build signs with debug key (D-013) – do not distribute.
+3. App IDs provisional (D-012).
+4. Hark's GitHub App cannot dispatch workflows (no actions:write) – trigger CI by pushing.
 
 ## Next task
-M1: commit generated `android/` + `ios/` (via a CI job that uploads them, or owner runs `flutter create` locally), apply `dart format`, make the format check blocking, add an iOS build job (macOS runner, no signing).
+M2 – P0 spike: EPUB/TXT/DOCX parse probes, Hindi PDF font probe, provider ping (BYOK), each behind tests.

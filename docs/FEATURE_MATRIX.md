@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 101 features — IMPLEMENTED: 0, IN PROGRESS: 1, PLANNED: 96, VERIFIED: 4
+Totals: 101 features — IMPLEMENTED: 0, IN PROGRESS: 2, PLANNED: 95, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -79,7 +79,7 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-PRF-02 | V1 | Performance | Isolates for heavy parsing; lazy loading/virtualized chapters; streaming export | P1 | V1-IMP-01 | PLANNED | - |
 | V1-CI-01 | V1 | QA/CI | GitHub Actions: analyze + unit/widget tests | P0 | - | VERIFIED | CI run 42146771459 green (analyze: no issues, 14/14 tests) |
 | V1-CI-02 | V1 | QA/CI | Android debug APK build in CI | P0 | V1-CI-01 | VERIFIED | CI run 42146771459: debug APK built + uploaded |
-| V1-CI-03 | V1 | QA/CI | iOS build on macOS runner; release builds with SHA-256 artifacts | P1 | V1-CI-01 | PLANNED | - |
+| V1-CI-03 | V1 | QA/CI | iOS build on macOS runner; release builds with SHA-256 artifacts | P1 | V1-CI-01 | IN PROGRESS | iOS debug no-codesign build green (run 42149165709); release builds + SHA-256 pending |
 | V1-CI-04 | V1 | QA/CI | Integration tests on emulator | P1 | V1-CI-01 | PLANNED | integration_test/app_launch_test (written, not run) |
 | V1-REL-01 | V1 | Release | Acceptance: 3 EPUBs keep chapter order + paragraph count; force-close resume; Devanagari checks on Android+iOS | P0 | all V1 | PLANNED | - |
 | V1-REL-02 | V1 | Release | Accessibility, store compliance, copyright notice (only rights-cleared content) | P1 | all V1 | PLANNED | - |
