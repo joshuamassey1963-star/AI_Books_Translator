@@ -50,8 +50,15 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42171138308 on 13c3f73: format ✅ analyze ✅ 112/112 ✅ Android ✅ iOS ✅.
 - Not done: encoding UI (preview/confirm dialog), legacy 8-bit encodings (V1-ENC-04, M2b-2), NFC applied in storage (M3), zip-level EN06 fixture.
 
-## Next exact task – M2b-2a (only after owner/tech-lead go; review/merge PR #3 first)
-- Legacy font mapping prototype per ROADMAP M2b-2a. Chanakya/Kruti Dev samples only outside git.
+## Session 7 (PR #3 merge + M2b-2a)
+- A: PR #3 merged into develop, merge commit ca887a5 (head 8e7edbe, runs 42171865752 + 42171873273 green). develop CI on ca887a5: run 42173845068 success.
+- B/C: branch `feature/m2b-2a-krutidev010`. Code: `lib/features/engine/legacy/legacy_font_converter.dart` (identity, registry, result, warnings), `kruti_dev_010.dart` (transducer). Licence: `third_party/`. Tests: `test/unit/engine/legacy/kruti_dev_010_test.dart` (18).
+- Commits: 8e778d6 feat → a763e1a format bot → a04078f fix (analyzer lint). First run 42174455640 failed on 4 analyzer infos (use_null_aware_elements); fixed.
+- CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
+- Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
+
+## Next exact task – M2b-2b (only after owner/tech-lead go; review/merge PR #4 first)
+- Chanakya / Walkman-Chanakya905 table; needs owner sample documents kept outside git (RC-001).
 
 ## Commands to resume
 ```bash

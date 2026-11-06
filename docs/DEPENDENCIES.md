@@ -50,3 +50,8 @@ Checked 2026-11-06 against pub.dev (latest version, SDK constraint, license, lik
 
 ## Third-party code copied
 None.
+
+## Ported data (no package)
+| Source | Licence | Used for | Notes |
+|---|---|---|---|
+| SIL wsresources `KrutiDev010.map` v1.3 | MIT (© SIL International) | Kruti Dev 010 → Unicode rules (M2b-2a) | ported to Dart by hand; licence in `third_party/`, notice in `third_party/README.md` |
