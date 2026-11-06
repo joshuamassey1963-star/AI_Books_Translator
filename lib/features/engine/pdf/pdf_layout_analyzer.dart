@@ -11,7 +11,7 @@ import 'pdf_models.dart';
 /// detection; rotated text is not handled.
 class PdfLayoutAnalyzer {
   const PdfLayoutAnalyzer({
-    this.wordGapFactor = 0.25,
+    this.wordGapFactor = 0.5,
     this.paragraphGapFactor = 1.6,
     this.indentFactor = 1.5,
     this.marginZone = 0.08,
@@ -31,10 +31,21 @@ class PdfLayoutAnalyzer {
   final double marginZone;
 
   PdfPageLayout analyzePage(PdfPageInfo page) {
-    final glyphs = [
-      for (final g in page.glyphs)
-        if (g.char.trim().isNotEmpty && g.box.height > 0) g,
-    ];
+    // A whitespace character in extraction order is a word break even when
+    // the boxes are close (tight glyph boxes, narrow spaces).
+    final breakBefore = Set<PdfGlyph>.identity();
+    final glyphs = <PdfGlyph>[];
+    var pendingBreak = false;
+    for (final g in page.glyphs) {
+      if (g.char.trim().isEmpty) {
+        pendingBreak = true;
+        continue;
+      }
+      if (g.box.height <= 0) continue;
+      if (pendingBreak) breakBefore.add(g);
+      pendingBreak = false;
+      glyphs.add(g);
+    }
     if (glyphs.isEmpty) {
       return PdfPageLayout(
         pageNumber: page.pageNumber,
@@ -44,7 +55,7 @@ class PdfLayoutAnalyzer {
       );
     }
     final medianHeight = _median([for (final g in glyphs) g.box.height]);
-    final lines = _buildLines(glyphs, medianHeight);
+    final lines = _buildLines(glyphs, medianHeight, breakBefore);
     final gutter = _findGutter(lines, page.width);
     final ordered = gutter == null ? lines : _orderTwoColumns(lines, gutter);
     final paragraphs = _buildParagraphs(ordered, medianHeight, gutter);
@@ -112,7 +123,11 @@ class PdfLayoutAnalyzer {
       .trim()
       .toLowerCase();
 
-  List<PdfLine> _buildLines(List<PdfGlyph> glyphs, double medianHeight) {
+  List<PdfLine> _buildLines(
+    List<PdfGlyph> glyphs,
+    double medianHeight,
+    Set<PdfGlyph> breakBefore,
+  ) {
     final sorted = [...glyphs]
       ..sort((a, b) {
         final byTop = b.box.top.compareTo(a.box.top);
@@ -142,7 +157,7 @@ class PdfLayoutAnalyzer {
     final lines = <PdfLine>[];
     for (final group in groups) {
       group.sort((a, b) => a.box.left.compareTo(b.box.left));
-      lines.addAll(_splitLine(group, medianHeight));
+      lines.addAll(_splitLine(group, medianHeight, breakBefore));
     }
     lines.sort((a, b) => b.box.top.compareTo(a.box.top));
     return lines;
@@ -150,7 +165,11 @@ class PdfLayoutAnalyzer {
 
   /// Splits one visual row into words, and into separate lines when a very
   /// wide gap separates two column fragments on the same row.
-  List<PdfLine> _splitLine(List<PdfGlyph> row, double medianHeight) {
+  List<PdfLine> _splitLine(
+    List<PdfGlyph> row,
+    double medianHeight,
+    Set<PdfGlyph> breakBefore,
+  ) {
     final wordGap = medianHeight * wordGapFactor;
     final columnGap = medianHeight * 3;
     final result = <PdfLine>[];
@@ -167,7 +186,8 @@ class PdfLayoutAnalyzer {
         closeWord();
         result.add(PdfLine(words));
         words = [];
-      } else if (gap > wordGap) {
+      } else if (gap > wordGap ||
+          (breakBefore.contains(row[i]) && gap >= 0)) {
         closeWord();
       }
       current.add(row[i]);
