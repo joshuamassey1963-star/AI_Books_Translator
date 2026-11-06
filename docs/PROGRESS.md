@@ -1,7 +1,7 @@
 # Progress
 
 - **Current version:** 0.1.0+1 (V1, pre-alpha)
-- **Current milestone:** M2a parser spike – **DONE**. Next: M2b (PDF probe, Hindi PDF export probe, provider ping).
+- **Current milestone:** M2a parser spike – **DONE**. Requirements update recorded (155 features). Next: **M2b-1a** (PDF extraction interface + diagnostics), waiting for owner's go.
 - **Last verified code commit:** `c2dbf7c` – GitHub Actions run 42152743112: format ✅, `flutter analyze` no issues ✅, `flutter test` 34/34 ✅ (14 shell + 20 parser), Android debug APK ✅, iOS unsigned build ✅.
 
 ## VERIFIED (automated CI evidence)

@@ -27,12 +27,15 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42152743112 on c2dbf7c: format ✅ analyze ✅ tests 34/34 ✅ Android APK ✅ iOS build ✅.
 - Owner requests logged in docs/OWNER_REQUESTS.md (Day/Night/Sepia, rotation, work history, login).
 
-## Next exact task (M2b – P0 spike, part 2)
-1. `git pull`; read PROGRESS, DECISIONS D-011/D-014.
-2. Hindi PDF export probe: check whether the `pdf` package shapes Devanagari (conjuncts/matras) with Noto Sans Devanagari (OFL). If not, record the blocker and evaluate alternatives (platform PDF via native print, or pre-shaped glyphs) – do not claim Hindi PDF works without a visual check by the owner.
-3. Text-layer PDF probe: evaluate `pdfrx` (MIT, PDFium) on Android/iOS; detect scanned PDFs → "OCR required".
-4. Provider adapter interface + "test connection" ping using the user's own key (BYOK, key never in repo/logs, no hardcoded model names – list models from the provider).
-5. Code workflow: commit → push `format/<name>` → wait for bot format commit → push to `feature/<name>` → CI green → fast-forward `develop`.
+## Requirements update (after M2a, 2026-11-06)
+- Owner added text/font/encoding/OCR/export/image requirements: 50 new feature IDs, 8 existing IDs annotated (FEATURE_MATRIX now 155). New docs: TEXT_ENCODING_FONT_COMPATIBILITY.md, REGRESSION_CASES.md. Decisions D-016..D-020. Docs-only commit; no code changed.
+
+## Next exact task – M2b-1a (do not start before owner says CONTINUE PROJECT)
+1. `git pull`; read ROADMAP "M2b – detailed plan", TEXT_ENCODING_FONT_COMPATIBILITY.md §1/§5, REGRESSION_CASES.md.
+2. Evaluate PDF text engine: `pdfrx` (license, PDFium binaries, whether `flutter test` on the Ubuntu runner can load it). Record result in RESEARCH.md / DECISIONS.
+3. Add `lib/features/engine/pdf/`: `PdfTextSource` interface, `PdfTextRun` (text, page, bbox, fontName, subsetPrefix, embedded, hasToUnicode), `PageTextStatus` (ok / noTextLayer / garbled), `OcrEngine` interface in `engine/ocr/` (no engine).
+4. Tests on generated PDFs only (our text + OFL font); RC-008 and RC-013 tests.
+5. Code workflow: commit → push `format/<name>` → bot format → push `feature/<name>` → CI green → ff `develop`. Docs in a separate commit.
 
 ## Commands to resume
 ```bash

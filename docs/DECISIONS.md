@@ -74,3 +74,24 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 ## D-015 · 2026-11-06 · Autoformat helper workflow
 - The authoring sandbox cannot run `dart format`. Pushing a `format/<name>` branch runs `.github/workflows/autoformat.yml`, which formats and pushes back to that branch; the result then goes to `feature/*`/`develop`. Never runs on main/develop.
 - **Status:** Accepted.
+
+## D-016 · 2026-11-06 · Extraction, legacy conversion, OCR and translation are separate stages
+- Each writes its own versioned text layer (L0 raw … L4 edited). Nothing overwrites an earlier layer; the original file is immutable. Reason: the old reader project lost the ability to tell extraction errors from conversion/OCR errors.
+- **Status:** Accepted.
+
+## D-017 · 2026-11-06 · Unicode normalization policy
+- L0 raw kept byte-for-byte as extracted; L1 and later layers stored in NFC; search, comparison and glossary matching on NFC. ZWJ/ZWNJ preserved.
+- **Status:** Accepted (implementation M2b-1c).
+
+## D-018 · 2026-11-06 · Font sourcing and licensing
+- Support is measured by test results, not font counts. Only a small license-checked set is bundled; others are system fonts or user-imported. Proprietary fonts (Mangal, Kokila, Nirmala UI, Apple system fonts) are never bundled. Legacy fonts (Kruti Dev, Chanakya, DevLys, Walkman-Chanakya905) are never bundled or rendered – they only identify which conversion table to use.
+- Before bundling: license file checked from upstream, added to `assets/fonts/LICENSES/` and DEPENDENCIES.md.
+- **Status:** Accepted.
+
+## D-019 · 2026-11-06 · Hindi PDF export engine is undecided
+- No engine is production-ready until X01–X10 pass on Android and iOS. M2b-3 compares the `pdf` package with at least one alternative (native platform PDF, HarfBuzz-shaped glyphs, or HTML print). Copy/search fidelity is tested separately from visual correctness.
+- **Status:** Open – decide in M2b-3c.
+
+## D-020 · 2026-11-06 · M2b split into five sub-milestones
+- M2b-1 PDF + diagnostics, M2b-2 legacy conversion, M2b-3 Hindi PDF export, M2b-4 provider adapter (mocks), M2b-5 real-book regression. Owner request; keeps each session small and testable. M2a code is unchanged.
+- **Status:** Accepted.

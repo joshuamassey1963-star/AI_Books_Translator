@@ -30,3 +30,12 @@ Invariants (tested from V1-C on): no paragraph silently skipped; source immutabl
 
 ## Security
 BYOK keys in Keystore/Keychain; consent before cloud translation; hardened EPUB/DOCX unzip and XML parsing; no book text or keys in logs; minimal permissions.
+
+## Text, fonts, encoding, OCR (owner requirements 2026-11-06)
+Full detail: `docs/TEXT_ENCODING_FONT_COMPATIBILITY.md`.
+- **Separate stages, separate layers (D-016):** Extract (L0 raw + per-char font/coords) → Diagnose (quality score) → one of {Unicode OK, Legacy converter, OCR} → L1 source Unicode → user corrections L2 → translation L3 → edits L4. No stage overwrites an earlier layer; the original file stays immutable.
+- **Engine folders (planned):** `engine/pdf/` (PdfTextSource interface + adapter, diagnostics), `engine/legacy/` (font registry, per-font tables, converter, confidence), `engine/ocr/` (OcrEngine interface; engines in V2), `engine/encoding/` (detection, BOM, NFC policy), `engine/fonts/` (FontRegistry, FontProfile, fallback, coverage), `engine/export/pdf/` (export engine interface + candidates).
+- **Fonts:** system + small license-checked bundled set + user-imported fonts; legacy fonts are identification keys only (D-018).
+- **Normalization:** L0 stored as-is; L1 and later NFC; search/compare on NFC (D-017).
+- **Quality gate:** translation is not offered for a block/page whose extraction score is below threshold without an explicit user override and warning.
+- **Images:** one image pipeline (decode limits, re-encode, EXIF strip, thumbnail cache) used by cover, backgrounds, logo and profile features (V1-IMG-05).
