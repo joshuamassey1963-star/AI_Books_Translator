@@ -3,7 +3,9 @@ enum ParseErrorCode {
   empty('The file is empty.'),
   tooLarge('The file is larger than the import limit.'),
   unsupportedFormat('This file type is not supported yet.'),
-  pdfNotYetSupported('PDF import is planned (V1-IMP-03) but not available yet.'),
+  pdfNotYetSupported(
+    'PDF import is planned (V1-IMP-03) but not available yet.',
+  ),
   invalidEncoding('The text is not valid UTF-8.'),
   corruptContainer('The file is damaged or not a valid EPUB/DOCX.'),
   unsafeContainer('The file was blocked for safety (suspicious archive).'),

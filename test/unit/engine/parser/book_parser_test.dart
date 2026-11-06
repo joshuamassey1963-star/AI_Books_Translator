@@ -11,9 +11,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../../support/book_fixtures.dart';
 
-Matcher throwsParse(ParseErrorCode code) => throwsA(
-  isA<ParseException>().having((e) => e.code, 'code', code),
-);
+Matcher throwsParse(ParseErrorCode code) =>
+    throwsA(isA<ParseException>().having((e) => e.code, 'code', code));
 
 List<String> texts(Chapter c) => c.blocks.map((b) => b.text).toList();
 
@@ -32,7 +31,10 @@ void main() {
     });
 
     test('empty, PDF and binary files are refused honestly', () {
-      expect(() => parser.parse(Uint8List(0)), throwsParse(ParseErrorCode.empty));
+      expect(
+        () => parser.parse(Uint8List(0)),
+        throwsParse(ParseErrorCode.empty),
+      );
       expect(
         () => parser.parse(utf8Bytes('%PDF-1.4 x'), fileName: 'a.txt'),
         throwsParse(ParseErrorCode.pdfNotYetSupported),
@@ -153,8 +155,7 @@ void main() {
     test('XXE / entity declarations are blocked', () {
       final bomb = zipOf({
         'mimetype': 'application/epub+zip',
-        'META-INF/container.xml':
-            '<container><rootfiles><rootfile full-path="c.opf"/></rootfiles></container>',
+        'META-INF/container.xml': '<container><rootfiles><rootfile full-path="c.opf"/></rootfiles></container>',
         'c.opf':
             '<package><metadata/><manifest><item id="a" href="a.xhtml"/></manifest>'
             '<spine><itemref idref="a"/></spine></package>',
@@ -181,10 +182,7 @@ void main() {
         0x04,
         ...List.filled(64, 7),
       ]);
-      expect(
-        () => parser.parse(bytes),
-        throwsA(isA<ParseException>()),
-      );
+      expect(() => parser.parse(bytes), throwsA(isA<ParseException>()));
     });
   });
 
@@ -227,7 +225,10 @@ void main() {
       expect(isSafeEntryName(r'a\b'), isFalse);
       expect(isSafeEntryName('C:/x'), isFalse);
       expect(resolveZipHref('OEBPS/content.opf', '../img/a.png'), 'img/a.png');
-      expect(resolveZipHref('OEBPS/c.opf', 'text/a.xhtml#p1'), 'OEBPS/text/a.xhtml');
+      expect(
+        resolveZipHref('OEBPS/c.opf', 'text/a.xhtml#p1'),
+        'OEBPS/text/a.xhtml',
+      );
       expect(normalizeZipPath('../../x'), '');
     });
   });

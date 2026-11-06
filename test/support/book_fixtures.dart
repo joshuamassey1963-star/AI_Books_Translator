@@ -107,8 +107,7 @@ Uint8List sampleDocx({String coreTitle = 'Docx Sample'}) {
     ..write(_docxParagraph('Chapter 2', style: 'Heading1'))
     ..write(_docxParagraph('हिंदी अनुच्छेद।'));
   return zipOf({
-    '[Content_Types].xml':
-        '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>',
+    '[Content_Types].xml': '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>',
     'word/document.xml':
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'

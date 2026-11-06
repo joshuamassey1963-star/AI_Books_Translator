@@ -19,7 +19,10 @@ class SafeZip {
     try {
       archive = ZipDecoder().decodeBytes(bytes);
     } on Object catch (e) {
-      throw ParseException(ParseErrorCode.corruptContainer, e.runtimeType.toString());
+      throw ParseException(
+        ParseErrorCode.corruptContainer,
+        e.runtimeType.toString(),
+      );
     }
     if (archive.isEmpty) {
       throw const ParseException(ParseErrorCode.corruptContainer, 'empty zip');
@@ -46,7 +49,8 @@ class SafeZip {
         'declared size too large: $total',
       );
     }
-    if (bytes.isNotEmpty && total ~/ bytes.length > limits.maxCompressionRatio) {
+    if (bytes.isNotEmpty &&
+        total ~/ bytes.length > limits.maxCompressionRatio) {
       throw ParseException(
         ParseErrorCode.unsafeContainer,
         'compression ratio too high: ${total ~/ bytes.length}',
@@ -87,7 +91,10 @@ class SafeZip {
     try {
       data = file.readBytes();
     } on Object catch (e) {
-      throw ParseException(ParseErrorCode.corruptContainer, e.runtimeType.toString());
+      throw ParseException(
+        ParseErrorCode.corruptContainer,
+        e.runtimeType.toString(),
+      );
     }
     if (data == null) return Uint8List(0);
     if (data.length > _limits.maxEntryUncompressedBytes) {

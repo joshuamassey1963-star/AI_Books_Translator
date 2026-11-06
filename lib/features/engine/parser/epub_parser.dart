@@ -67,10 +67,10 @@ class EpubParser {
       }
     }
 
-    final spine = allByLocalName(opf, 'itemref')
-        .map((e) => e.getAttribute('idref'))
-        .whereType<String>()
-        .toList();
+    final spine = allByLocalName(
+      opf,
+      'itemref',
+    ).map((e) => e.getAttribute('idref')).whereType<String>().toList();
     if (spine.isEmpty) {
       throw const ParseException(ParseErrorCode.missingPart, 'spine');
     }
