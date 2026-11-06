@@ -1,6 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 5 / M2b-1b, 2026-11-06)
+- `PdfLayoutAnalyzer`: words, lines, paragraphs from glyph boxes; two-column reading order; header/footer/page-number candidates.
+- `PdfCharDiagnostics` + `ExtractionQualityGate`: FFFD, control, PUA, ligature, duplicate-glyph, Latin-1 signals; score 0–100; pass/warn/block.
+- `PdfPageInfo.glyphs` (per-character boxes from PDFium).
+- 21 new tests (84 total).
+### Docs (Session 5)
+- System-wide translation and Read Aloud/TTS specifications (29 planned IDs), D-022..D-024.
 ### Added (Session 4 / M2b-1a, 2026-11-06)
 - `PdfTextSource` interface and `PdfrxTextSource` (pdfrx/PDFium): text runs with page number and coordinates, page size, SHA-256, original bytes untouched.
 - `PdfStructureScanner` (pure Dart): page fonts (BaseFont, subset prefix, embedded, ToUnicode, encoding, mapping risk), image XObjects, inline images, text operators, form XObjects, object streams.

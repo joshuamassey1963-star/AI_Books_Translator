@@ -115,3 +115,11 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 - Device voice and online AI voice are labelled differently; AI TTS is BYOK, opt-in per provider, never a silent paid switch; keys never in source, logs or exported audio/metadata.
 - Candidate packages (flutter_tts, audio_service, audio_session, just_audio – all MIT/Apache) to be re-checked when the milestone starts.
 - **Status:** Accepted (planning).
+
+## D-024 · 2026-11-06 · Layout reconstruction and quality gate (M2b-1b)
+- Words/lines/paragraphs are rebuilt from PDFium **tight** glyph boxes (`FPDFText_GetCharBox` via pdfrx). Word breaks use extracted whitespace first, then a geometric gap (0.5 × median glyph height). Paragraph break: vertical gap > 1.6 × median line gap (capped at 2 glyph heights) or first-line indent.
+- Reading order: one or two columns (gutter between 30–70 % of width, ≤20 % spanning lines, closest to centre). Tables, footnotes, >2 columns, rotated text: not handled yet.
+- Header/footer: lines in the top/bottom 8 % repeating on ≥ half the pages (min 2), or bare page numbers → **candidates**, reported, never deleted silently.
+- Quality gate: score 0–100 from FFFD, control, PUA, duplicate glyph, ligature, Latin-1 ratios and high/unknown-risk fonts; `pass ≥ 80`, `block < 50` or all pages need OCR, otherwise `warn` (user confirmation). Thresholds are provisional until M2b-5 real-book regression.
+- **Per-run font via PDFium FFI (investigated, not implemented):** `pdfium_dart` 0.4.1 binds `FPDFText_GetFontInfo`, `FPDFText_GetFontWeight`, `FPDFText_GetFontSize`, `FPDFTextObj_GetFont`, `FPDFFont_GetBaseFontName`/`GetIsEmbedded`. pdfrx keeps document handles private inside its worker isolate, so per-char font info needs either a second raw PDFium open of the same bytes (own FFI worker, thread-safety via pdfrx's gate) or an upstream pdfrx API. Planned as a separate spike; until then fonts stay page-level (`PdfTextRun.fontName == null`), nothing inferred.
+- **Status:** Accepted for M2b-1b.

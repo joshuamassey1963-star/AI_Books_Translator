@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 184 features — IMPLEMENTED: 0, IN PROGRESS: 14, PLANNED: 166, VERIFIED: 4
+Totals: 184 features — IMPLEMENTED: 0, IN PROGRESS: 19, PLANNED: 161, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -106,19 +106,19 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-LEG-07 | V1 | Legacy Fonts | Manual correction of wrong conversions (L2 layer) – owner req 2026-11-06 | P1 | V1-LEG-06, V1-EDT-01 | PLANNED | - |
 | V1-LEG-08 | V1 | Legacy Fonts | Unsupported-mapping warning + OCR fallback route for uncertain text – owner req 2026-11-06 | P1 | V1-LEG-04, V1-OCR-03 | PLANNED | - |
 | V1-PDF-01 | V1 | PDF Extraction | PdfTextSource interface + engine adapter (candidate pdfrx/PDFium): text runs with page, coordinates, font metadata; original PDF untouched – owner req 2026-11-06 | P0 | V1-IMP-05 | IN PROGRESS | pdfrx_text_source_test (7) – run 42158726040 |
-| V1-PDF-02 | V1 | PDF Extraction | Reading order: multi-column layouts and tables detection – owner req 2026-11-06 | P1 | V1-PDF-01 | PLANNED | - |
-| V1-PDF-03 | V1 | PDF Extraction | Header/footer/page-number detection and separation – owner req 2026-11-06 | P1 | V1-PDF-01 | PLANNED | - |
+| V1-PDF-02 | V1 | PDF Extraction | Reading order: multi-column layouts and tables detection – owner req 2026-11-06 | P1 | V1-PDF-01 | IN PROGRESS | two-column order only (no tables) – layout tests, run 42164277343 |
+| V1-PDF-03 | V1 | PDF Extraction | Header/footer/page-number detection and separation – owner req 2026-11-06 | P1 | V1-PDF-01 | IN PROGRESS | candidates detected, not separated in UI – run 42164277343 |
 | V1-PDF-04 | V1 | PDF Extraction | Font/Unicode diagnostics: ToUnicode CMap availability, embedded/subset fonts, missing/repeated chars, ligature decomposition, PUA detection – owner req 2026-11-06 | P0 | V1-PDF-01 | IN PROGRESS | pdf_structure_scanner_test font group (7) – run 42158726040 |
-| V1-PDF-05 | V1 | PDF Extraction | Word and paragraph boundary reconstruction from glyph positions – owner req 2026-11-06 | P0 | V1-PDF-01 | PLANNED | - |
+| V1-PDF-05 | V1 | PDF Extraction | Word and paragraph boundary reconstruction from glyph positions – owner req 2026-11-06 | P0 | V1-PDF-01 | IN PROGRESS | pdf_layout_analyzer_test – run 42164277343 |
 | V1-PDF-06 | V1 | PDF Extraction | Footnotes and references detection – owner req 2026-11-06 | P2 | V1-PDF-02 | PLANNED | - |
-| V1-PDF-07 | V1 | PDF Extraction | Extraction quality gate before translation: score, per-page flags, clear warning when unreliable – owner req 2026-11-06 | P0 | V1-PDF-04, V1-PDF-05 | PLANNED | - |
+| V1-PDF-07 | V1 | PDF Extraction | Extraction quality gate before translation: score, per-page flags, clear warning when unreliable – owner req 2026-11-06 | P0 | V1-PDF-04, V1-PDF-05 | IN PROGRESS | pdf_quality_test (score + gate, thresholds untuned) – run 42164277343 |
 | V1-ENC-01 | V1 | Encoding | TXT: UTF-8, UTF-8 BOM, UTF-16 LE/BE (BOM + heuristic) – owner req 2026-11-06 | P0 | V1-IMP-02 | PLANNED | - |
 | V1-ENC-02 | V1 | Encoding | Unicode normalization policy (L0 as-is, L1+ NFC; search/compare on NFC) – owner req 2026-11-06 | P0 | V1-TRP-05 | PLANNED | - |
 | V1-ENC-03 | V1 | Encoding | Invalid bytes: no data loss, encoding preview and user choice when detection is uncertain – owner req 2026-11-06 | P1 | V1-ENC-01 | PLANNED | - |
 | V1-ENC-04 | V1 | Encoding | Legacy/8-bit encoding detection (Windows-1252, ISCII, legacy-font ASCII text) with clear unsupported-encoding errors – owner req 2026-11-06 | P2 | V1-ENC-01, V1-LEG-01 | PLANNED | - |
 | V1-ENC-05 | V1 | Encoding | Per-format encoding tests: TXT, EPUB (XML declarations), DOCX, PDF – owner req 2026-11-06 | P1 | V1-ENC-01 | PLANNED | - |
 | V1-OCR-01 | V1 | OCR (detection) | Scanned PDF / missing text layer detection per page – owner req 2026-11-06 | P0 | V1-PDF-01 | IN PROGRESS | scanner + pdfrx RC-013 tests – run 42158726040 |
-| V1-OCR-02 | V1 | OCR (detection) | Garbled-text detection (low score, PUA-heavy, unknown legacy font) – owner req 2026-11-06 | P0 | V1-PDF-04 | PLANNED | - |
+| V1-OCR-02 | V1 | OCR (detection) | Garbled-text detection (low score, PUA-heavy, unknown legacy font) – owner req 2026-11-06 | P0 | V1-PDF-04 | IN PROGRESS | PUA/FFFD/control/Latin-1 signals – run 42164277343; legacy detection M2b-2 |
 | V1-OCR-03 | V1 | OCR (detection) | 'OCR required' page status + OcrEngine interface (no engine in V1) – owner req 2026-11-06 | P1 | V1-OCR-01 | IN PROGRESS | ocr_engine_test (2) + classifyPage tests – run 42158726040 |
 | V1-OCR-04 | V1 | OCR (detection) | Original page image preservation (render on demand, cache by page hash) – owner req 2026-11-06 | P1 | V1-PDF-01 | PLANNED | - |
 | V1-EXP-06 | V1 | Export | Hindi PDF acceptance checklist X01–X10 (matras, conjuncts, half letters, mixed text, select/copy, Unicode copy, search, embedding, wrapping, Android+iOS) – owner req 2026-11-06 | P0 | V1-EXP-04, V1-FNT-02 | PLANNED | - |
