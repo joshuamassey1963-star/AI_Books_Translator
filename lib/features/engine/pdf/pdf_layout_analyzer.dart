@@ -281,9 +281,11 @@ class PdfLayoutAnalyzer {
           lines[i - 1].box.bottom - lines[i].box.top,
     ];
     final medianGap = gaps.isEmpty ? medianHeight * 0.4 : _median(gaps);
-    final breakGap = math.max(
-      medianGap * paragraphGapFactor,
-      medianHeight * 0.6,
+    // A gap of more than two glyph heights always separates blocks, even
+    // when few lines make the median gap itself large.
+    final breakGap = math.min(
+      math.max(medianGap * paragraphGapFactor, medianHeight * 0.6),
+      medianHeight * 2,
     );
     final paragraphs = <PdfParagraph>[];
     var current = <PdfLine>[lines.first];
