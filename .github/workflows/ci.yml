@@ -32,13 +32,13 @@ jobs:
           cache: true
       - run: flutter --version
       - run: flutter pub get
-      - name: Format check (report only until first local format pass)
-        run: dart format --output=none --set-exit-if-changed lib test integration_test || echo "::warning::dart format would change files"
+      - name: Format check
+        run: dart format --output=none --set-exit-if-changed lib test integration_test
       - run: flutter analyze
       - run: flutter test --reporter expanded
 
   build-android-debug:
-    name: Android debug build (platform folders generated in CI)
+    name: Android debug build
     needs: analyze-and-test
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -53,15 +53,6 @@ jobs:
           channel: stable
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
-      # Session 1 could not run `flutter create` locally (SDK download blocked
-      # in the authoring sandbox). Until android/ and ios/ are committed,
-      # CI generates them without touching lib/. See docs/HANDOVER.md.
-      - name: Generate missing platform folders
-        run: |
-          if [ ! -d android ]; then
-            flutter create --platforms=android,ios --org com.aibooktranslator --project-name ai_book_translator .
-            rm -f test/widget_test.dart
-          fi
       - run: flutter pub get
       - run: flutter build apk --debug
       - uses: actions/upload-artifact@v7
@@ -69,3 +60,20 @@ jobs:
           name: app-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 7
+
+  build-ios-unsigned:
+    name: iOS build (no code signing)
+    needs: analyze-and-test
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      # Compile check only. Signing/TestFlight needs an Apple Developer
+      # account and is out of scope until the V1 release milestone.
+      - run: flutter build ios --debug --no-codesign

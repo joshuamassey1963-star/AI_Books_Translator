@@ -162,14 +162,11 @@ MIT License. See [LICENSE](LICENSE). Check dependency licenses (especially AGPL/
 
 ## Development (code status)
 
-> **Current milestone: M0 Foundation.** Only the Flutter navigation shell exists; every other screen shows "Not available yet". Live status: `docs/PROGRESS.md`, `docs/FEATURE_MATRIX.md`, `docs/HANDOVER.md`.
+> **Current milestone: M1 Platform folders + CI.** Only the Flutter navigation shell exists; every other screen shows "Not available yet". Live status: `docs/PROGRESS.md`, `docs/FEATURE_MATRIX.md`, `docs/HANDOVER.md`.
 
 Docs: `docs/ROADMAP.md` · `docs/ARCHITECTURE.md` · `docs/DECISIONS.md` · `docs/DEPENDENCIES.md` · `docs/RESEARCH.md` · `docs/TEST_PLAN.md` · requirements PDF `docs/AI_Book_Translator_Roadmap_V1_V3.pdf`.
 
 ```bash
 flutter --version            # 3.47.9 stable expected
-# first time only, until android/ and ios/ are committed:
-flutter create --platforms=android,ios --org com.aibooktranslator --project-name ai_book_translator .
-rm -f test/widget_test.dart
 flutter pub get && flutter analyze && flutter test
 ```
