@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/dev_tests/dev_tests_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/more/more_screen.dart';
 import '../features/planned/planned_screen.dart';
@@ -18,6 +20,9 @@ abstract final class AppRoutes {
 
   static String bookDetails() => '$library/${bookDetailsScreen.path}';
   static String moreSub(AppScreen screen) => '$more/${screen.path}';
+
+  /// Debug builds only (DEV-01).
+  static const String devTests = '$more/dev-tests';
 }
 
 GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
@@ -78,6 +83,11 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
                     GoRoute(
                       path: screen.path,
                       builder: (_, _) => PlannedScreen(screen: screen),
+                    ),
+                  if (kDebugMode)
+                    GoRoute(
+                      path: 'dev-tests',
+                      builder: (_, _) => const DevTestsScreen(),
                     ),
                 ],
               ),
