@@ -278,12 +278,12 @@ class KrutiDev010Converter implements LegacyFontConverter {
         final reph = take((x) => x == _reph);
         final nasal = take(_nasal.contains);
         o.addAll([
-          if (reph != null) reph,
+          ?reph,
           ...b.sublist(j, e),
-          if (nukta != null) nukta,
+          ?nukta,
           if (hasIkar) _ikar,
-          if (vowel != null) vowel,
-          if (nasal != null) nasal,
+          ?vowel,
+          ?nasal,
         ]);
         i = k;
         continue;
