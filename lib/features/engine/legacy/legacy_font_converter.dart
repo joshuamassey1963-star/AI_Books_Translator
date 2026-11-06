@@ -46,7 +46,8 @@ class LegacyWarning {
   final int count;
 
   @override
-  String toString() => '${code.name}(${character.runes.first.toRadixString(16)})×$count';
+  String toString() =>
+      '${code.name}(${character.runes.first.toRadixString(16)})×$count';
 }
 
 enum LegacyRefusal {

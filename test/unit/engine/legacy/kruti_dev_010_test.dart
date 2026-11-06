@@ -136,7 +136,11 @@ void main() {
     });
 
     test('PDF subset prefix and spacing variants are recognised', () {
-      for (final name in ['ABCDEF+KrutiDev010', 'Kruti-Dev-010', 'KRUTI DEV 010 Bold']) {
+      for (final name in [
+        'ABCDEF+KrutiDev010',
+        'Kruti-Dev-010',
+        'KRUTI DEV 010 Bold',
+      ]) {
         expect(
           registry.converterFor(LegacyFontIdentity(name, confirmed: true))?.id,
           'krutidev010',
@@ -150,8 +154,10 @@ void main() {
       final again = registry.convert(first.converted!, kruti);
       expect(again.refusal, LegacyRefusal.alreadyUnicode);
       expect(again.converted, isNull);
-      expect(registry.convert('भारत Hkkjr', kruti).refusal,
-          LegacyRefusal.alreadyUnicode);
+      expect(
+        registry.convert('भारत Hkkjr', kruti).refusal,
+        LegacyRefusal.alreadyUnicode,
+      );
     });
 
     test('original input is preserved unchanged', () {

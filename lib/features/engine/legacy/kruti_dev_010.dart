@@ -173,12 +173,7 @@ class KrutiDev010Converter implements LegacyFontConverter {
         i += 2;
       } else if ((_hcOnly.contains(x) || _hcOnlySpecial.contains(x)) &&
           (n1 == _vb || n1 == 168 || n1 == 169)) {
-        o.addAll([
-          x,
-          _vb,
-          if (n1 == 168) 115,
-          if (n1 == 169) 83,
-        ]);
+        o.addAll([x, _vb, if (n1 == 168) 115, if (n1 == 169) 83]);
         i += 2;
       } else if (x == _vb && n1 == 115) {
         o.add(168);
