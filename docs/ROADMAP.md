@@ -4,7 +4,7 @@ Requirements source: `docs/AI_Book_Translator_Roadmap_V1_V3.pdf` (03 Nov 2026). 
 
 | # | Milestone | Scope (feature IDs) | Exit criteria | Status |
 |---|---|---|---|---|
-| M0 | Foundation (Session 1) | V1-NAV-01/02, V1-CI-01/02, docs | Shell + tests written; CI green on GitHub | IN PROGRESS (not pushed) |
+| M0 | Foundation (Session 1) | V1-NAV-01/02, V1-CI-01/02, docs | Shell + tests written; CI green on GitHub | DONE (CI run 42146771459) |
 | M1 | Platform folders + CI green | commit android/ & ios/, first CI run, format pass | `flutter analyze` + `flutter test` green in CI; debug APK artifact | PLANNED |
 | M2 | P0 spike: parsers | EPUB/DOCX/TXT/PDF text extraction prototype, Hindi PDF export probe, provider ping | 2 chapters of a sample book import/export correctly | PLANNED |
 | M3 | V1-A Storage | V1-STO-01/02/04, V1-SEC-01, V1-SET-01 | Schema + migration tests; secure-storage test | PLANNED |

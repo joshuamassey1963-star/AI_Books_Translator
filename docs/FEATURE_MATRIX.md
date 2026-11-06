@@ -2,14 +2,14 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 101 features — IMPLEMENTED: 4, IN PROGRESS: 1, PLANNED: 96
+Totals: 101 features — IMPLEMENTED: 0, IN PROGRESS: 1, PLANNED: 96, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
 | ID | Version | Module | Feature | Priority | Dependency | Status | Tests |
 |---|---|---|---|---|---|---|---|
-| V1-NAV-01 | V1 | App Shell | Bottom navigation (Home, Library, Translate, Tasks, More) with per-tab stacks | P0 | - | IMPLEMENTED | widget: navigation_shell_test |
-| V1-NAV-02 | V1 | App Shell | Honest Planned/Not-available placeholders for every screen; no dead buttons | P0 | V1-NAV-01 | IMPLEMENTED | widget + unit: screen_registry_test |
+| V1-NAV-01 | V1 | App Shell | Bottom navigation (Home, Library, Translate, Tasks, More) with per-tab stacks | P0 | - | VERIFIED | CI run 42146771459: widget tests pass |
+| V1-NAV-02 | V1 | App Shell | Honest Planned/Not-available placeholders for every screen; no dead buttons | P0 | V1-NAV-01 | VERIFIED | CI run 42146771459: unit + widget tests pass |
 | V1-NAV-03 | V1 | App Shell | Home: new project, ongoing work, recent translations, status | P1 | V1-LIB-01 | IN PROGRESS | widget (empty state only) |
 | V1-NAV-04 | V1 | App Shell | Deep links + project state restore (go_router) | P2 | V1-STO-01 | PLANNED | - |
 | V1-NAV-05 | V1 | App Shell | Tablet two-pane workspace layout | P2 | V1-EDT-01 | PLANNED | - |
@@ -77,8 +77,8 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-OFF-01 | V1 | Offline | Local library and editor work without internet; no mandatory account | P0 | V1-STO-01 | PLANNED | - |
 | V1-PRF-01 | V1 | Performance | Performance baseline: startup, import latency (10MB EPUB), memory, 60fps scroll | P1 | V1-IMP-01 | PLANNED | - |
 | V1-PRF-02 | V1 | Performance | Isolates for heavy parsing; lazy loading/virtualized chapters; streaming export | P1 | V1-IMP-01 | PLANNED | - |
-| V1-CI-01 | V1 | QA/CI | GitHub Actions: analyze + unit/widget tests | P0 | - | IMPLEMENTED | ci.yml (not yet run: repo not pushed) |
-| V1-CI-02 | V1 | QA/CI | Android debug APK build in CI | P0 | V1-CI-01 | IMPLEMENTED | ci.yml (not yet run) |
+| V1-CI-01 | V1 | QA/CI | GitHub Actions: analyze + unit/widget tests | P0 | - | VERIFIED | CI run 42146771459 green (analyze: no issues, 14/14 tests) |
+| V1-CI-02 | V1 | QA/CI | Android debug APK build in CI | P0 | V1-CI-01 | VERIFIED | CI run 42146771459: debug APK built + uploaded |
 | V1-CI-03 | V1 | QA/CI | iOS build on macOS runner; release builds with SHA-256 artifacts | P1 | V1-CI-01 | PLANNED | - |
 | V1-CI-04 | V1 | QA/CI | Integration tests on emulator | P1 | V1-CI-01 | PLANNED | integration_test/app_launch_test (written, not run) |
 | V1-REL-01 | V1 | Release | Acceptance: 3 EPUBs keep chapter order + paragraph count; force-close resume; Devanagari checks on Android+iOS | P0 | all V1 | PLANNED | - |
@@ -110,4 +110,4 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V3-WSP-01 | V3 | Workspace | Advanced workspace; optional desktop/web companion or self-hosted server (never mandatory) | P3 | V3-SRV-01 | PLANNED | - |
 | V3-PRF-01 | V3 | Performance | Performance optimization from recorded baselines | P2 | V1-PRF-01 | PLANNED | - |
 
-> No feature is VERIFIED yet: CI has not run because the repository has not been pushed (see HANDOVER.md).
+> VERIFIED here means automated tests passed in GitHub Actions (run 42146771459, commit 529643f). No real-device testing yet.

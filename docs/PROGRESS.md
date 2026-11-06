@@ -1,14 +1,14 @@
 # Progress
 
 - **Current version:** 0.1.0+1 (V1, pre-alpha)
-- **Current milestone:** M0 Foundation – IN PROGRESS (code written, CI not yet run)
-- **Last verified commit:** none (no CI run yet)
+- **Current milestone:** M0 Foundation – **DONE** (CI green). Next: M1.
+- **Last verified commit:** `529643f` on `develop` – GitHub Actions run 42146771459: `flutter analyze` no issues, `flutter test` 14/14 passed, Android debug APK built (artifact `app-debug-apk`, 83 MB).
 
-## Completed (verified)
-- Nothing verified yet.
-
-## Implemented, not verified
-- V1-NAV-01 bottom navigation shell · V1-NAV-02 honest placeholders · V1-CI-01 CI analyze/test · V1-CI-02 CI Android debug build
+## Completed (VERIFIED by CI)
+- V1-NAV-01 bottom navigation shell
+- V1-NAV-02 honest Planned placeholders (no dead buttons / fake progress – asserted in tests)
+- V1-CI-01 CI analyze + tests
+- V1-CI-02 CI Android debug APK
 
 ## In progress
 - V1-NAV-03 Home (empty state only)
@@ -16,10 +16,11 @@
 ## Remaining
 - 96 PLANNED features – see FEATURE_MATRIX.md
 
-## Blockers
-1. ~~GitHub access~~ resolved 2026-11-06: repo `AI_Books_Translator` created by owner, Hark App installed.
-2. Authoring sandbox cannot download the Flutter SDK (Google storage returns 403), so `flutter analyze` / `flutter test` / `flutter create` have not run locally. CI will be the first real run.
-3. `android/` and `ios/` folders not generated yet (needs `flutter create`); CI generates them temporarily.
+## Blockers / known gaps
+1. Authoring sandbox cannot download the Flutter SDK (Google storage 403) – all compile/test evidence comes from GitHub Actions.
+2. `android/` and `ios/` not committed yet; CI generates them on each build.
+3. `dart format` would change 4 files (router.dart, theme.dart, both test files) – warning only.
+4. No real-device or iOS build yet; integration test not run.
 
 ## Next task
-M1: push, get CI green, fix any analyzer/test failures, commit generated `android/` + `ios/`, run `dart format`.
+M1: commit generated `android/` + `ios/` (via a CI job that uploads them, or owner runs `flutter create` locally), apply `dart format`, make the format check blocking, add an iOS build job (macOS runner, no signing).
