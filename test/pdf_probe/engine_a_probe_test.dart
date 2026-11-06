@@ -50,8 +50,7 @@ void main() {
   test(
     'Engine A writes one PDF per case (evidence for CI checks)',
     () async {
-      Uint8List read(String name) =>
-          File('$fontDir/$name').readAsBytesSync();
+      Uint8List read(String name) => File('$fontDir/$name').readAsBytesSync();
       File? opt(String name) {
         final f = File('$fontDir/$name');
         return f.existsSync() ? f : null;
@@ -65,8 +64,7 @@ void main() {
       );
       const PdfExportProbe engine = DartPdfEngineA();
       final pdfDir = Directory('$outDir/pdf')..createSync(recursive: true);
-      final expDir = Directory('$outDir/expected')
-        ..createSync(recursive: true);
+      final expDir = Directory('$outDir/expected')..createSync(recursive: true);
       final generation = <Map<String, Object?>>[];
       for (final c in probeCases) {
         final before = c.expectedText;
@@ -76,7 +74,11 @@ void main() {
           final bytes = await engine.render(c, fonts);
           File('${pdfDir.path}/${c.id}.pdf').writeAsBytesSync(bytes);
           expect(ascii.decode(bytes.sublist(0, 5)), '%PDF-');
-          generation.add({'id': c.id, 'generated': true, 'bytes': bytes.length});
+          generation.add({
+            'id': c.id,
+            'generated': true,
+            'bytes': bytes.length,
+          });
         } catch (e) {
           generation.add({'id': c.id, 'generated': false, 'error': '$e'});
         }
@@ -87,12 +89,7 @@ void main() {
           'engine': engine.engineId,
           'cases': [
             for (final c in probeCases)
-              {
-                'id': c.id,
-                'title': c.title,
-                'tCases': c.tCases,
-                'rtl': c.rtl,
-              },
+              {'id': c.id, 'title': c.title, 'tCases': c.tCases, 'rtl': c.rtl},
           ],
           'generation': generation,
         }),

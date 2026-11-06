@@ -64,7 +64,9 @@ final List<ProbeCase> probeCases = List.unmodifiable(<ProbeCase>[
     title: 'English + Hindi mixed paragraph',
     tCases: ['T10'],
     blocks: [
-      ProbeBlock.p('यह Gospel of John 1:1 का अध्ययन है, जहाँ “Logos” शब्द आता है।'),
+      ProbeBlock.p(
+        'यह Gospel of John 1:1 का अध्ययन है, जहाँ “Logos” शब्द आता है।',
+      ),
       ProbeBlock.p('The book पुस्तक has 12 chapters और 340 pages.'),
     ],
   ),
@@ -99,9 +101,7 @@ final List<ProbeCase> probeCases = List.unmodifiable(<ProbeCase>[
     id: 'p06_zwj_zwnj',
     title: 'ZWJ / ZWNJ half forms',
     tCases: ['T04'],
-    blocks: [
-      ProbeBlock.p('क्${_zwj}ष क्${_zwnj}ष विद्${_zwj}यालय'),
-    ],
+    blocks: [ProbeBlock.p('क्${_zwj}ष क्${_zwnj}ष विद्${_zwj}यालय')],
   ),
   const ProbeCase(
     id: 'p07_nukta',
