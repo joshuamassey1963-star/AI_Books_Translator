@@ -186,8 +186,7 @@ class PdfLayoutAnalyzer {
         closeWord();
         result.add(PdfLine(words));
         words = [];
-      } else if (gap > wordGap ||
-          (breakBefore.contains(row[i]) && gap >= 0)) {
+      } else if (gap > wordGap || (breakBefore.contains(row[i]) && gap >= 0)) {
         closeWord();
       }
       current.add(row[i]);
