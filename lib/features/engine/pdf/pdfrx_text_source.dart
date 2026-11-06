@@ -74,8 +74,7 @@ class PdfrxTextSource implements PdfTextSource {
 
     try {
       final structurePages = structure?.pages ?? const <PdfStructurePage>[];
-      if (structure != null &&
-          structurePages.length != document.pages.length) {
+      if (structure != null && structurePages.length != document.pages.length) {
         warnings.add(
           'page count differs: engine ${document.pages.length}, '
           'structure ${structurePages.length}',
@@ -97,7 +96,8 @@ class PdfrxTextSource implements PdfTextSource {
               ),
             ),
         ];
-        final info = page.pageNumber <= structurePages.length &&
+        final info =
+            page.pageNumber <= structurePages.length &&
                 structurePages.length == document.pages.length
             ? structurePages[page.pageNumber - 1]
             : null;

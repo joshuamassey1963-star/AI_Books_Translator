@@ -30,8 +30,7 @@ class PdfStructureScanner {
   final int maxTotalDecodedBytes;
   final int maxDepth;
 
-  PdfStructureReport scan(Uint8List bytes) =>
-      _Scan(bytes, this).run();
+  PdfStructureReport scan(Uint8List bytes) => _Scan(bytes, this).run();
 }
 
 class PdfStructurePage {
@@ -209,7 +208,10 @@ class PdfObjectParser {
       final key = parse(depth: depth + 1);
       if (key is! PdfName) throw _PdfParseError('dictionary key is not a name');
       skipWhite();
-      if (!atEnd && b[pos] == 0x3E && pos + 1 < b.length && b[pos + 1] == 0x3E) {
+      if (!atEnd &&
+          b[pos] == 0x3E &&
+          pos + 1 < b.length &&
+          b[pos + 1] == 0x3E) {
         map[key.value] = null;
         continue;
       }
@@ -453,7 +455,10 @@ class _Scan {
         p++;
       }
       if (_startsWith(p, 'endstream')) {
-        return PdfStream(dict, Uint8List.sublistView(bytes, start, start + length));
+        return PdfStream(
+          dict,
+          Uint8List.sublistView(bytes, start, start + length),
+        );
       }
     }
     // Indirect or wrong /Length: fall back to searching for `endstream`.
@@ -624,7 +629,13 @@ class _Scan {
     }
     _collectFonts(_dictOf(resources), fonts);
     if (readable) {
-      readable = _scanContent(data.takeBytes(), _dictOf(resources), stats, fonts, 0);
+      readable = _scanContent(
+        data.takeBytes(),
+        _dictOf(resources),
+        stats,
+        fonts,
+        0,
+      );
     }
     return PdfStructurePage(
       pageNumber: number,
@@ -635,7 +646,10 @@ class _Scan {
     );
   }
 
-  void _collectFonts(Map<String, Object?>? resources, Map<String, PdfFontInfo> out) {
+  void _collectFonts(
+    Map<String, Object?>? resources,
+    Map<String, PdfFontInfo> out,
+  ) {
     final fontDict = _dictOf(resources?['Font']);
     if (fontDict == null) return;
     for (final entry in fontDict.entries) {
@@ -651,7 +665,8 @@ class _Scan {
     final subsetTag = baseFont == null
         ? null
         : _subsetPattern.firstMatch(baseFont)?.group(1);
-    final hasToUnicode = font.containsKey('ToUnicode') && font['ToUnicode'] != null;
+    final hasToUnicode =
+        font.containsKey('ToUnicode') && font['ToUnicode'] != null;
 
     final encodingValue = _resolve(font['Encoding']);
     String? encoding;
@@ -772,7 +787,13 @@ class _Scan {
                   final decoded = _decode(x);
                   if (decoded == null) {
                     ok = false;
-                  } else if (!_scanContent(decoded, formRes, stats, fonts, depth + 1)) {
+                  } else if (!_scanContent(
+                    decoded,
+                    formRes,
+                    stats,
+                    fonts,
+                    depth + 1,
+                  )) {
                     ok = false;
                   }
                 }

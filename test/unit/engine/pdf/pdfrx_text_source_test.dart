@@ -56,7 +56,10 @@ void main() {
     expect(doc.looksScanned, isTrue);
     expect(doc.pagesNeedingOcr, [1, 2]);
     expect(doc.pages.first.status, PageTextStatus.imageOnly);
-    expect(doc.pages.first.runs.where((r) => r.text.trim().isNotEmpty), isEmpty);
+    expect(
+      doc.pages.first.runs.where((r) => r.text.trim().isNotEmpty),
+      isEmpty,
+    );
   });
 
   test('mixed PDF: only the image page needs OCR', () async {
@@ -92,7 +95,13 @@ void main() {
   test('refuses empty, non-PDF and broken input with honest codes', () async {
     await expectLater(
       source.read(utf8Bytes('')),
-      throwsA(isA<ParseException>().having((e) => e.code, 'code', ParseErrorCode.empty)),
+      throwsA(
+        isA<ParseException>().having(
+          (e) => e.code,
+          'code',
+          ParseErrorCode.empty,
+        ),
+      ),
     );
     await expectLater(
       source.read(utf8Bytes('just text')),

@@ -32,7 +32,8 @@ Uint8List buildPdf(List<PdfObj> objects, {String trailerExtra = ''}) {
       write('${o.body}\nendobj\n');
     } else {
       final body = o.body.trim();
-      final dict = '${body.substring(0, body.length - 2)} '
+      final dict =
+          '${body.substring(0, body.length - 2)} '
           '/Length ${o.stream!.length} >>';
       write('$dict\nstream\n');
       out.add(o.stream!);
@@ -107,7 +108,9 @@ Uint8List imageOnlyPdf({int pages = 1}) {
           '/Resources << /XObject << /Im1 3 0 R >> >> /Contents ${5 + 2 * i} 0 R >>',
         ),
       )
-      ..add(PdfObj('<< >>', latin1.encode('q 400 0 0 400 100 200 cm /Im1 Do Q')));
+      ..add(
+        PdfObj('<< >>', latin1.encode('q 400 0 0 400 100 200 cm /Im1 Do Q')),
+      );
   }
   return buildPdf(objects);
 }
@@ -139,8 +142,10 @@ Uint8List blankPdf() => buildPdf([
 /// First page has text, second page is image-only (mixed document).
 Uint8List mixedPdf() => buildPdf([
   PdfObj('<< /Type /Catalog /Pages 2 0 R >>'),
-  PdfObj('<< /Type /Pages /Kids [4 0 R 6 0 R] /Count 2 /MediaBox [0 0 612 792] '
-      '/Resources << /Font << /F1 3 0 R >> /XObject << /Im1 8 0 R >> >> >>'),
+  PdfObj(
+    '<< /Type /Pages /Kids [4 0 R 6 0 R] /Count 2 /MediaBox [0 0 612 792] '
+    '/Resources << /Font << /F1 3 0 R >> /XObject << /Im1 8 0 R >> >> >>',
+  ),
   PdfObj(_helvetica),
   // Page 1 inherits MediaBox and Resources from the Pages node.
   PdfObj('<< /Type /Page /Parent 2 0 R /Contents 5 0 R >>'),
@@ -278,9 +283,8 @@ Uint8List objectStreamPdf() {
 /// is enough to check that the scanner refuses to inspect streams).
 Uint8List encryptedMarkerPdf() {
   final plain = textPdf(['Secret']);
-  final text = latin1.decode(plain).replaceFirst(
-    '/Root 1 0 R ',
-    '/Root 1 0 R /Encrypt 99 0 R ',
-  );
+  final text = latin1
+      .decode(plain)
+      .replaceFirst('/Root 1 0 R ', '/Root 1 0 R /Encrypt 99 0 R ');
   return Uint8List.fromList(latin1.encode(text));
 }

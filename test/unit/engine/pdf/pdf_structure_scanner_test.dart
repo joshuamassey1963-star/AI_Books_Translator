@@ -27,7 +27,10 @@ void main() {
     });
 
     test('FlateDecode content streams are decoded', () {
-      final page = scanner.scan(textPdf(['Zipped'], compress: true)).pages.single;
+      final page = scanner
+          .scan(textPdf(['Zipped'], compress: true))
+          .pages
+          .single;
       expect(page.contentReadable, isTrue);
       expect(page.textOperatorCount, 1);
     });
@@ -105,7 +108,10 @@ void main() {
     });
 
     test('RC-008: Type0 Identity-H without ToUnicode is high risk', () {
-      final f = font(scanner.scan(type0Pdf(toUnicode: false)).pages.single, 'F1');
+      final f = font(
+        scanner.scan(type0Pdf(toUnicode: false)).pages.single,
+        'F1',
+      );
       expect(f.subtype, 'Type0');
       expect(f.baseFont, 'ABCDEF+TestDeva');
       expect(f.subsetTag, 'ABCDEF');
@@ -117,7 +123,10 @@ void main() {
     });
 
     test('RC-008: the same font with ToUnicode is low risk', () {
-      final f = font(scanner.scan(type0Pdf(toUnicode: true)).pages.single, 'F1');
+      final f = font(
+        scanner.scan(type0Pdf(toUnicode: true)).pages.single,
+        'F1',
+      );
       expect(f.hasToUnicode, isTrue);
       expect(f.mappingRisk, UnicodeMappingRisk.low);
     });
@@ -158,15 +167,27 @@ void main() {
         PageTextStatus.textLayer,
       );
       expect(
-        classifyPage(hasVisibleText: false, imageCount: 1, textOperatorCount: 0),
+        classifyPage(
+          hasVisibleText: false,
+          imageCount: 1,
+          textOperatorCount: 0,
+        ),
         PageTextStatus.imageOnly,
       );
       expect(
-        classifyPage(hasVisibleText: false, imageCount: 0, textOperatorCount: 4),
+        classifyPage(
+          hasVisibleText: false,
+          imageCount: 0,
+          textOperatorCount: 4,
+        ),
         PageTextStatus.textNotExtractable,
       );
       expect(
-        classifyPage(hasVisibleText: false, imageCount: 0, textOperatorCount: 0),
+        classifyPage(
+          hasVisibleText: false,
+          imageCount: 0,
+          textOperatorCount: 0,
+        ),
         PageTextStatus.blank,
       );
       expect(
