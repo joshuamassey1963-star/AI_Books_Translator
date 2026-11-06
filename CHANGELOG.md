@@ -1,6 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 6 / M2b-1c, 2026-11-06)
+- `EncodingDetector`: UTF-8 (BOM), UTF-16 LE/BE (BOM), BOM-less UTF-16 suggestion needing confirmation, explicit override, lossy preview, byte-offset diagnostics.
+- `UnicodeNormalizer` (NFC per D-017, protected spans), dependency `unorm_dart` (MIT).
+- `BookParser.parse(textEncoding:)` override; new `ParseErrorCode.encodingNeedsConfirmation`.
+### Fixed
+- RC-012: UTF-16 TXT with BOM was rejected as binary.
 ### Added (Session 5 / M2b-1b, 2026-11-06)
 - `PdfLayoutAnalyzer`: words, lines, paragraphs from glyph boxes; two-column reading order; header/footer/page-number candidates.
 - `PdfCharDiagnostics` + `ExtractionQualityGate`: FFFD, control, PUA, ligature, duplicate-glyph, Latin-1 signals; score 0–100; pass/warn/block.

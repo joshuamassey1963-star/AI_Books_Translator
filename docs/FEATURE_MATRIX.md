@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 184 features — IMPLEMENTED: 0, IN PROGRESS: 19, PLANNED: 161, VERIFIED: 4
+Totals: 184 features — IMPLEMENTED: 0, IN PROGRESS: 23, PLANNED: 157, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -20,7 +20,7 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-LIB-01 | V1 | Library | Bookshelf list of local projects | P0 | V1-STO-01 | PLANNED | - |
 | V1-LIB-02 | V1 | Library | Book details: metadata, chapter navigator, search | P1 | V1-IMP-04 | PLANNED | - |
 | V1-IMP-01 | V1 | Import | EPUB import (first priority format) | P0 | V1-STO-01 | IN PROGRESS | spike (M2a): parser + unit tests in CI run 42152743112; no UI/storage yet |
-| V1-IMP-02 | V1 | Import | TXT and DOCX import (TXT UTF-8 only today → V1-ENC-01) | P0 | V1-STO-01 | IN PROGRESS | spike (M2a): parser + unit tests in CI run 42152743112; no UI/storage yet |
+| V1-IMP-02 | V1 | Import | TXT and DOCX import (TXT UTF-8 + UTF-16 BOM since M2b-1c) | P0 | V1-STO-01 | IN PROGRESS | spike (M2a): parser + unit tests in CI run 42152743112; no UI/storage yet |
 | V1-IMP-03 | V1 | Import | Text-layer PDF import; detect scanned PDF and show 'OCR required' (split into V1-PDF-01..07, V1-OCR-01..04) | P0 | V1-STO-01 | IN PROGRESS | engine only (M2b-1a), run 42158726040; no import UI |
 | V1-IMP-04 | V1 | Import | Structure model: chapter/heading/paragraph, footnotes, images, tables, inline emphasis, reading order | P0 | V1-IMP-01 | IN PROGRESS | spike: chapter/heading/paragraph only; footnotes/tables/images pending |
 | V1-IMP-05 | V1 | Import | Real file-type check (magic bytes), size/storage limits, corrupt-file recovery | P0 | V1-IMP-01 | IN PROGRESS | magic-byte sniffing + size limit tested; corrupt-file recovery pending |
@@ -112,11 +112,11 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-PDF-05 | V1 | PDF Extraction | Word and paragraph boundary reconstruction from glyph positions – owner req 2026-11-06 | P0 | V1-PDF-01 | IN PROGRESS | pdf_layout_analyzer_test – run 42164277343 |
 | V1-PDF-06 | V1 | PDF Extraction | Footnotes and references detection – owner req 2026-11-06 | P2 | V1-PDF-02 | PLANNED | - |
 | V1-PDF-07 | V1 | PDF Extraction | Extraction quality gate before translation: score, per-page flags, clear warning when unreliable – owner req 2026-11-06 | P0 | V1-PDF-04, V1-PDF-05 | IN PROGRESS | pdf_quality_test (score + gate, thresholds untuned) – run 42164277343 |
-| V1-ENC-01 | V1 | Encoding | TXT: UTF-8, UTF-8 BOM, UTF-16 LE/BE (BOM + heuristic) – owner req 2026-11-06 | P0 | V1-IMP-02 | PLANNED | - |
-| V1-ENC-02 | V1 | Encoding | Unicode normalization policy (L0 as-is, L1+ NFC; search/compare on NFC) – owner req 2026-11-06 | P0 | V1-TRP-05 | PLANNED | - |
-| V1-ENC-03 | V1 | Encoding | Invalid bytes: no data loss, encoding preview and user choice when detection is uncertain – owner req 2026-11-06 | P1 | V1-ENC-01 | PLANNED | - |
+| V1-ENC-01 | V1 | Encoding | TXT: UTF-8, UTF-8 BOM, UTF-16 LE/BE (BOM + heuristic) – owner req 2026-11-06 | P0 | V1-IMP-02 | IN PROGRESS | EncodingDetector + TxtParser, text_encoding_test – run 42171138308; no UI |
+| V1-ENC-02 | V1 | Encoding | Unicode normalization policy (L0 as-is, L1+ NFC; search/compare on NFC) – owner req 2026-11-06 | P0 | V1-TRP-05 | IN PROGRESS | UnicodeNormalizer (NFC, protected spans) – run 42171138308; not yet applied by a storage layer |
+| V1-ENC-03 | V1 | Encoding | Invalid bytes: no data loss, encoding preview and user choice when detection is uncertain – owner req 2026-11-06 | P1 | V1-ENC-01 | IN PROGRESS | refuse with offset + lossy preview + override API – run 42171138308; no UI |
 | V1-ENC-04 | V1 | Encoding | Legacy/8-bit encoding detection (Windows-1252, ISCII, legacy-font ASCII text) with clear unsupported-encoding errors – owner req 2026-11-06 | P2 | V1-ENC-01, V1-LEG-01 | PLANNED | - |
-| V1-ENC-05 | V1 | Encoding | Per-format encoding tests: TXT, EPUB (XML declarations), DOCX, PDF – owner req 2026-11-06 | P1 | V1-ENC-01 | PLANNED | - |
+| V1-ENC-05 | V1 | Encoding | Per-format encoding tests: TXT, EPUB (XML declarations), DOCX, PDF – owner req 2026-11-06 | P1 | V1-ENC-01 | IN PROGRESS | TXT + EPUB/DOCX XML-declaration check (EN06) – run 42171138308; PDF via M2b-1a/b |
 | V1-OCR-01 | V1 | OCR (detection) | Scanned PDF / missing text layer detection per page – owner req 2026-11-06 | P0 | V1-PDF-01 | IN PROGRESS | scanner + pdfrx RC-013 tests – run 42158726040 |
 | V1-OCR-02 | V1 | OCR (detection) | Garbled-text detection (low score, PUA-heavy, unknown legacy font) – owner req 2026-11-06 | P0 | V1-PDF-04 | IN PROGRESS | PUA/FFFD/control/Latin-1 signals – run 42164277343; legacy detection M2b-2 |
 | V1-OCR-03 | V1 | OCR (detection) | 'OCR required' page status + OcrEngine interface (no engine in V1) – owner req 2026-11-06 | P1 | V1-OCR-01 | IN PROGRESS | ocr_engine_test (2) + classifyPage tests – run 42158726040 |

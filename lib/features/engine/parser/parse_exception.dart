@@ -6,7 +6,14 @@ enum ParseErrorCode {
   pdfNotYetSupported(
     'PDF import is planned (V1-IMP-03) but not available yet.',
   ),
-  invalidEncoding('The text is not valid UTF-8.'),
+  invalidEncoding(
+    'The text encoding could not be read without loss (invalid bytes or '
+    'not text). The original file was not changed.',
+  ),
+  encodingNeedsConfirmation(
+    'This looks like UTF-16 text without a byte-order mark. Please confirm '
+    'the encoding before importing.',
+  ),
   corruptContainer('The file is damaged or not a valid EPUB/DOCX.'),
   unsafeContainer('The file was blocked for safety (suspicious archive).'),
   unsafeXml('The file was blocked for safety (unsafe XML).'),

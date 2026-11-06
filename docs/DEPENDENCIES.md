@@ -10,6 +10,7 @@ Checked 2026-11-06 against pub.dev (latest version, SDK constraint, license, lik
 | go_router | ^18.1.3 | BSD-3 | routing | needs Flutter ≥3.44 |
 | pdfrx | ^2.12.0 (lock 2.12.0) | MIT | PDF engine plugin (packages PDFium for Android/iOS) | M2b-1a; pulls url_launcher, path_provider, image, http, rxdart (permissive) |
 | pdfrx_engine | ^0.9.1 | MIT | PDF text runs + coordinates (PDFium) | M2b-1a; imported directly by engine code |
+| unorm_dart | ^0.3.3 (lock 0.3.3) | MIT | Unicode NFC/NFD (Unicode 18.0 data), pure Dart | M2b-1c; only `nfc` used (never NFKC); port of walling/unorm (MIT) |
 | pdfium_dart / pdfium_flutter | 0.4.1 (transitive) | MIT | PDFium FFI bindings + native packaging | build hook downloads PDFium binaries |
 | PDFium binaries (bblanchon/pdfium-binaries, chromium/8125) | transitive | PDFium: BSD-3-Clause (+ bundled third-party notices, e.g. Apache-2.0/FreeType/libjpeg) | native PDF engine | notices must ship in the app's licence screen before release (V1-SEC-06); debug APK artifact grew 83.1 MB → 95.7 MB (all ABIs, debug) |
 | flutter_lints (dev) | ^6.0.0 | BSD-3 | lints | |

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 
+import '../text/text_encoding.dart';
 import 'book_document.dart';
 import 'docx_parser.dart';
 import 'epub_parser.dart';
@@ -20,7 +21,11 @@ class BookParser {
 
   final ImportLimits limits;
 
-  BookDocument parse(Uint8List bytes, {String? fileName}) {
+  BookDocument parse(
+    Uint8List bytes, {
+    String? fileName,
+    TextEncoding? textEncoding,
+  }) {
     if (bytes.isEmpty) throw const ParseException(ParseErrorCode.empty);
     if (bytes.length > limits.maxFileBytes) {
       throw ParseException(ParseErrorCode.tooLarge, '${bytes.length} bytes');
@@ -61,7 +66,7 @@ class BookParser {
       case DetectedFormat.unknownBinary:
         throw const ParseException(ParseErrorCode.unsupportedFormat);
       case DetectedFormat.text:
-        final txt = const TxtParser().parse(bytes);
+        final txt = const TxtParser().parse(bytes, encoding: textEncoding);
         return BookDocument(
           format: SourceFormat.txt,
           title: fallbackTitle ?? txt.title,
@@ -84,7 +89,8 @@ class BookParser {
 
 enum DetectedFormat { zip, pdf, text, unknownBinary }
 
-/// Content sniffing (V1-IMP-05). Text = no NUL bytes in the first 8 KB.
+/// Content sniffing (V1-IMP-05). Text = no NUL bytes in the first 8 KB,
+/// or a UTF-8/UTF-16 BOM, or a clear UTF-16 byte pattern (M2b-1c).
 DetectedFormat detectFormat(Uint8List bytes) {
   bool startsWith(List<int> magic) {
     if (bytes.length < magic.length) return false;
@@ -98,7 +104,18 @@ DetectedFormat detectFormat(Uint8List bytes) {
   if (startsWith(const [0x25, 0x50, 0x44, 0x46, 0x2D])) {
     return DetectedFormat.pdf;
   }
+  // RC-012: a UTF-16 BOM (or a clear UTF-16 byte pattern) is text even
+  // though it contains NUL bytes. UTF-32 BOMs are left to the decoder,
+  // which refuses them with a clear reason.
+  if (EncodingDetector.bomEncoding(bytes) != null) return DetectedFormat.text;
   final sample = bytes.length > 8192 ? bytes.sublist(0, 8192) : bytes;
-  if (sample.contains(0)) return DetectedFormat.unknownBinary;
+  if (sample.contains(0)) {
+    return EncodingDetector.utf16PatternGuess(
+              bytes.length.isOdd ? bytes.sublist(0, bytes.length - 1) : bytes,
+            ) ==
+            null
+        ? DetectedFormat.unknownBinary
+        : DetectedFormat.text;
+  }
   return DetectedFormat.text;
 }

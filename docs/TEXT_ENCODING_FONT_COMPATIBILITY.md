@@ -161,20 +161,20 @@ Detection is a **suggestion, never truth**: when confidence is low the user sees
 
 | # | Case | Formats | Expected behaviour | Current status |
 |---|---|---|---|---|
-| EN01 | UTF-8 without BOM | TXT, EPUB, DOCX | decoded | TXT/EPUB/DOCX PASS in unit tests (M2a, run 42152743112) |
-| EN02 | UTF-8 with BOM | TXT, EPUB parts | BOM stripped | TXT PASS (M2a); EPUB parts covered by SafeZip.readText, no dedicated test |
-| EN03 | UTF-16 LE with BOM | TXT | decoded | **FAIL – known gap**: NUL bytes make `detectFormat` call it binary (RC-012) |
-| EN04 | UTF-16 BE with BOM | TXT | decoded | **FAIL – known gap** (RC-012) |
-| EN05 | UTF-16 without BOM | TXT | heuristic (NUL pattern) + user confirmation | NOT TESTED |
-| EN06 | XML declaration encoding ≠ UTF-8 (e.g. UTF-16, ISO-8859-1) | EPUB, DOCX | honour declaration or refuse clearly | NOT TESTED (currently assumes UTF-8) |
-| EN07 | Invalid UTF-8 byte sequences | TXT | refuse with message; offer preview with replacement chars; original kept | refuse PASS (M2a); preview NOT IMPLEMENTED |
+| EN01 | UTF-8 without BOM | TXT, EPUB, DOCX | decoded | PASS (TXT M2b-1c run 42171138308; EPUB/DOCX M2a) |
+| EN02 | UTF-8 with BOM | TXT, EPUB parts | BOM stripped | PASS (TXT + XML parts via decodeXmlPart, run 42171138308) |
+| EN03 | UTF-16 LE with BOM | TXT | decoded | PASS – RC-012 fixed (run 42171138308) |
+| EN04 | UTF-16 BE with BOM | TXT | decoded | PASS – RC-012 fixed (run 42171138308) |
+| EN05 | UTF-16 without BOM | TXT | heuristic (NUL pattern) + user confirmation | PASS: byte-pattern suggestion → needsConfirmation; import only with explicit override (run 42171138308) |
+| EN06 | XML declaration encoding ≠ UTF-8 (e.g. UTF-16, ISO-8859-1) | EPUB, DOCX | honour declaration or refuse clearly | PARTIAL: UTF-16 parts with BOM decoded; non-matching declaration refused (unit, run 42171138308); no zip-level fixture yet |
+| EN07 | Invalid UTF-8 byte sequences | TXT | refuse with message; offer preview with replacement chars; original kept | PASS: refused with byte offset; lossy preview flagged; original bytes kept (run 42171138308) |
 | EN08 | Windows-1252 / Latin-1 English text | TXT | detect as likely, ask user | NOT IMPLEMENTED |
 | EN09 | ISCII or other legacy Indian encodings | TXT | detect if possible, else "unsupported encoding" | NOT IMPLEMENTED |
 | EN10 | Legacy-font ASCII text pasted as TXT (Kruti Dev-typed text) | TXT, DOCX | flag "looks like legacy font text", offer converter | NOT IMPLEMENTED |
-| EN11 | Unicode normalization (NFC) | all | store L0 as-is, L1 NFC; comparisons/search on NFC | NOT IMPLEMENTED (D-017) |
-| EN12 | Mixed Hindi-English text | all | no script loss, no reordering | PASS for TXT/EPUB/DOCX fixtures (M2a) |
+| EN11 | Unicode normalization (NFC) | all | store L0 as-is, L1 NFC; comparisons/search on NFC | PASS: UnicodeNormalizer NFC helper, nukta composition exclusions, protected spans (run 42171138308); storage layers not built |
+| EN12 | Mixed Hindi-English text | all | no script loss, no reordering | PASS (M2a + all 4 encodings byte-exact, run 42171138308) |
 | EN13 | Private-Use-Area (U+E000–F8FF) characters | PDF, DOCX | flag as legacy/symbol font, never pass to translation silently | NOT IMPLEMENTED |
-| EN14 | ZWJ/ZWNJ preserved | all | kept in all layers | NOT TESTED |
+| EN14 | ZWJ/ZWNJ preserved | all | kept in all layers | PASS: ZWJ/ZWNJ kept through decoding and NFC (run 42171138308) |
 
 ## 6. Legacy Hindi font conversion (V1-LEG-01..08)
 

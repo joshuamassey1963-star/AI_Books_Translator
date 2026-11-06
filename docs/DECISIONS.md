@@ -123,3 +123,11 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 - Quality gate: score 0–100 from FFFD, control, PUA, duplicate glyph, ligature, Latin-1 ratios and high/unknown-risk fonts; `pass ≥ 80`, `block < 50` or all pages need OCR, otherwise `warn` (user confirmation). Thresholds are provisional until M2b-5 real-book regression.
 - **Per-run font via PDFium FFI (investigated, not implemented):** `pdfium_dart` 0.4.1 binds `FPDFText_GetFontInfo`, `FPDFText_GetFontWeight`, `FPDFText_GetFontSize`, `FPDFTextObj_GetFont`, `FPDFFont_GetBaseFontName`/`GetIsEmbedded`. pdfrx keeps document handles private inside its worker isolate, so per-char font info needs either a second raw PDFium open of the same bytes (own FFI worker, thread-safety via pdfrx's gate) or an upstream pdfrx API. Planned as a separate spike; until then fonts stay page-level (`PdfTextRun.fontName == null`), nothing inferred.
 - **Status:** Accepted for M2b-1b.
+
+## D-025 · 2026-11-06 · Text encoding detection and NFC implementation (M2b-1c)
+- `EncodingDetector`: BOM decides (UTF-8, UTF-16 LE/BE; UTF-32 refused). No BOM: strict UTF-8 without NUL bytes, else a UTF-16 *suggestion* from the byte pattern (one parity with ≤3 values covering ≥90 % of bytes) → status `needsConfirmation`; `TxtParser`/`BookParser` import it only with an explicit `textEncoding` override. An override that contradicts a BOM is refused.
+- Invalid UTF-8, odd-length UTF-16 and unpaired surrogates are refused with byte offset; `preview()` gives a lossy display-only text flagged `lossy`. Original bytes are kept as an unmodifiable copy; decoded text is not normalized.
+- `detectFormat` (RC-012): a BOM or a clear UTF-16 pattern is text even with NUL bytes.
+- EPUB/DOCX XML parts: BOM-aware decoding; an XML declaration naming a different encoding is refused (EN06).
+- NFC via `unorm_dart` (MIT). Never NFKC. Protected spans copied exactly; digits and ZWJ/ZWNJ untouched. Applying NFC to L1 storage waits for the storage milestone (M3).
+- **Status:** Accepted.

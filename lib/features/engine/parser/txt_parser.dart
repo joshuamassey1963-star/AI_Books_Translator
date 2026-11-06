@@ -1,13 +1,14 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
+import '../text/text_encoding.dart';
 import 'book_document.dart';
 import 'parse_exception.dart';
 
 /// Plain-text import (V1-IMP-02, TXT part).
 ///
-/// - UTF-8 only (with or without BOM); anything else is refused honestly
-///   instead of guessing and producing mojibake.
+/// - UTF-8 (with/without BOM) and UTF-16 LE/BE with BOM (M2b-1c, RC-012).
+///   UTF-16 without BOM needs an explicit [encoding] (user confirmation);
+///   invalid bytes are refused instead of producing mojibake.
 /// - Paragraphs are separated by blank lines; single line breaks inside a
 ///   paragraph are joined (hard-wrapped Gutenberg texts).
 /// - A line like `Chapter 3`, `CHAPTER IV`, `Part One` or `अध्याय 2` that
@@ -25,14 +26,23 @@ class TxtParser {
     unicode: true,
   );
 
-  ParsedText parse(Uint8List bytes) {
-    final String text;
-    try {
-      text = utf8.decode(bytes);
-    } on FormatException {
-      throw const ParseException(ParseErrorCode.invalidEncoding);
+  ParsedText parse(Uint8List bytes, {TextEncoding? encoding}) {
+    final report = const EncodingDetector().detect(bytes, override: encoding);
+    switch (report.status) {
+      case EncodingStatus.decoded:
+        break;
+      case EncodingStatus.needsConfirmation:
+        throw ParseException(
+          ParseErrorCode.encodingNeedsConfirmation,
+          report.encoding?.label,
+        );
+      case EncodingStatus.refused:
+        throw ParseException(
+          ParseErrorCode.invalidEncoding,
+          report.issues.join(', '),
+        );
     }
-    final normalized = (text.startsWith('\uFEFF') ? text.substring(1) : text)
+    final normalized = report.text!
         .replaceAll('\r\n', '\n')
         .replaceAll('\r', '\n');
 

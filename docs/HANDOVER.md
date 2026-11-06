@@ -44,10 +44,14 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42164277343: format ✅, analyze ✅, 84/84 ✅ (Android/iOS: see PR checks). Earlier run 42164083234 failed one test (paragraph gap with few lines) → fixed in 995cbce.
 - Not done: tables/footnotes/>2 columns, per-run font FFI (investigated, D-024), threshold tuning on real books, integration into an import flow.
 
-## Next exact task – M2b-1c (only after owner/tech-lead go)
-1. UTF-16 LE/BE + BOM detection in TXT (fixes RC-012, EN03/EN04), NFC policy helper (D-017), encoding preview API (V1-ENC-01..03/05).
-2. Tests EN01–EN07, EN11, EN12, EN14. Same branch workflow.
-3. Review/merge PR #2 first if approved.
+## Session 6 (PR #2 merge + M2b-1c)
+- A: PR #2 merged into develop, merge commit d7e9601 (PR head 5b7cce1, runs 42164510713 + 42164649943 green). develop CI on d7e9601: run 42170637270 all green.
+- B/C: branch `feature/m2b-1c-encoding`. Code: `lib/features/engine/text/text_encoding.dart`, `unicode_normalizer.dart`; `txt_parser.dart`, `book_parser.dart` (detectFormat + `textEncoding` override), `safe_zip.dart` (decodeXmlPart), `parse_exception.dart`. Tests: `test/unit/engine/text/*`, new group in `book_parser_test.dart`, fixtures `encoding_fixtures.dart`.
+- CI run 42171138308 on 13c3f73: format ✅ analyze ✅ 112/112 ✅ Android ✅ iOS ✅.
+- Not done: encoding UI (preview/confirm dialog), legacy 8-bit encodings (V1-ENC-04, M2b-2), NFC applied in storage (M3), zip-level EN06 fixture.
+
+## Next exact task – M2b-2a (only after owner/tech-lead go; review/merge PR #3 first)
+- Legacy font mapping prototype per ROADMAP M2b-2a. Chanakya/Kruti Dev samples only outside git.
 
 ## Commands to resume
 ```bash
