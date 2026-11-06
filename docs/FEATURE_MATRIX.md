@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 101 features — IMPLEMENTED: 0, IN PROGRESS: 2, PLANNED: 95, VERIFIED: 4
+Totals: 105 features — IMPLEMENTED: 0, IN PROGRESS: 2, PLANNED: 99, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -72,6 +72,9 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-SEC-05 | V1 | Security | Minimal platform permissions (SAF / document picker, sandbox copies) | P0 | - | PLANNED | - |
 | V1-SEC-06 | V1 | Security | License inventory (SPDX/SBOM) and dependency scanning in CI | P1 | V1-CI-01 | PLANNED | - |
 | V1-SET-01 | V1 | Settings | Settings: privacy, consent, storage, theme | P1 | V1-STO-01 | PLANNED | - |
+| V1-SET-02 | V1 | Settings | Appearance: Day / Night / Sepia modes for app, reader and editor (+ follow system) – owner request 2026-11-06 | P1 | V1-SET-01 | PLANNED | - |
+| V1-SET-03 | V1 | Settings | Screen rotation: Auto / Portrait lock / Landscape lock; two-pane editor in landscape – owner request 2026-11-06 | P2 | V1-SET-01 | PLANNED | - |
+| V1-HIS-01 | V1 | History | Local work history timeline: imports, translation jobs, edits, exports (works offline, no account) – owner request 2026-11-06 | P1 | V1-STO-01 | PLANNED | - |
 | V1-ERR-01 | V1 | Reliability | Error handling + help/diagnostics screen with error codes | P0 | V1-AIP-04 | PLANNED | - |
 | V1-ERR-02 | V1 | Reliability | Airplane mode / network flapping / storage full / low RAM without data loss | P0 | V1-ENG-05 | PLANNED | - |
 | V1-OFF-01 | V1 | Offline | Local library and editor work without internet; no mandatory account | P0 | V1-STO-01 | PLANNED | - |
@@ -102,6 +105,7 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V3-LLM-02 | V3 | Offline AI | Model manager: size, RAM, heat, battery, quality gating; thermal throttling | P1 | V3-LLM-01 | PLANNED | - |
 | V3-SYN-01 | V3 | Sync | Optional account + encrypted cloud sync, offline-first | P2 | V1-STO-01 | PLANNED | - |
 | V3-SYN-02 | V3 | Sync | Cross-device progress, project export/import, conflict resolution | P2 | V3-SYN-01 | PLANNED | - |
+| V3-SYN-03 | V3 | Sync | Optional login that syncs work history and projects across devices – owner request 2026-11-06 | P2 | V3-SYN-01, V1-HIS-01 | PLANNED | - |
 | V3-SRV-01 | V3 | Cloud Engine | Optional remote durable jobs (FastAPI/Go/Rust workers, queue, object storage) | P2 | V1-ENG-01 | PLANNED | - |
 | V3-TEAM-01 | V3 | Team | Editor roles, comment threads, approval workflow, revision history | P2 | V3-SYN-01 | PLANNED | - |
 | V3-PUB-01 | V3 | Publishing | Professional publishing presets | P2 | V1-EXP-03 | PLANNED | - |

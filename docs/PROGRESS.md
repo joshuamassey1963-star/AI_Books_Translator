@@ -14,8 +14,11 @@
 - V1-NAV-03 Home (empty state only)
 - V1-CI-03 iOS build verified (debug, unsigned); release builds + SHA-256 checksums pending
 
+## Manual smoke test
+- 2026-11-06: owner installed the debug APK on an Android phone; navigation shell and placeholders work as designed (see docs/OWNER_REQUESTS.md).
+
 ## Not verified yet
-- Nothing tested on a real phone or emulator; integration_test not run (V1-CI-04).
+- Only a manual smoke test on one Android phone; integration_test not run (V1-CI-04).
 - iOS app not run on simulator/device.
 
 ## Known gaps
