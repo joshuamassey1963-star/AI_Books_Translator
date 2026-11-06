@@ -1,7 +1,7 @@
 # Progress
 
 - **Current version:** 0.1.0+1 (V1, pre-alpha)
-- **Current milestone:** M2b-1a – **DONE**, merged into develop via PR #1 (merge commit d29b0cd). Session 5: system translation + TTS requirements recorded (184 features). Next: M2b-1b.
+- **Current milestone:** M2b-1a – **DONE**, merged into develop via PR #1 (merge commit d29b0cd). Session 5: system translation + TTS requirements recorded (184 features); M2b-1b coded on feature branch, PR #2 open (run 42164277343: 84/84). Next: M2b-1c.
 - **Last verified code commit:** `85ce46b` (feature/m2b-1a-pdf-text-source) – run 42158726040: format ✅, analyze ✅, `flutter test` 63/63 ✅, Android debug APK ✅, iOS unsigned ✅.
 - **Previous:** `c2dbf7c` – GitHub Actions run 42152743112: format ✅, `flutter analyze` no issues ✅, `flutter test` 34/34 ✅ (14 shell + 20 parser), Android debug APK ✅, iOS unsigned build ✅.
 

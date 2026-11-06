@@ -39,10 +39,15 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - A: PR #1 merged into develop (merge commit d29b0cd); evidence runs 42159548254 (push) + 42159584549 (PR) on 69cfc6b, all green, 63/63.
 - B/C: System-wide translation + Read Aloud/TTS requirements recorded (29 new IDs, docs only): docs/SYSTEM_TRANSLATION.md, docs/READ_ALOUD_TTS.md, D-022, D-023, ROADMAP M8b, M10b–d, V2/V3 milestones. No implementation.
 
-## Next exact task – M2b-1b (only after owner/tech-lead go)
-1. Word/paragraph boundaries from char boxes (RC-005), reading-order basics + header/footer detection (RC-006), repeated/missing char, ligature and PUA diagnostics (RC-007, RC-014), extraction quality score + gate (V1-PDF-07, V1-OCR-02 garbled text).
-2. Evaluate per-run font via PDFium FFI (`FPDFText_GetFontInfo`) behind pdfrx's worker; keep scanner as fallback.
-3. Tests on generated PDFs only. Same branch workflow.
+## Session 5 – checkpoint D (M2b-1b)
+- Branch `feature/m2b-1b-pdf-layout-quality`, PR #2 into develop (not merged). Code: `lib/features/engine/pdf/pdf_layout_analyzer.dart`, `pdf_quality.dart`, `PdfPageInfo.glyphs`. Tests: `pdf_layout_analyzer_test`, `pdf_quality_test`, `pdf_layout_pdfium_test`; fixtures `glyph_fixtures.dart`, `layoutPdf()`.
+- CI run 42164277343: format ✅, analyze ✅, 84/84 ✅ (Android/iOS: see PR checks). Earlier run 42164083234 failed one test (paragraph gap with few lines) → fixed in 995cbce.
+- Not done: tables/footnotes/>2 columns, per-run font FFI (investigated, D-024), threshold tuning on real books, integration into an import flow.
+
+## Next exact task – M2b-1c (only after owner/tech-lead go)
+1. UTF-16 LE/BE + BOM detection in TXT (fixes RC-012, EN03/EN04), NFC policy helper (D-017), encoding preview API (V1-ENC-01..03/05).
+2. Tests EN01–EN07, EN11, EN12, EN14. Same branch workflow.
+3. Review/merge PR #2 first if approved.
 
 ## Commands to resume
 ```bash

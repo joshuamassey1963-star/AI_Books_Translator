@@ -96,6 +96,22 @@ class PdfrxTextSource implements PdfTextSource {
               ),
             ),
         ];
+        final glyphs = <PdfGlyph>[
+          if (text.charRects.length == text.fullText.length)
+            for (var i = 0; i < text.fullText.length; i++)
+              PdfGlyph(
+                text.fullText[i],
+                PdfBox(
+                  left: text.charRects[i].left,
+                  top: text.charRects[i].top,
+                  right: text.charRects[i].right,
+                  bottom: text.charRects[i].bottom,
+                ),
+              ),
+        ];
+        if (glyphs.isEmpty && text.fullText.isNotEmpty) {
+          warnings.add('page ${page.pageNumber}: no per-character boxes');
+        }
         final info =
             page.pageNumber <= structurePages.length &&
                 structurePages.length == document.pages.length
@@ -110,6 +126,7 @@ class PdfrxTextSource implements PdfTextSource {
             fonts: info?.fonts ?? const [],
             imageCount: info?.imageCount,
             textOperatorCount: info?.textOperatorCount,
+            glyphs: glyphs,
             status: classifyPage(
               hasVisibleText: text.fullText.trim().isNotEmpty,
               imageCount: info?.imageCount,
