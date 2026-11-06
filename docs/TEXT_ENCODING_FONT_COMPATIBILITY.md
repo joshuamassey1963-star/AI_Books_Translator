@@ -48,6 +48,8 @@ Each font gets a `FontProfile`: family, style, source, license, script coverage 
 Fallback chain per script, e.g. Hindi body: user choice → bundled Noto Serif Devanagari → system Devanagari. Missing glyphs (tofu) are detected by checking coverage before rendering/export → warning (V1-FNT-04).
 
 ### 1.2 Detecting fonts in PDFs (V1-PDF-04, V1-LEG-01)
+**Implemented in M2b-1a (run 42158726040):** `PdfStructureScanner` reports per page: `/BaseFont`, subset tag, name without tag, `/Subtype`, embedded (FontFile/FontFile2/FontFile3; Type3 = embedded), `/ToUnicode` present, `/Encoding`, and a `UnicodeMappingRisk` (low/medium/high/unknown). Technical limitations: fonts are **page-level, not per text run** (pdfrx exposes no font per run); ToUnicode **contents are not validated**; only FlateDecode streams are decoded; encrypted files → stream data not inspected; legacy names are not yet classified (M2b-2).
+
 - Read font name per text run; strip subset prefix (`ABCDEF+Mangal` → `Mangal`).
 - Record: embedded? subset? ToUnicode CMap present? encoding (Identity-H, WinAnsi, custom)?
 - A font classed as Unicode-Devanagari but producing only Latin letters, or a known legacy name, marks the span as **legacy**.

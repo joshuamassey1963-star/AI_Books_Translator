@@ -30,12 +30,15 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 ## Requirements update (after M2a, 2026-11-06)
 - Owner added text/font/encoding/OCR/export/image requirements: 50 new feature IDs, 8 existing IDs annotated (FEATURE_MATRIX now 155). New docs: TEXT_ENCODING_FONT_COMPATIBILITY.md, REGRESSION_CASES.md. Decisions D-016..D-020. Docs-only commit; no code changed.
 
-## Next exact task – M2b-1a (do not start before owner says CONTINUE PROJECT)
-1. `git pull`; read ROADMAP "M2b – detailed plan", TEXT_ENCODING_FONT_COMPATIBILITY.md §1/§5, REGRESSION_CASES.md.
-2. Evaluate PDF text engine: `pdfrx` (license, PDFium binaries, whether `flutter test` on the Ubuntu runner can load it). Record result in RESEARCH.md / DECISIONS.
-3. Add `lib/features/engine/pdf/`: `PdfTextSource` interface, `PdfTextRun` (text, page, bbox, fontName, subsetPrefix, embedded, hasToUnicode), `PageTextStatus` (ok / noTextLayer / garbled), `OcrEngine` interface in `engine/ocr/` (no engine).
-4. Tests on generated PDFs only (our text + OFL font); RC-008 and RC-013 tests.
-5. Code workflow: commit → push `format/<name>` → bot format → push `feature/<name>` → CI green → ff `develop`. Docs in a separate commit.
+## Session 4 (M2b-1a) summary
+- Branch `feature/m2b-1a-pdf-text-source`, PR into `develop` (draft for review). Code: `lib/features/engine/pdf/` (pdf_models, pdf_text_source, pdf_structure_scanner, pdfrx_text_source), `lib/features/engine/ocr/ocr_engine.dart`. Tests: `test/unit/engine/pdf/`, `test/unit/engine/ocr/`, fixtures `test/support/pdf_fixtures.dart`.
+- CI run 42158726040: format ✅, analyze ✅, 63/63 tests ✅, Android debug APK ✅, iOS unsigned ✅.
+- Limitations: fonts page-level only; ToUnicode contents not validated; FlateDecode only; no garbled-text score yet; not integrated into BookParser (PDF still returns `pdfNotYetSupported` there); no import UI; no real PDFs tried.
+
+## Next exact task – M2b-1b (only after owner/tech-lead go)
+1. Word/paragraph boundaries from char boxes (RC-005), reading-order basics + header/footer detection (RC-006), repeated/missing char, ligature and PUA diagnostics (RC-007, RC-014), extraction quality score + gate (V1-PDF-07, V1-OCR-02 garbled text).
+2. Evaluate per-run font via PDFium FFI (`FPDFText_GetFontInfo`) behind pdfrx's worker; keep scanner as fallback.
+3. Tests on generated PDFs only. Same branch workflow.
 
 ## Commands to resume
 ```bash

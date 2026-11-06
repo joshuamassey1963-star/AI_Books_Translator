@@ -95,3 +95,10 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 ## D-020 · 2026-11-06 · M2b split into five sub-milestones
 - M2b-1 PDF + diagnostics, M2b-2 legacy conversion, M2b-3 Hindi PDF export, M2b-4 provider adapter (mocks), M2b-5 real-book regression. Owner request; keeps each session small and testable. M2a code is unchanged.
 - **Status:** Accepted.
+
+## D-021 · 2026-11-06 · PDF text engine: pdfrx (PDFium) + own structure scanner (M2b-1a)
+- **pdfrx 2.12.0 / pdfrx_engine 0.9.1 (MIT, PDFium BSD-3)** gives text fragments with coordinates on Android, iOS and the Linux CI host. Android debug build and iOS unsigned build succeed with it (run 42158726040).
+- pdfrx's public API exposes **no font information per run** and **no ToUnicode flag**. PDFium itself has `FPDFText_GetFontInfo` / `FPDFFont_*` (font name, embedded) but calling raw FFI around pdfrx's worker isolate was not attempted in M2b-1a.
+- Therefore a small pure-Dart **PdfStructureScanner** reads per-page font dictionaries (BaseFont, subset prefix, FontFile*, ToUnicode, Encoding), image XObjects/inline images and text operators. Fonts are page-level, not per run (documented limitation, `PdfTextRun.fontName == null`).
+- Host tests: `flutter test` does not load pdfium_dart's native asset, so CI downloads the same PDFium release and sets `PDFIUM_PATH`.
+- **Status:** Accepted for M2b-1a. Re-evaluate per-run fonts (FFI) in M2b-1b.

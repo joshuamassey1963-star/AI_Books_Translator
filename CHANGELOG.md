@@ -1,6 +1,12 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 4 / M2b-1a, 2026-11-06)
+- `PdfTextSource` interface and `PdfrxTextSource` (pdfrx/PDFium): text runs with page number and coordinates, page size, SHA-256, original bytes untouched.
+- `PdfStructureScanner` (pure Dart): page fonts (BaseFont, subset prefix, embedded, ToUnicode, encoding, mapping risk), image XObjects, inline images, text operators, form XObjects, object streams.
+- Page status `textLayer / imageOnly / textNotExtractable / blank / unknownNoText`; scanned-PDF and missing-text-layer detection.
+- `OcrEngine` interface + `UnavailableOcrEngine` (no OCR in V1).
+- 29 new tests on generated PDFs (63 total). CI downloads PDFium for host tests.
 ### Added (Session 3 / M2a, 2026-11-06)
 - Parser spike: TXT, EPUB 2/3 and DOCX → `BookDocument` (chapters, headings, paragraphs, stable block ids, SHA-256).
 - Import hardening: magic-byte detection, size/entry/ratio limits, path-traversal and XXE blocking.
