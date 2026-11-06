@@ -8,10 +8,10 @@ Requirements source: `docs/AI_Book_Translator_Roadmap_V1_V3.pdf` (03 Nov 2026). 
 | M1 | Platform folders + CI green | commit android/ & ios/, first CI run, format pass | `flutter analyze` + `flutter test` green in CI; debug APK artifact | DONE (CI run 42149165709) |
 | M2a | P0 spike: parsers | TXT/EPUB/DOCX → BookDocument, zip/XML hardening | parser unit tests green in CI | DONE (CI run 42152743112) |
 | M2b-1 | PDF extraction + font/encoding diagnostics | V1-PDF-01/04/05/07, V1-OCR-01..04, V1-ENC-01..03/05 | see M2b-1a..c below | M2b-1a DONE (PR #1, d29b0cd); M2b-1b DONE (PR #2, d7e9601); M2b-1c DONE (PR #3, ca887a5) |
-| M2b-2 | Legacy font mapping + Unicode conversion prototype | V1-LEG-01..08 | see M2b-2a..c | IN PROGRESS – M2b-2a DONE (PR #4, 721fe4f); M2b-2b next |
+| M2b-2 | Legacy font mapping + Unicode conversion prototype | V1-LEG-01..08 | see M2b-2a..c | IN PROGRESS – M2b-2a DONE (PR #4, 721fe4f); M2b-2b DEFERRED (needs verified Chanakya samples + licensing evidence); M2b-2c pending font/span confidence work |
 | DEV-01 | Developer Tests screen v0.1 (debug only, separate from M2b-2b) | V1-DEV-01 | encoding / Kruti Dev / TXT diagnostics + named debug APK artifact | DONE – PR #5 merged (bb5a8cb) |
-| M-DEV-02a | Real TXT file picker + build info, APK 0.1.1+2 (debug tooling, separate from M2b-2b) | V1-DEV-02 | system picker, limits, encoding choice, preview, version/SHA | IN PROGRESS – PR #6 (run 42184277563) |
-| M2b-3 | Hindi PDF export + shaping verification | V1-EXP-04/06/07, V1-FNT-01/02/05 (partial) | see M2b-3a..c | PLANNED |
+| M-DEV-02a | Real TXT file picker + build info, APK 0.1.1+2 (debug tooling, separate from M2b-2b) | V1-DEV-02 | system picker, limits, encoding choice, preview, version/SHA | DONE – PR #6 merged (f39b5d8) |
+| M2b-3 | Hindi PDF export + shaping verification | V1-EXP-04/06/07, V1-FNT-01/02/05 (partial) | see M2b-3a..c | IN PROGRESS – M2b-3a done: Engine A FAILS shaping (PR #8, run 42203433139); M2b-3b next after owner go |
 | M2b-4 | AI provider adapter + mock connection tests | V1-AIP-01/03/04 (interface + mocks) | see below | PLANNED |
 | M2b-5 | Real-book regression tests + integration review | REGRESSION_CASES RC-001..015 | see below | PLANNED |
 | M3 | V1-A Storage | V1-STO-01/02/04, V1-SEC-01, V1-SET-01 | Schema + migration tests; secure-storage test | PLANNED |
@@ -49,7 +49,7 @@ Order: M2b-1 → M2b-2 → M2b-3 → M2b-4 → M2b-5. One sub-milestone (or one 
 ### M2b-2 Legacy font mapping and Unicode conversion prototype
 - **Scope:** legacy font registry; converter pipeline (substitution → reordering → NFC); confidence; mixed-font spans.
   - **M2b-2a** Kruti Dev 010 table + reordering rules + synthetic tests (RC-002, RC-003).
-  - **M2b-2b** Chanakya / Walkman-Chanakya905 table – needs owner sample documents (kept outside git) (RC-001).
+  - **M2b-2b** Chanakya / Walkman-Chanakya905 table – **DEFERRED (Session 10)** until verified owner sample data (kept outside git) and licensing evidence for any mapping source exist. No table or result is to be invented (RC-001).
   - **M2b-2c** confidence scoring, mixed-font paragraph handling, English/digit protection (RC-004), unsupported-mapping warnings.
 - **Dependencies:** M2b-1a font metadata per span.
 - **Acceptance criteria:** synthetic legacy strings convert to expected Unicode; a table never runs on another font; English words/digits unchanged; raw and converted both available.
@@ -60,7 +60,7 @@ Order: M2b-1 → M2b-2 → M2b-3 → M2b-4 → M2b-5. One sub-milestone (or one 
 
 ### M2b-3 Hindi PDF export and shaping verification
 - **Scope:** probe engines A–D from TEXT_ENCODING_FONT_COMPATIBILITY.md §8 with test strings T01–T11.
-  - **M2b-3a** Engine A (`pdf` package + bundled Noto Serif Devanagari): CI generates PDF + PNG renders (pdftoppm) + `pdftotext`/`pdffonts` checks as artifacts.
+  - **M2b-3a** Engine A (`pdf` package + Noto Serif Devanagari fetched in CI): CI generates PDF + PNG renders (pdftoppm) + `pdftotext`/`pdffonts` checks as artifacts. **Done Session 10: Engine A FAILS Devanagari shaping** (no GSUB/GPOS: i-matra not reordered, no conjuncts/reph/half forms); extraction and embedding pass. Advanced before M2b-2b/2c because it is testable on its own with synthetic text and is the biggest technical risk for Hindi book export. See D-027.
   - **M2b-3b** one alternative prototype (native platform PDF or HarfBuzz-shaped path), chosen from 3a results.
   - **M2b-3c** comparison table X01–X10, decision record; owner visual check on Android + iOS.
 - **Dependencies:** V1-FNT-02 license check for the bundled font.

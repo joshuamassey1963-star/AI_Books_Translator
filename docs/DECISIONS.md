@@ -139,3 +139,10 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 - Safety: `LegacyFontRegistry` converts only with a confirmed font identity whose normalized name is exactly Kruti Dev 010 (subset prefix and Bold/Italic allowed). Kruti Dev 011 is refused (differs at bytes 145–148). Input with Devanagari is refused (no double conversion). Raw input kept, output separate, unknown characters kept and reported.
 - Not in scope: detection of legacy fonts from PDFs (V1-LEG-01), span-level application, confidence score, Chanakya.
 - **Status:** Accepted.
+
+## D-027 · 2026-11-06 · Hindi PDF export Engine A result (M2b-3a)
+- Tested: Dart `pdf` 3.13.1 (Apache-2.0) with Noto Serif Devanagari Regular/Bold, Noto Serif (Latin/Greek) and Noto Serif Hebrew as fallback (all OFL-1.1, fetched in CI from notofonts.github.io with pinned SHA-256, never committed). Isolated `PdfExportProbe` interface; 13 synthetic cases; checks by poppler 26.01 (pdftoppm, pdftotext, pdffonts) and a HarfBuzz/raqm reference image (Pillow). Run 42203433139.
+- Result: the `pdf` package maps code points to glyphs through `cmap` only (its source has Arabic shaping and bidi, no GSUB/GPOS). Devanagari: i-matra drawn after the consonant, no conjuncts, no reph/rakar, no half forms (ZWJ), visible halants inside words, marks not positioned. Hebrew points misplaced. Latin, polytonic Greek (precomposed), digits and punctuation render correctly.
+- Text layer: fonts embedded as subsets with ToUnicode; `pdftotext` returns the exact source Unicode for 11/13 cases. p08 loses spaces between punctuation marks; p13 (Hebrew) returns marks in wrong order with extra spaces.
+- Decision: Engine A is **rejected for Hindi output**. No workaround (e.g. hand-made reordering) is added, because it would be unverified and would break copy/search. Next: M2b-3b, one shaped alternative (native platform PDF or HarfBuzz-shaped glyph path), chosen with the owner. The probe stays as a regression harness.
+- **Status:** Accepted (Engine A rejected for Devanagari).
