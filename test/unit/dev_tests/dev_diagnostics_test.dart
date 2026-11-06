@@ -63,8 +63,11 @@ void main() {
 
     test('unconfirmed or other fonts are refused', () {
       expect(
-        convertLegacy('Hkkjr', fontName: 'Kruti Dev 010', confirmed: false)
-            .refusal,
+        convertLegacy(
+          'Hkkjr',
+          fontName: 'Kruti Dev 010',
+          confirmed: false,
+        ).refusal,
         LegacyRefusal.fontNotConfirmed,
       );
       expect(

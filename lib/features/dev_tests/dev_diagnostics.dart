@@ -25,11 +25,20 @@ enum SampleBytes {
 
   Uint8List encode(String text) => Uint8List.fromList(switch (this) {
     SampleBytes.utf8 => const Utf8Encoder().convert(text),
-    SampleBytes.utf8Bom => [0xEF, 0xBB, 0xBF, ...const Utf8Encoder().convert(text)],
+    SampleBytes.utf8Bom => [
+      0xEF,
+      0xBB,
+      0xBF,
+      ...const Utf8Encoder().convert(text),
+    ],
     SampleBytes.utf16leBom => [0xFF, 0xFE, ..._le(text)],
     SampleBytes.utf16beBom => [0xFE, 0xFF, ..._be(text)],
     SampleBytes.utf16leNoBom => _le(text),
-    SampleBytes.invalidUtf8 => [...const Utf8Encoder().convert(text), 0xC3, 0x28],
+    SampleBytes.invalidUtf8 => [
+      ...const Utf8Encoder().convert(text),
+      0xC3,
+      0x28,
+    ],
   });
 
   static List<int> _le(String s) => [

@@ -36,7 +36,9 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('enc-run')));
     await tester.pumpAndSettle();
     expect(
-      tester.widget<SelectableText>(find.byKey(const ValueKey('enc-status'))).data,
+      tester
+          .widget<SelectableText>(find.byKey(const ValueKey('enc-status')))
+          .data,
       'decoded',
     );
     expect(
@@ -86,7 +88,9 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('txt-run')));
     await tester.pumpAndSettle();
     expect(
-      tester.widget<SelectableText>(find.byKey(const ValueKey('txt-status'))).data,
+      tester
+          .widget<SelectableText>(find.byKey(const ValueKey('txt-status')))
+          .data,
       'parsed',
     );
     final picker = tester.widget<ListTile>(

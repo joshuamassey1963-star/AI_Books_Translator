@@ -321,9 +321,8 @@ class _KrutiTabState extends State<_KrutiTab> {
                 label: const Text('Copy output'),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: r.converted!));
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(const SnackBar(content: Text('Copied')));
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(content: Text('Copied')));
                 },
               ),
             ),
