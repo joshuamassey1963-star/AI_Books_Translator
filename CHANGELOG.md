@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 9 / M-DEV-02a, version 0.1.1+2, 2026-11-06)
+- Developer Tests → TXT Parser: "Choose TXT File" (system document picker, no storage permission), size limit checked before reading, encoding choice for UTF-16 without BOM, file name/size/encoding/chapters/paragraphs/SHA-256/warnings, bounded scrollable preview with copy.
+- More → About this build: version, build number, build type, commit SHA injected by CI (`--dart-define=GIT_SHA`).
+- CI verifies APK version, permissions, embedded SHA and prints the signer certificate.
 ### Added (Session 8 / DEV-01, 2026-11-06)
 - Debug-only Developer Tests screen (More → Developer Tests): text encoding inspection, Kruti Dev 010 conversion with copy, TXT parser diagnostics.
 - CI: debug APK artifact named `ai-book-translator-<version>-debug-<sha>.apk`, size and SHA-256 in the run summary, kept 14 days.

@@ -63,7 +63,7 @@ jobs:
           cache: true
       - run: flutter pub get
       # Universal debug APK (all ABIs, incl. arm64-v8a). Debug-signed only.
-      - run: flutter build apk --debug
+      - run: flutter build apk --debug --dart-define=GIT_SHA=${{ github.sha }}
       - name: Name APK with version and commit
         run: |
           VERSION=$(grep -E '^version:' pubspec.yaml | awk '{print $2}' | tr '+' '-')
@@ -81,6 +81,26 @@ jobs:
             echo "- SHA-256: \`$(sha256sum "dist/$NAME" | cut -d' ' -f1)\`"
             echo "- Commit: $GITHUB_SHA"
           } >> "$GITHUB_STEP_SUMMARY"
+      # Evidence that the APK carries the right version, commit, permissions
+      # and which debug certificate signed it (M-DEV-02a).
+      - name: Verify APK metadata
+        run: |
+          APK="dist/$APK_NAME"
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          "$BT/aapt2" dump badging "$APK" | grep -E "^package:"
+          echo "Permissions:"; "$BT/aapt2" dump permissions "$APK"
+          if "$BT/aapt2" dump permissions "$APK" | grep -E "EXTERNAL_STORAGE|READ_MEDIA_"; then
+            echo "::error::storage permission found"; exit 1
+          fi
+          if unzip -p "$APK" assets/flutter_assets/kernel_blob.bin | grep -a -q "$GITHUB_SHA"; then
+            echo "GIT_SHA $GITHUB_SHA embedded in kernel_blob.bin"
+          else
+            echo "::error::GIT_SHA not found in APK"; exit 1
+          fi
+          # Informational: which debug certificate signed this APK.
+          "$BT/apksigner" verify --print-certs "$APK" 2>&1 | grep -iE "certificate (DN|SHA-256)" || \
+            unzip -p "$APK" 'META-INF/*.RSA' | keytool -printcert | grep -E "Owner|SHA256" || \
+            echo "signer certificate could not be printed"
       - uses: actions/upload-artifact@v7
         with:
           name: app-debug-apk
@@ -102,4 +122,4 @@ jobs:
       - run: flutter pub get
       # Compile check only. Signing/TestFlight needs an Apple Developer
       # account and is out of scope until the V1 release milestone.
-      - run: flutter build ios --debug --no-codesign
+      - run: flutter build ios --debug --no-codesign --dart-define=GIT_SHA=${{ github.sha }}
