@@ -17,7 +17,7 @@
 - 96 PLANNED features – see FEATURE_MATRIX.md
 
 ## Blockers
-1. GitHub: Hark cannot create repositories, and the Hark GitHub App is not installed on the owner's account. Owner must create empty public repo `ai-book-translator` and grant access.
+1. ~~GitHub access~~ resolved 2026-11-06: repo `AI_Books_Translator` created by owner, Hark App installed.
 2. Authoring sandbox cannot download the Flutter SDK (Google storage returns 403), so `flutter analyze` / `flutter test` / `flutter create` have not run locally. CI will be the first real run.
 3. `android/` and `ios/` folders not generated yet (needs `flutter create`); CI generates them temporarily.
 
