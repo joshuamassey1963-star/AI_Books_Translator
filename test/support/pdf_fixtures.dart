@@ -288,3 +288,32 @@ Uint8List encryptedMarkerPdf() {
       .replaceFirst('/Root 1 0 R ', '/Root 1 0 R /Encrypt 99 0 R ');
   return Uint8List.fromList(latin1.encode(text));
 }
+
+/// A positioned piece of Helvetica text for [layoutPdf].
+typedef PlacedText = ({double x, double y, String text, double size});
+
+/// One page per entry; each text is drawn in the given order (which can
+/// differ from reading order on purpose).
+Uint8List layoutPdf(List<List<PlacedText>> pages) {
+  final kids = [for (var i = 0; i < pages.length; i++) '${4 + 2 * i} 0 R'];
+  final objects = <PdfObj>[
+    PdfObj('<< /Type /Catalog /Pages 2 0 R >>'),
+    PdfObj('<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${pages.length} >>'),
+    PdfObj(_helvetica),
+  ];
+  for (var i = 0; i < pages.length; i++) {
+    final ops = StringBuffer();
+    for (final t in pages[i]) {
+      ops.write('BT /F1 ${t.size} Tf ${t.x} ${t.y} Td (${t.text}) Tj ET\n');
+    }
+    objects
+      ..add(
+        PdfObj(
+          '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] '
+          '/Resources << /Font << /F1 3 0 R >> >> /Contents ${5 + 2 * i} 0 R >>',
+        ),
+      )
+      ..add(PdfObj('<< >>', latin1.encode(ops.toString())));
+  }
+  return buildPdf(objects);
+}

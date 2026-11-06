@@ -27,6 +27,15 @@ class PdfBox {
   String toString() => 'PdfBox($left, $top, $right, $bottom)';
 }
 
+/// One extracted character (UTF-16 code unit as the engine reports it)
+/// with its box.
+class PdfGlyph {
+  const PdfGlyph(this.char, this.box);
+
+  final String char;
+  final PdfBox box;
+}
+
 /// One run of text as the extraction engine reports it, in extraction
 /// order (which may differ from visual reading order – V1-PDF-02).
 class PdfTextRun {
@@ -153,6 +162,7 @@ class PdfPageInfo {
     required this.imageCount,
     required this.textOperatorCount,
     required this.status,
+    this.glyphs = const [],
   });
 
   final int pageNumber;
@@ -175,6 +185,10 @@ class PdfPageInfo {
   final int? textOperatorCount;
 
   final PageTextStatus status;
+
+  /// Characters with their boxes, in extraction order (M2b-1b). Empty when
+  /// the engine gives no per-character boxes.
+  final List<PdfGlyph> glyphs;
 
   String get text => runs.map((r) => r.text).join();
 }
