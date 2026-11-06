@@ -7,8 +7,8 @@ Requirements source: `docs/AI_Book_Translator_Roadmap_V1_V3.pdf` (03 Nov 2026). 
 | M0 | Foundation (Session 1) | V1-NAV-01/02, V1-CI-01/02, docs | Shell + tests written; CI green on GitHub | DONE (CI run 42146771459) |
 | M1 | Platform folders + CI green | commit android/ & ios/, first CI run, format pass | `flutter analyze` + `flutter test` green in CI; debug APK artifact | DONE (CI run 42149165709) |
 | M2a | P0 spike: parsers | TXT/EPUB/DOCX → BookDocument, zip/XML hardening | parser unit tests green in CI | DONE (CI run 42152743112) |
-| M2b-1 | PDF extraction + font/encoding diagnostics | V1-PDF-01/04/05/07, V1-OCR-01..04, V1-ENC-01..03/05 | see M2b-1a..c below | M2b-1a DONE (PR #1, d29b0cd); M2b-1b DONE (PR #2, d7e9601); M2b-1c code on feature branch (run 42171138308, PR #3) – merge pending |
-| M2b-2 | Legacy font mapping + Unicode conversion prototype | V1-LEG-01..08 | see M2b-2a..c | PLANNED |
+| M2b-1 | PDF extraction + font/encoding diagnostics | V1-PDF-01/04/05/07, V1-OCR-01..04, V1-ENC-01..03/05 | see M2b-1a..c below | M2b-1a DONE (PR #1, d29b0cd); M2b-1b DONE (PR #2, d7e9601); M2b-1c DONE (PR #3, ca887a5) |
+| M2b-2 | Legacy font mapping + Unicode conversion prototype | V1-LEG-01..08 | see M2b-2a..c | IN PROGRESS – M2b-2a code on feature branch (run 42174654507, PR #4) |
 | M2b-3 | Hindi PDF export + shaping verification | V1-EXP-04/06/07, V1-FNT-01/02/05 (partial) | see M2b-3a..c | PLANNED |
 | M2b-4 | AI provider adapter + mock connection tests | V1-AIP-01/03/04 (interface + mocks) | see below | PLANNED |
 | M2b-5 | Real-book regression tests + integration review | REGRESSION_CASES RC-001..015 | see below | PLANNED |

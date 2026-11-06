@@ -131,3 +131,11 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 - EPUB/DOCX XML parts: BOM-aware decoding; an XML declaration naming a different encoding is refused (EN06).
 - NFC via `unorm_dart` (MIT). Never NFKC. Protected spans copied exactly; digits and ZWJ/ZWNJ untouched. Applying NFC to L1 storage waits for the storage milestone (M3).
 - **Status:** Accepted.
+
+## D-026 · 2026-11-06 · Kruti Dev 010 converter (M2b-2a)
+- Source: SIL International wsresources `KrutiDev010.map` v1.3 (MIT), the TECkit map used by several MIT tools. GPL converter tables (e.g. the long-circulated JS converter some ports mention) are **not** used.
+- Port: same 7 passes (nasal reorder, duplicate glyphs, half form + vertical bar, positional/unpacked glyphs, ikar+reph, visual→logical syllable reorder, byte→Unicode). Input runes are mapped to font bytes via Windows-1252/Latin-1.
+- Deliberate differences: bytes 140/229/219 not mapped (public tables disagree; reported, not guessed); 162/170 positional variants mapped in all contexts; half C + low r + aakar → full C + low r + aakar; transducer-inserted ZWJ/ZWNJ removed; output NFC.
+- Safety: `LegacyFontRegistry` converts only with a confirmed font identity whose normalized name is exactly Kruti Dev 010 (subset prefix and Bold/Italic allowed). Kruti Dev 011 is refused (differs at bytes 145–148). Input with Devanagari is refused (no double conversion). Raw input kept, output separate, unknown characters kept and reported.
+- Not in scope: detection of legacy fonts from PDFs (V1-LEG-01), span-level application, confidence score, Chanakya.
+- **Status:** Accepted.

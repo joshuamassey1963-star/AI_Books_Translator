@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 184 features — IMPLEMENTED: 0, IN PROGRESS: 23, PLANNED: 157, VERIFIED: 4
+Totals: 184 features — IMPLEMENTED: 0, IN PROGRESS: 26, PLANNED: 154, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -98,9 +98,9 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-FNT-05 | V1 | Fonts | Font test matrix: 40 Hindi + 20 English families/variants (extraction, rendering, export results) – owner req 2026-11-06 | P1 | V1-FNT-01, V1-PDF-01, V1-EXP-06 | PLANNED | - |
 | V1-FNT-06 | V1 | Fonts | Mixed Hindi-English and Sanskrit/Vedic Devanagari coverage; correct matras, conjuncts, half letters, combining marks, digits, punctuation – owner req 2026-11-06 | P1 | V1-FNT-01 | PLANNED | - |
 | V1-LEG-01 | V1 | Legacy Fonts | Legacy Hindi font detection per span (font name w/o subset prefix + content heuristics) – owner req 2026-11-06 | P0 | V1-PDF-01 | PLANNED | - |
-| V1-LEG-02 | V1 | Legacy Fonts | Font-specific mapping tables (Kruti Dev 010 first, Chanakya family separate); never applied to another font – owner req 2026-11-06 | P0 | V1-LEG-01 | PLANNED | - |
-| V1-LEG-03 | V1 | Legacy Fonts | Unicode conversion engine: substitution, i-matra and reph reordering, nukta/halant fixes, NFC – owner req 2026-11-06 | P0 | V1-LEG-02 | PLANNED | - |
-| V1-LEG-04 | V1 | Legacy Fonts | Conversion confidence score and diagnostics per span – owner req 2026-11-06 | P1 | V1-LEG-03 | PLANNED | - |
+| V1-LEG-02 | V1 | Legacy Fonts | Font-specific mapping tables (Kruti Dev 010 first, Chanakya family separate); never applied to another font – owner req 2026-11-06 | P0 | V1-LEG-01 | IN PROGRESS | Kruti Dev 010 only (SIL map port), confirmed-font registry – run 42174654507; Chanakya = M2b-2b |
+| V1-LEG-03 | V1 | Legacy Fonts | Unicode conversion engine: substitution, i-matra and reph reordering, nukta/halant fixes, NFC – owner req 2026-11-06 | P0 | V1-LEG-02 | IN PROGRESS | substitution + ikar/reph/nasal reordering + NFC, synthetic strings – run 42174654507; no real-book check |
+| V1-LEG-04 | V1 | Legacy Fonts | Conversion confidence score and diagnostics per span – owner req 2026-11-06 | P1 | V1-LEG-03 | IN PROGRESS | warnings only (unmapped, outside code page, stray ikar); no confidence score yet – run 42174654507 |
 | V1-LEG-05 | V1 | Legacy Fonts | Mixed-font paragraphs: convert only legacy spans; English words and digits protected – owner req 2026-11-06 | P0 | V1-LEG-03 | PLANNED | - |
 | V1-LEG-06 | V1 | Legacy Fonts | Raw (L0) and converted (L1) text stored separately – owner req 2026-11-06 | P0 | V1-TRP-05 | PLANNED | - |
 | V1-LEG-07 | V1 | Legacy Fonts | Manual correction of wrong conversions (L2 layer) – owner req 2026-11-06 | P1 | V1-LEG-06, V1-EDT-01 | PLANNED | - |

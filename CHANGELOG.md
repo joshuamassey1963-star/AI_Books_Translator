@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 7 / M2b-2a, 2026-11-06)
+- Kruti Dev 010 → Unicode converter (port of SIL KrutiDev010.map, MIT) behind `LegacyFontRegistry` (confirmed font only, no double conversion, warnings for unmapped characters).
 ### Added (Session 6 / M2b-1c, 2026-11-06)
 - `EncodingDetector`: UTF-8 (BOM), UTF-16 LE/BE (BOM), BOM-less UTF-16 suggestion needing confirmation, explicit override, lossy preview, byte-offset diagnostics.
 - `UnicodeNormalizer` (NFC per D-017, protected spans), dependency `unorm_dart` (MIT).
