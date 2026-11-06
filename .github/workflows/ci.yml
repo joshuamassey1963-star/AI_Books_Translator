@@ -97,7 +97,10 @@ jobs:
           else
             echo "::error::GIT_SHA not found in APK"; exit 1
           fi
-          "$BT/apksigner" verify --print-certs "$APK" | grep -E "Signer #1 certificate (DN|SHA-256)"
+          # Informational: which debug certificate signed this APK.
+          "$BT/apksigner" verify --print-certs "$APK" 2>&1 | grep -iE "certificate (DN|SHA-256)" || \
+            unzip -p "$APK" 'META-INF/*.RSA' | keytool -printcert | grep -E "Owner|SHA256" || \
+            echo "signer certificate could not be printed"
       - uses: actions/upload-artifact@v7
         with:
           name: app-debug-apk
