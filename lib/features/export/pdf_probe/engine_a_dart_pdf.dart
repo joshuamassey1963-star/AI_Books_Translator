@@ -51,7 +51,7 @@ class DartPdfEngineA implements PdfExportProbe {
                 child: pw.Text(
                   b.text,
                   textDirection: direction,
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 18,
                     fontWeight: pw.FontWeight.bold,
                   ),

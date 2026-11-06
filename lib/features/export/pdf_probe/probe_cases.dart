@@ -41,9 +41,6 @@ class ProbeCase {
   String get expectedText => blocks.map((b) => b.text).join('\n');
 }
 
-const _zwj = '\u200D';
-const _zwnj = '\u200C';
-
 const String _longHindi =
     'यह एक लंबा अनुच्छेद है जिसका उद्देश्य पंक्ति तोड़ने और पृष्ठ बदलने की जाँच '
     'करना है। हिन्दी वाक्यों में मात्राएँ, संयुक्ताक्षर और विराम चिह्न सही क्रम में '
@@ -101,7 +98,7 @@ final List<ProbeCase> probeCases = List.unmodifiable(<ProbeCase>[
     id: 'p06_zwj_zwnj',
     title: 'ZWJ / ZWNJ half forms',
     tCases: ['T04'],
-    blocks: [ProbeBlock.p('क्${_zwj}ष क्${_zwnj}ष विद्${_zwj}यालय')],
+    blocks: [ProbeBlock.p('क्\u200Dष क्\u200Cष विद्\u200Dयालय')],
   ),
   const ProbeCase(
     id: 'p07_nukta',
