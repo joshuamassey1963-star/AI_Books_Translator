@@ -19,9 +19,9 @@ Checked 2026-11-06 against pub.dev (latest version, SDK constraint, license, lik
 | flutter_secure_storage | 11.2.0 | BSD-3 | V1-A | candidate (Keystore/Keychain) |
 | dio | 5.11.1 | MIT | V1-C | candidate |
 | file_picker | 13.3.2 | MIT | V1-B | candidate (SAF / document picker) |
-| archive | 4.6.0 | MIT | V1-B | candidate (EPUB/DOCX zip) |
-| xml | 7.1.0 | MIT | V1-B | candidate (XHTML/OOXML) |
-| crypto | 3.0.8 | BSD-3 | V1-B | candidate (SHA-256) |
+| archive | ^4.6.0 | MIT | V1-B | **in use since M2** (EPUB/DOCX zip, in-memory only) |
+| xml | ^7.1.0 | MIT | V1-B | **in use since M2** (needs Dart >=3.13, pubspec sdk ^3.13.0) |
+| crypto | ^3.0.8 | BSD-3 | V1-B | **in use since M2** (SHA-256 fingerprint) |
 | uuid | 4.6.0 | MIT | V1-A | candidate |
 | path_provider | 2.1.6 | BSD-3 | V1-A | candidate |
 | pdf | 3.13.1 | Apache-2.0 | V1-E | candidate (Hindi PDF + font embedding) |

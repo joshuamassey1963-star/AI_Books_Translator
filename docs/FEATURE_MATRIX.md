@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 105 features — IMPLEMENTED: 0, IN PROGRESS: 2, PLANNED: 99, VERIFIED: 4
+Totals: 105 features — IMPLEMENTED: 0, IN PROGRESS: 9, PLANNED: 92, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -19,13 +19,13 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-STO-04 | V1 | Storage | Original file immutable; translations/edits/exports saved as separate versions | P0 | V1-STO-01 | PLANNED | - |
 | V1-LIB-01 | V1 | Library | Bookshelf list of local projects | P0 | V1-STO-01 | PLANNED | - |
 | V1-LIB-02 | V1 | Library | Book details: metadata, chapter navigator, search | P1 | V1-IMP-04 | PLANNED | - |
-| V1-IMP-01 | V1 | Import | EPUB import (first priority format) | P0 | V1-STO-01 | PLANNED | - |
-| V1-IMP-02 | V1 | Import | TXT and DOCX import | P0 | V1-STO-01 | PLANNED | - |
+| V1-IMP-01 | V1 | Import | EPUB import (first priority format) | P0 | V1-STO-01 | IN PROGRESS | spike (M2a): parser + unit tests in CI run 42152743112; no UI/storage yet |
+| V1-IMP-02 | V1 | Import | TXT and DOCX import | P0 | V1-STO-01 | IN PROGRESS | spike (M2a): parser + unit tests in CI run 42152743112; no UI/storage yet |
 | V1-IMP-03 | V1 | Import | Text-layer PDF import; detect scanned PDF and show 'OCR required' | P0 | V1-STO-01 | PLANNED | - |
-| V1-IMP-04 | V1 | Import | Structure model: chapter/heading/paragraph, footnotes, images, tables, inline emphasis, reading order | P0 | V1-IMP-01 | PLANNED | - |
-| V1-IMP-05 | V1 | Import | Real file-type check (magic bytes), size/storage limits, corrupt-file recovery | P0 | V1-IMP-01 | PLANNED | - |
-| V1-IMP-06 | V1 | Import | SHA-256 fingerprint, project snapshot, import diagnostics, duplicate detection | P1 | V1-IMP-01 | PLANNED | - |
-| V1-IMP-07 | V1 | Import | Chapter detection and chapter tree | P0 | V1-IMP-04 | PLANNED | - |
+| V1-IMP-04 | V1 | Import | Structure model: chapter/heading/paragraph, footnotes, images, tables, inline emphasis, reading order | P0 | V1-IMP-01 | IN PROGRESS | spike: chapter/heading/paragraph only; footnotes/tables/images pending |
+| V1-IMP-05 | V1 | Import | Real file-type check (magic bytes), size/storage limits, corrupt-file recovery | P0 | V1-IMP-01 | IN PROGRESS | magic-byte sniffing + size limit tested; corrupt-file recovery pending |
+| V1-IMP-06 | V1 | Import | SHA-256 fingerprint, project snapshot, import diagnostics, duplicate detection | P1 | V1-IMP-01 | IN PROGRESS | SHA-256 fingerprint tested; snapshot/duplicate detection pending |
+| V1-IMP-07 | V1 | Import | Chapter detection and chapter tree | P0 | V1-IMP-04 | IN PROGRESS | TXT/DOCX heading rules + EPUB spine chapters tested |
 | V1-ENG-01 | V1 | Engine | Pipeline: Parse→Normalize→Segment→Context/Glossary→Translate→Validate→Save→Review→Export | P0 | V1-IMP-04 | PLANNED | - |
 | V1-ENG-02 | V1 | Engine | Token-budget chunking respecting chapter bounds, paragraph IDs, quotes, footnotes, tags | P0 | V1-ENG-01 | PLANNED | - |
 | V1-ENG-03 | V1 | Engine | Controlled concurrency (start 1-3 workers), cancellation | P0 | V1-ENG-01 | PLANNED | - |
@@ -66,7 +66,7 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-EXP-04 | V1 | Export | Unicode Hindi PDF with font embedding (Devanagari ligatures, matras, copy/search) | P0 | V1-ENG-01 | PLANNED | - |
 | V1-EXP-05 | V1 | Export | Hindi-only and bilingual output; Unicode normalization; pre-export validation | P1 | V1-EXP-01 | PLANNED | - |
 | V1-SEC-01 | V1 | Security | API keys in Android Keystore / iOS Keychain; never in code, logs, git | P0 | - | PLANNED | - |
-| V1-SEC-02 | V1 | Security | Import hardening: path traversal, ZIP bomb, XXE, malformed XML, oversized images, unsafe HTML | P0 | V1-IMP-01 | PLANNED | - |
+| V1-SEC-02 | V1 | Security | Import hardening: path traversal, ZIP bomb, XXE, malformed XML, oversized images, unsafe HTML | P0 | V1-IMP-01 | IN PROGRESS | path traversal, zip bomb ratio/size/count, XXE/entities, malformed XML tested; oversized images + unsafe HTML pending |
 | V1-SEC-03 | V1 | Security | Explicit consent + privacy notice before sending text to a cloud provider | P0 | V1-AIP-01 | PLANNED | - |
 | V1-SEC-04 | V1 | Security | No book text, keys or PII in logs; telemetry opt-in only | P0 | - | PLANNED | - |
 | V1-SEC-05 | V1 | Security | Minimal platform permissions (SAF / document picker, sandbox copies) | P0 | - | PLANNED | - |

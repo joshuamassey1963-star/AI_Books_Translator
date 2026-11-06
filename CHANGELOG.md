@@ -1,6 +1,14 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 3 / M2a, 2026-11-06)
+- Parser spike: TXT, EPUB 2/3 and DOCX → `BookDocument` (chapters, headings, paragraphs, stable block ids, SHA-256).
+- Import hardening: magic-byte detection, size/entry/ratio limits, path-traversal and XXE blocking.
+- 20 parser unit tests with in-memory fixtures (no copyrighted files in repo).
+- Autoformat helper workflow (`format/**` branches).
+### Changed
+- Dart SDK constraint ^3.13.0 (required by `xml` 7.1.0); Flutter >=3.47.0.
+
 ### Added (Session 2 / M1, 2026-11-06)
 - Committed `android/` and `ios/` platform folders (Flutter 3.47.9 template), app name "AI Book Translator".
 - `pubspec.lock` committed for reproducible builds.

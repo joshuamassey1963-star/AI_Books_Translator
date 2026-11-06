@@ -64,3 +64,13 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 - Android `release` build type still signs with the debug key (template default). Release APKs must not be distributed until a real keystore is set up via CI secrets (V1 release milestone). iOS signing needs an Apple Developer account – CI only does `--no-codesign`.
 - Main AndroidManifest has no INTERNET permission yet (debug/profile have it via Flutter). Add it in M6 together with the first network code.
 - **Status:** Accepted.
+
+## D-014 · 2026-11-06 · Own EPUB/DOCX/TXT parsers (M2a)
+- Implemented on `archive` + `xml` + `crypto` (all permissive), no code copied from other projects. Pure Dart in `lib/features/engine/parser/` so it can run in an isolate later.
+- Safety by default: no extraction to disk, entry-name checks, declared-size and ratio limits, `<!ENTITY>`/internal-DOCTYPE refusal, HTML5 named entities decoded.
+- TXT is UTF-8 only; other encodings are refused with a clear message instead of guessing (revisit if owner's books need other encodings).
+- **Status:** Accepted (spike; structure model grows in M4).
+
+## D-015 · 2026-11-06 · Autoformat helper workflow
+- The authoring sandbox cannot run `dart format`. Pushing a `format/<name>` branch runs `.github/workflows/autoformat.yml`, which formats and pushes back to that branch; the result then goes to `feature/*`/`develop`. Never runs on main/develop.
+- **Status:** Accepted.

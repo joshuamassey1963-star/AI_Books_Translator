@@ -1,8 +1,8 @@
 # Progress
 
 - **Current version:** 0.1.0+1 (V1, pre-alpha)
-- **Current milestone:** M1 Platform folders + CI – **DONE**. Next: M2 (P0 spike).
-- **Last verified code commit:** `0602b55` on `develop` – GitHub Actions run 42149165709: format check 0 changes, `flutter analyze` no issues, `flutter test` 14/14, Android debug APK built (artifact 13471217965), iOS debug `--no-codesign` build OK.
+- **Current milestone:** M2a parser spike – **DONE**. Next: M2b (PDF probe, Hindi PDF export probe, provider ping).
+- **Last verified code commit:** `c2dbf7c` – GitHub Actions run 42152743112: format ✅, `flutter analyze` no issues ✅, `flutter test` 34/34 ✅ (14 shell + 20 parser), Android debug APK ✅, iOS unsigned build ✅.
 
 ## VERIFIED (automated CI evidence)
 - V1-NAV-01 bottom navigation shell
@@ -10,22 +10,24 @@
 - V1-CI-01 CI analyze + tests (+ blocking format check)
 - V1-CI-02 Android debug APK in CI
 
-## In progress
+## In progress (code + unit tests exist, feature not complete)
 - V1-NAV-03 Home (empty state only)
-- V1-CI-03 iOS build verified (debug, unsigned); release builds + SHA-256 checksums pending
+- V1-CI-03 iOS build verified (debug, unsigned); release builds + SHA-256 pending
+- V1-IMP-01 EPUB, V1-IMP-02 TXT/DOCX, V1-IMP-04 structure, V1-IMP-05 sniffing/limits, V1-IMP-06 SHA-256, V1-IMP-07 chapters, V1-SEC-02 hardening – parser engine only; no import screen, no storage, not tried on real books yet
 
 ## Manual smoke test
 - 2026-11-06: owner installed the debug APK on an Android phone; navigation shell and placeholders work as designed (see docs/OWNER_REQUESTS.md).
 
 ## Not verified yet
-- Only a manual smoke test on one Android phone; integration_test not run (V1-CI-04).
-- iOS app not run on simulator/device.
+- Parsers not run on real-world EPUB/DOCX books (only in-memory fixtures).
+- PDF import, Hindi PDF export, AI providers: not started.
+- integration_test not run (V1-CI-04); iOS app not run on simulator/device.
 
 ## Known gaps
-1. Authoring sandbox cannot run Flutter – all evidence is from GitHub Actions.
+1. Authoring sandbox cannot run Flutter – all evidence comes from GitHub Actions (format via autoformat workflow, D-015).
 2. Release build signs with debug key (D-013) – do not distribute.
 3. App IDs provisional (D-012).
-4. Hark's GitHub App cannot dispatch workflows (no actions:write) – trigger CI by pushing.
+4. TXT import accepts UTF-8 only (D-014).
 
 ## Next task
-M2 – P0 spike: EPUB/TXT/DOCX parse probes, Hindi PDF font probe, provider ping (BYOK), each behind tests.
+M2b – see HANDOVER.md.

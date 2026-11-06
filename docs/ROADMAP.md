@@ -6,7 +6,8 @@ Requirements source: `docs/AI_Book_Translator_Roadmap_V1_V3.pdf` (03 Nov 2026). 
 |---|---|---|---|---|
 | M0 | Foundation (Session 1) | V1-NAV-01/02, V1-CI-01/02, docs | Shell + tests written; CI green on GitHub | DONE (CI run 42146771459) |
 | M1 | Platform folders + CI green | commit android/ & ios/, first CI run, format pass | `flutter analyze` + `flutter test` green in CI; debug APK artifact | DONE (CI run 42149165709) |
-| M2 | P0 spike: parsers | EPUB/DOCX/TXT/PDF text extraction prototype, Hindi PDF export probe, provider ping | 2 chapters of a sample book import/export correctly | PLANNED |
+| M2a | P0 spike: parsers | TXT/EPUB/DOCX → BookDocument, zip/XML hardening | parser unit tests green in CI | DONE (CI run 42152743112) |
+| M2b | P0 spike: PDF + provider | text-layer PDF probe, Hindi PDF export probe (Devanagari shaping), provider adapter + BYOK ping | 2 chapters of a sample book import/export correctly | PLANNED |
 | M3 | V1-A Storage | V1-STO-01/02/04, V1-SEC-01, V1-SET-01 | Schema + migration tests; secure-storage test | PLANNED |
 | M4 | V1-B Import | V1-IMP-01..07, V1-SEC-02, V1-LIB-01/02 | Content order + corrupt/malicious file tests | PLANNED |
 | M5 | V1-C Glossary & Instructions | V1-GLO-01..07, V1-INS-01/02 | Glossary unit tests incl. conflicts, protected terms | PLANNED |

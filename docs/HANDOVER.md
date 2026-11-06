@@ -1,8 +1,8 @@
 # Handover
 
-- **Session:** 2 – M1 done (2026-11-06)
+- **Session:** 3 – M2a done (2026-11-06)
 - **Current branch:** `develop` (`main` = owner README only; merge needs owner approval)
-- **Commits:** S1: 61258d5, f3ce938, 529643f, 7f5f048 · S2: e5fc6bb, f63a95d (bootstrap, removed), a552f0f, 0602b55, + docs commit
+- **Commits:** S1: 61258d5, f3ce938, 529643f, 7f5f048 · S2: e5fc6bb, f63a95d, a552f0f, 0602b55, 988e9c2 · S3: a0bb6ac, b75d727, c2dbf7c, + docs commit
 - **Push status:** ✅ pushed to `origin/develop` (github.com/joshuamassey1963-star/AI_Books_Translator). `main` untouched.
 
 ## Files
@@ -20,17 +20,19 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 ## Incomplete work
 - None for M0.
 
-## Session 2 (M1) summary
-- a552f0f platform folders + dart format (generated on runner) · 0602b55 CI: committed folders, blocking format, iOS job · this docs commit.
-- CI run 42149165709 on 0602b55: format ✅ analyze ✅ tests 14/14 ✅ Android debug APK ✅ iOS unsigned build ✅.
-- Build config reviewed: see DECISIONS D-012 (IDs, SDK/toolchain) and D-013 (debug-key release signing, INTERNET permission deferred to M6).
+## Session 3 (M2a) summary
+- Branch `feature/m2-parsers`: b75d727 parser spike, c2dbf7c `dart format` (bot via autoformat workflow), + docs commit; fast-forwarded into `develop` after CI.
+- Code: `lib/features/engine/parser/` – book_document, parse_exception, import_limits, safe_zip, safe_xml, txt_parser, epub_parser, docx_parser, book_parser (entry point `BookParser().parse(bytes, fileName:)`).
+- Tests: `test/unit/engine/parser/book_parser_test.dart` (20 tests), fixtures built in memory by `test/support/book_fixtures.dart`.
+- CI run 42152743112 on c2dbf7c: format ✅ analyze ✅ tests 34/34 ✅ Android APK ✅ iOS build ✅.
+- Owner requests logged in docs/OWNER_REQUESTS.md (Day/Night/Sepia, rotation, work history, login).
 
-## Next exact task (M2 – P0 spike)
-1. `git pull`; read PROGRESS, FEATURE_MATRIX, DECISIONS D-011.
-2. Add `archive` + `xml` (EPUB), probe parsers for TXT/EPUB/DOCX with small fixture files in `test/fixtures/` (public-domain text only).
-3. Hindi PDF probe with `pdf` package + embedded Noto Sans Devanagari (OFL) – check matras/ligatures in a golden test.
-4. Provider adapter interface + "ping" with user's own key (BYOK, nothing stored in repo); no hardcoded model names.
-5. Push to `feature/m2-p0-spike`, open draft PR into develop, CI green, report.
+## Next exact task (M2b – P0 spike, part 2)
+1. `git pull`; read PROGRESS, DECISIONS D-011/D-014.
+2. Hindi PDF export probe: check whether the `pdf` package shapes Devanagari (conjuncts/matras) with Noto Sans Devanagari (OFL). If not, record the blocker and evaluate alternatives (platform PDF via native print, or pre-shaped glyphs) – do not claim Hindi PDF works without a visual check by the owner.
+3. Text-layer PDF probe: evaluate `pdfrx` (MIT, PDFium) on Android/iOS; detect scanned PDFs → "OCR required".
+4. Provider adapter interface + "test connection" ping using the user's own key (BYOK, key never in repo/logs, no hardcoded model names – list models from the provider).
+5. Code workflow: commit → push `format/<name>` → wait for bot format commit → push to `feature/<name>` → CI green → fast-forward `develop`.
 
 ## Commands to resume
 ```bash
