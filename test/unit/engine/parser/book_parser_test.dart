@@ -290,17 +290,19 @@ void main() {
       }
     });
 
-    test('UTF-16 without BOM needs confirmation, then imports with override',
-        () {
-      final bytes = utf16le(mixedText, bom: false);
-      expect(detectFormat(bytes), DetectedFormat.text);
-      expect(
-        () => parser.parse(bytes),
-        throwsParse(ParseErrorCode.encodingNeedsConfirmation),
-      );
-      final book = parser.parse(bytes, textEncoding: TextEncoding.utf16le);
-      expect(book.chapters, isNotEmpty);
-    });
+    test(
+      'UTF-16 without BOM needs confirmation, then imports with override',
+      () {
+        final bytes = utf16le(mixedText, bom: false);
+        expect(detectFormat(bytes), DetectedFormat.text);
+        expect(
+          () => parser.parse(bytes),
+          throwsParse(ParseErrorCode.encodingNeedsConfirmation),
+        );
+        final book = parser.parse(bytes, textEncoding: TextEncoding.utf16le);
+        expect(book.chapters, isNotEmpty);
+      },
+    );
 
     test('malformed UTF-16 TXT is refused, original bytes untouched', () {
       final bytes = Uint8List.fromList([0xFF, 0xFE, 0x41, 0x00, 0x00, 0xD8]);

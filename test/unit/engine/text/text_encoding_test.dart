@@ -122,7 +122,16 @@ void main() {
   });
 
   test('malformed UTF-16: unpaired surrogates and odd length', () {
-    final lone = Uint8List.fromList([0xFF, 0xFE, 0x41, 0x00, 0x00, 0xD8, 0x42, 0x00]);
+    final lone = Uint8List.fromList([
+      0xFF,
+      0xFE,
+      0x41,
+      0x00,
+      0x00,
+      0xD8,
+      0x42,
+      0x00,
+    ]);
     final r1 = detector.detect(lone);
     expect(r1.status, EncodingStatus.refused);
     expect(r1.issues.single.code, EncodingIssueCode.unpairedSurrogate);
@@ -157,7 +166,9 @@ void main() {
   });
 
   test('UTF-32 BOM is refused clearly', () {
-    final r = detector.detect(Uint8List.fromList([0xFF, 0xFE, 0, 0, 0x41, 0, 0, 0]));
+    final r = detector.detect(
+      Uint8List.fromList([0xFF, 0xFE, 0, 0, 0x41, 0, 0, 0]),
+    );
     expect(r.issues.single.code, EncodingIssueCode.utf32NotSupported);
   });
 

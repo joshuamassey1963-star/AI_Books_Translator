@@ -98,7 +98,11 @@ class EncodingReport {
 
 /// A display-only preview; [lossy] is true when bytes were replaced.
 class EncodingPreview {
-  const EncodingPreview(this.text, {required this.encoding, required this.lossy});
+  const EncodingPreview(
+    this.text, {
+    required this.encoding,
+    required this.lossy,
+  });
   final String text;
   final TextEncoding encoding;
   final bool lossy;
@@ -160,7 +164,12 @@ class EncodingDetector {
 
     final nulCount = bytes.where((b) => b == 0).length;
     if (nulCount == 0) {
-      return _strict(bytes, TextEncoding.utf8, EncodingSource.strictUtf8, result);
+      return _strict(
+        bytes,
+        TextEncoding.utf8,
+        EncodingSource.strictUtf8,
+        result,
+      );
     }
     final guess = utf16PatternGuess(bytes);
     if (guess != null) {
@@ -390,9 +399,9 @@ class EncodingDetector {
         );
       }
     }
-    final controls = RegExp(
-      r'[\u0001-\u0008\u000B\u000E-\u001F\u007F]',
-    ).allMatches(text).length;
+    final controls = RegExp(r'[\u0001-\u0008\u000B\u000E-\u001F\u007F]')
+        .allMatches(text)
+        .length;
     return result(
       EncodingStatus.decoded,
       encoding: enc,
@@ -418,7 +427,9 @@ class EncodingDetector {
   }
 
   static int _unit(Uint8List b, int i, TextEncoding enc) =>
-      enc == TextEncoding.utf16le ? b[i] | (b[i + 1] << 8) : (b[i] << 8) | b[i + 1];
+      enc == TextEncoding.utf16le
+      ? b[i] | (b[i + 1] << 8)
+      : (b[i] << 8) | b[i + 1];
 
   static bool _validUtf8(List<int> bytes) {
     try {
