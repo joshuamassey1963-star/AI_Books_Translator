@@ -5,7 +5,11 @@ name: Bootstrap platform folders (one-off)
 # runner and pushes the result to a separate branch for human/agent review.
 # It never touches main or develop directly. Safe to delete after M1.
 
+# Triggered by pushing the branch `chore/m1-bootstrap` (Hark's GitHub App
+# cannot dispatch workflows), or manually from the Actions tab.
 on:
+  push:
+    branches: ['chore/m1-bootstrap']
   workflow_dispatch:
 
 permissions:
