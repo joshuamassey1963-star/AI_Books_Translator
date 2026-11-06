@@ -32,6 +32,12 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - Manual (owner, phone): install CI debug APK → More → Developer Tests → checklist in HANDOVER.md.
 - Release exclusion: route and More row are behind `kDebugMode` (compiled out of release); verify when release builds exist (D-013).
 
+## Real TXT file picker (M-DEV-02a)
+- Unit `test/unit/dev_tests/txt_file_diagnostics_test.dart`: UTF-8, Hindi+English, UTF-16 LE/BE BOM, BOM-less UTF-16 needs choice, invalid encoding, empty, oversized (checked before read), bounded preview, binary failure, bytes unchanged, manifest has no storage permission.
+- Widget `test/widget/txt_file_picker_test.dart` with a fake `TxtFilePicker`: metadata + preview, UTF-16 BOM, encoding choice, invalid, empty, oversized without reading, cancel, picker failure, build info (no SHA invented in tests).
+- CI `Verify APK metadata`: aapt2 badging (versionCode/versionName), aapt2 permissions (fails on storage permissions), GIT_SHA present in the APK, signer certificate printed.
+- Manual: owner picks real TXT files on the phone (checklist in HANDOVER.md).
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 

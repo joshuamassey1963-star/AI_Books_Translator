@@ -33,3 +33,5 @@
 
 ## Next task
 M2b – see HANDOVER.md.
+
+- 2026-11-06 Session 9: PR #5 merged (bb5a8cb). M-DEV-02a on `feature/m-dev-02a-txt-picker` (PR #6): real TXT picker, About this build, version 0.1.1+2. Run 42184277563: 162/162, Android + iOS green, APK artifact verified (versionCode 2, versionName 0.1.1, GIT_SHA embedded, no storage permissions).

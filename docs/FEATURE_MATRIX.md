@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 185 features — IMPLEMENTED: 0, IN PROGRESS: 27, PLANNED: 154, VERIFIED: 4
+Totals: 186 features — IMPLEMENTED: 0, IN PROGRESS: 28, PLANNED: 154, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -82,7 +82,8 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-PRF-02 | V1 | Performance | Isolates for heavy parsing; lazy loading/virtualized chapters; streaming export | P1 | V1-IMP-01 | PLANNED | - |
 | V1-CI-01 | V1 | QA/CI | GitHub Actions: analyze + unit/widget tests | P0 | - | VERIFIED | CI run 42146771459 green (analyze: no issues, 14/14 tests) |
 | V1-CI-02 | V1 | QA/CI | Android debug APK build in CI | P0 | V1-CI-01 | VERIFIED | CI run 42146771459: debug APK built + uploaded |
-| V1-DEV-01 | V1 | QA/Dev | Developer Tests screen (debug builds only): text encoding inspection, Kruti Dev 010 conversion, TXT parser diagnostics on synthetic input; file picker + PDF diagnostics not included | P2 | V1-ENC-01, V1-LEG-03 | IN PROGRESS | widget+unit tests – run 42176973417; not yet checked on a phone |
+| V1-DEV-01 | V1 | QA/Dev | Developer Tests screen (debug builds only): text encoding inspection, Kruti Dev 010 conversion, TXT parser diagnostics on synthetic input; file picker + PDF diagnostics not included | P2 | V1-ENC-01, V1-LEG-03 | IN PROGRESS | merged PR #5 (bb5a8cb); run 42176973417 |
+| V1-DEV-02 | V1 | QA/Dev | Developer Tests: real TXT file via system picker (no storage permission), size limit before read, encoding choice for BOM-less UTF-16, metadata + bounded preview + copy; About this build in More (version, build, type, CI-injected commit SHA) | P2 | V1-DEV-01, V1-IMP-01 | IN PROGRESS | run 42184277563: 162/162, APK 0.1.1+2 metadata checked in CI; not yet checked on a phone |
 | V1-CI-03 | V1 | QA/CI | iOS build on macOS runner; release builds with SHA-256 artifacts | P1 | V1-CI-01 | IN PROGRESS | iOS debug no-codesign build green (run 42149165709); release builds + SHA-256 pending |
 | V1-CI-04 | V1 | QA/CI | Integration tests on emulator | P1 | V1-CI-01 | PLANNED | integration_test/app_launch_test (written, not run) |
 | V1-REL-01 | V1 | Release | Acceptance: 3 EPUBs keep chapter order + paragraph count; force-close resume; Devanagari checks on Android+iOS | P0 | all V1 | PLANNED | - |

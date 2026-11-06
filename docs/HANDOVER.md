@@ -57,6 +57,15 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
 - Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
 
+## Session 9 (PR #5 merge + M-DEV-02a real TXT picker, APK 0.1.1+2)
+- A: PR #5 merged into develop, merge commit bb5a8cb (head 9bbe378; runs 42177818518 + 42177841668 green, 142/142). Develop CI after merge not separately checked.
+- Branch `feature/m-dev-02a-txt-picker`. Commits: d479bbd feat → 8d7952f format bot → eb9dc69 ci fix (signer print step was fatal in run 42183428510; tests/iOS were green there).
+- New deps: file_selector ^1.1.0 (BSD-3, flutter.dev; Android ACTION_OPEN_DOCUMENT, no permission), package_info_plus ^10.2.2 (BSD-3).
+- Code: `lib/features/dev_tests/txt_file_picker.dart` (TxtFilePicker seam + SystemTxtFilePicker + provider), `dev_diagnostics.dart` (checkPickedSize, inspectTxtFile, LoadedTxt, preview cap 3000 chars), parser tab UI, `lib/features/more/build_info.dart` (BuildInfoTile).
+- CI run 42184277563 on eb9dc69: analyze ✅ 162/162 ✅ Android ✅ iOS ✅. APK `ai-book-translator-0.1.1-2-debug-eb9dc69.apk`, 191,107,973 bytes, SHA-256 0090fe185f29ff9d2b7a2b81c7065aed856fad58e5900b93dae1e1f2d8f18a61; artifact `app-debug-apk` id 13486074860 (zip 102,098,423 bytes, expires 2026-11-20 13:34 IST). aapt2: versionCode 2, versionName 0.1.1; permissions INTERNET (debug) + androidx receiver only; GIT_SHA eb9dc69… embedded; signer CN=Android Debug, cert SHA-256 4d622c36…aec1.
+- Limitations: file_selector on Android reads the whole file into memory before the size can be re-checked (limit 200 MB from ImportLimits); the plugin may keep a copy in the app cache. Debug keystore is created per CI runner, so a new APK may not install over an older one (uninstall then). Not checked on a real phone. EPUB/DOCX/PDF picker, import UI, storage: not built.
+- Owner checklist: More → About this build shows 0.1.1 (build 2), Debug, commit eb9dc69…; Developer Tests → TXT Parser → Choose TXT File: UTF-8 Hindi/English file (parsed, preview, copy), UTF-16 file from Notepad "Unicode" (BOM, parsed), cancel picker (message, button works), empty file (refused: empty), a non-text file renamed .txt (refused).
+
 ## Session 8 (PR #4 merge + DEV-01 Developer Tests screen)
 - A: PR #4 merged into develop, merge commit 721fe4f (head 99d64eb; runs 42175449447 push + 42175456385 PR green, 130/130).
 - B/C: branch `feature/dev-test-screen`. Code: `lib/features/dev_tests/dev_diagnostics.dart` (pure helpers), `dev_tests_screen.dart` (3 tabs); route `/more/dev-tests` and More row guarded by `kDebugMode`. CI: APK named with version+sha, 14-day retention.
