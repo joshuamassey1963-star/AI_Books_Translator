@@ -35,6 +35,10 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42158726040: format ✅, analyze ✅, 63/63 tests ✅, Android debug APK ✅, iOS unsigned ✅.
 - Limitations: fonts page-level only; ToUnicode contents not validated; FlateDecode only; no garbled-text score yet; not integrated into BookParser (PDF still returns `pdfNotYetSupported` there); no import UI; no real PDFs tried.
 
+## Session 5 – checkpoints A–C
+- A: PR #1 merged into develop (merge commit d29b0cd); evidence runs 42159548254 (push) + 42159584549 (PR) on 69cfc6b, all green, 63/63.
+- B/C: System-wide translation + Read Aloud/TTS requirements recorded (29 new IDs, docs only): docs/SYSTEM_TRANSLATION.md, docs/READ_ALOUD_TTS.md, D-022, D-023, ROADMAP M8b, M10b–d, V2/V3 milestones. No implementation.
+
 ## Next exact task – M2b-1b (only after owner/tech-lead go)
 1. Word/paragraph boundaries from char boxes (RC-005), reading-order basics + header/footer detection (RC-006), repeated/missing char, ligature and PUA diagnostics (RC-007, RC-014), extraction quality score + gate (V1-PDF-07, V1-OCR-02 garbled text).
 2. Evaluate per-run font via PDFium FFI (`FPDFText_GetFontInfo`) behind pdfrx's worker; keep scanner as fallback.

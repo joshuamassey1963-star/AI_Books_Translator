@@ -1,7 +1,7 @@
 # Progress
 
 - **Current version:** 0.1.0+1 (V1, pre-alpha)
-- **Current milestone:** M2b-1a (PDF text source, font/ToUnicode/image diagnostics, OCR interface) – **DONE** on feature branch, PR open into develop. Next: M2b-1b (waiting for go).
+- **Current milestone:** M2b-1a – **DONE**, merged into develop via PR #1 (merge commit d29b0cd). Session 5: system translation + TTS requirements recorded (184 features). Next: M2b-1b.
 - **Last verified code commit:** `85ce46b` (feature/m2b-1a-pdf-text-source) – run 42158726040: format ✅, analyze ✅, `flutter test` 63/63 ✅, Android debug APK ✅, iOS unsigned ✅.
 - **Previous:** `c2dbf7c` – GitHub Actions run 42152743112: format ✅, `flutter analyze` no issues ✅, `flutter test` 34/34 ✅ (14 shell + 20 parser), Android debug APK ✅, iOS unsigned build ✅.
 

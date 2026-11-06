@@ -39,3 +39,7 @@ Full detail: `docs/TEXT_ENCODING_FONT_COMPATIBILITY.md`.
 - **Normalization:** L0 stored as-is; L1 and later NFC; search/compare on NFC (D-017).
 - **Quality gate:** translation is not offered for a block/page whose extraction score is below threshold without an explicit user override and warning.
 - **Images:** one image pipeline (decode limits, re-encode, EXIF strip, thumbnail cache) used by cover, backgrounds, logo and profile features (V1-IMG-05).
+
+## System translation and Read Aloud (owner requirements 2026-11-06, Session 5 – planned)
+- **System translation** (docs/SYSTEM_TRANSLATION.md, D-022): platform entry points (paste, share intent/extension, Android PROCESS_TEXT, clipboard on tap, URL import) all feed one `SnippetTranslationRequest` into the existing translation engine and task queue (V1-TSK-01). Platform code lives in `lib/features/system_translation/` plus thin Android/iOS channels; no engine logic in platform code.
+- **Read Aloud** (docs/READ_ALOUD_TTS.md, D-023): `ReadAloudController` → `TextSourceSelector` (L2/L1, L4/L3 only) → `TtsEngine` (`SystemTtsEngine` | V2 `AiTtsEngine` adapters) → `PlaybackSession` (notification, audio focus, lifecycle) → `ReadingPositionStore`. Lives in `lib/features/read_aloud/`; independent of `engine/translation`.

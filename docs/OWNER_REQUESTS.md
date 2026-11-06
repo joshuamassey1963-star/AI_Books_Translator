@@ -4,6 +4,8 @@ Ideas and wishes from the owner, with where they landed in the Feature Matrix. N
 
 | Date | Request (owner's words, translated) | Feature IDs | Version | Notes |
 |---|---|---|---|---|
+| 2026-11-06 (S5) | System-wide translation: paste text, background queue (V1); share, selected text, clipboard on tap, URL/article, floating bubble (V2); optional accessibility, advanced webpage (V3) | V1-STR-01/02, V2-STR-01..07, V3-STR-01/02 | V1–V3 | docs/SYSTEM_TRANSLATION.md; no universal cross-app access; accessibility never required; D-022 |
+| 2026-11-06 (S5) | Read Aloud / TTS: system TTS Hindi+English, scopes, controls, position, background, BYOK AI TTS architecture (V1); AI providers, caching, highlighting, export, quota (V2); bilingual, multi-voice, customisation (V3) | V1-TTS-01..09, V2-TTS-01..06, V3-TTS-01..03 | V1–V3 | docs/READ_ALOUD_TTS.md; reads L2/L4 validated text only; D-023 |
 | 2026-11-06 | Image customisation: logo/branding, app background, book covers, reader/editor background, with fit/opacity/dim/reset/cache/theme compatibility and safe processing | V1-IMG-01..05 | V1 | Answers the earlier open "images" question |
 | 2026-11-06 | Local profile picture without login | V2-IMG-01 | V2 | |
 | 2026-11-06 | Account profile picture sync; alternate app icons where supported | V3-IMG-01, V3-IMG-02 | V3 | iOS shows a system alert on icon change; only bundled icons possible |

@@ -102,3 +102,16 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 - Therefore a small pure-Dart **PdfStructureScanner** reads per-page font dictionaries (BaseFont, subset prefix, FontFile*, ToUnicode, Encoding), image XObjects/inline images and text operators. Fonts are page-level, not per run (documented limitation, `PdfTextRun.fontName == null`).
 - Host tests: `flutter test` does not load pdfium_dart's native asset, so CI downloads the same PDFium release and sets `PDFIUM_PATH`.
 - **Status:** Accepted for M2b-1a. Re-evaluate per-run fonts (FFI) in M2b-1b.
+
+## D-022 · 2026-11-06 · System-wide translation scope
+- Only platform-sanctioned, user-initiated entry points (paste, share, Android PROCESS_TEXT, clipboard on tap, URL). No universal cross-app access is promised; iOS offers less (no PROCESS_TEXT, no overlays, no accessibility reading).
+- AccessibilityService is optional V3 only, never required; Google Play demands a Permission Declaration plus separate prominent disclosure and affirmative consent for non-accessibility-tool apps. A policy review is a gate before V2-STR-07 and V3-STR-01.
+- No background clipboard reading. Same engine, consent and BYOK rules as book translation.
+- **Status:** Accepted (planning).
+
+## D-023 · 2026-11-06 · Read Aloud / TTS architecture
+- TTS engine is separate from the translation engine; `TtsEngine` interface with `SystemTtsEngine` (Android TextToSpeech / iOS AVSpeechSynthesizer, evaluated separately) and, in V2, `AiTtsEngine` adapters.
+- Reads only validated layers: L2→L1 for source, L4→L3 for translation; never L0, unvalidated OCR or unconverted legacy text.
+- Device voice and online AI voice are labelled differently; AI TTS is BYOK, opt-in per provider, never a silent paid switch; keys never in source, logs or exported audio/metadata.
+- Candidate packages (flutter_tts, audio_service, audio_session, just_audio – all MIT/Apache) to be re-checked when the milestone starts.
+- **Status:** Accepted (planning).

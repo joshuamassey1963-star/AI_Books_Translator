@@ -19,6 +19,13 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - Legacy conversion: table-driven unit tests per font + negative tests (wrong font, unknown chars, English/digits untouched).
 - A font row becomes PASS only with a CI run id or a dated owner check per column.
 
+## System translation and Read Aloud tests (planned, Session 5 requirements)
+- Paste translation: paragraph count in == out, protected words, NFC, provider error mocks (401/429/timeout), cancel.
+- Background: process kill → resume without re-billing completed chunks (Android emulator); iOS "paused in background" state.
+- Entry points (V2): fake share / PROCESS_TEXT intents; no clipboard read without a user tap (code-path test); URL import with synthetic HTML fixtures, size/time/redirect limits.
+- TTS: fake-engine contract tests; `TextSourceSelector` refuses L0/unvalidated OCR/legacy; sentence splitter (danda, abbreviations, numbers, mixed script) with "chunks concatenate to source"; position store + edit anchoring; audio-focus/interruption state machine; log scrubber proves keys never logged; no auto-switch to paid.
+- Manual device checklists: Android Hindi + English voices, call/alarm/Bluetooth interruptions, screen off 30 min; iOS speech voices.
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 

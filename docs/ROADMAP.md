@@ -18,11 +18,15 @@ Requirements source: `docs/AI_Book_Translator_Roadmap_V1_V3.pdf` (03 Nov 2026). 
 | M6 | V1-C Provider adapters | V1-AIP-01..08, V1-SEC-03 | Adapter tests with mocked HTTP for every error code | PLANNED |
 | M7 | V1-C Chunking & pipeline | V1-ENG-01/02/07/08/09 | EN→HI on 3 sample chapters, structural validator tests | PLANNED |
 | M8 | V1-D Queue & recovery | V1-ENG-03..06, V1-TSK-01..05, V1-ERR-01/02 | Force-stop, 429, offline recovery tests | PLANNED |
+| M8b | V1 System translation (basic) | V1-STR-01/02 | Paste translation + background recovery tests (Android kill/resume; iOS pause honesty) | PLANNED |
 | M9 | V1-E Editor | V1-EDT-01..03 | Alignment + autosave tests | PLANNED |
 | M10 | V1-E Export | V1-EXP-01..05 | Hindi fonts, paragraph alignment, re-open tests | PLANNED |
+| M10b | V1 Read Aloud TTS-1 | V1-TTS-01/03/04/05 | Fake-engine unit tests, layer-selection tests, Android Hindi+English device check | PLANNED |
+| M10c | V1 Read Aloud TTS-2 | V1-TTS-06/07/09 | Position resume, interruption state machine, background device checklist | PLANNED |
+| M10d | V1 Read Aloud TTS-3 | V1-TTS-02/08 | iOS speech check; BYOK config tests, no-network + no-auto-paid tests | PLANNED |
 | M11 | V1 Release | V1-REL-01/02, V1-PRF-01/02, V1-CI-03/04 | Acceptance checklist signed off on real devices | PLANNED |
-| M12+ | V2 | V2-* | OCR benchmark + quality metrics | PLANNED |
-| M20+ | V3 | V3-* | Device / cost / privacy validation | PLANNED |
+| M12+ | V2 | V2-* (incl. M13a–d system translation entry points V2-STR-01..07 after policy review; M14a–c AI TTS V2-TTS-01..06) | OCR benchmark + quality metrics | PLANNED |
+| M20+ | V3 | V3-* (incl. M21 V3-STR-01/02 if policy review passes; M22 V3-TTS-01..03) | Device / cost / privacy validation | PLANNED |
 
 ## M2b – detailed plan (owner restructuring, 2026-11-06)
 

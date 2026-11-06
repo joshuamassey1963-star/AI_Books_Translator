@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 155 features — IMPLEMENTED: 0, IN PROGRESS: 14, PLANNED: 137, VERIFIED: 4
+Totals: 184 features — IMPLEMENTED: 0, IN PROGRESS: 14, PLANNED: 166, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -55,7 +55,7 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-EDT-01 | V1 | Editor | Two-pane source/translation editor with paragraph alignment | P0 | V1-ENG-05 | PLANNED | - |
 | V1-EDT-02 | V1 | Editor | Undo/redo, search/replace, autosave | P0 | V1-EDT-01 | PLANNED | - |
 | V1-EDT-03 | V1 | Editor | Review status and manual lock per segment | P1 | V1-EDT-01 | PLANNED | - |
-| V1-TSK-01 | V1 | Tasks | Task queue states: Pending/Running/Paused/Failed/Completed | P0 | V1-ENG-05 | PLANNED | - |
+| V1-TSK-01 | V1 | Tasks | Task queue states: Pending/Running/Paused/Failed/Completed (also snippet jobs from V1-STR-01; background execution = V1-STR-02) | P0 | V1-ENG-05 | PLANNED | - |
 | V1-TSK-02 | V1 | Tasks | Chunk progress, estimated tokens (cost when available) | P1 | V1-TSK-01 | PLANNED | - |
 | V1-TSK-03 | V1 | Tasks | Pause/resume/retry; retry failed chunks only | P0 | V1-TSK-01 | PLANNED | - |
 | V1-TSK-04 | V1 | Tasks | Resume from checkpoint after force-close/restart without duplicate billing | P0 | V1-ENG-05 | PLANNED | - |
@@ -163,5 +163,34 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V3-PRF-01 | V3 | Performance | Performance optimization from recorded baselines | P2 | V1-PRF-01 | PLANNED | - |
 | V3-IMG-01 | V3 | Images | Optional account profile picture sync – owner req 2026-11-06 | P2 | V3-SYN-01, V2-IMG-01 | PLANNED | - |
 | V3-IMG-02 | V3 | Images | Alternate app icons where the platform supports it (Android activity-alias, iOS setAlternateIconName; bundled icons only) – owner req 2026-11-06 | P3 | V1-IMG-01 | PLANNED | - |
+| V1-STR-01 | V1 | System Translation | Paste-text translation (paragraphs 1:1, protected words, copy/share/history) – SYSTEM_TRANSLATION.md – owner req 2026-11-06 S5 | P1 | V1-ENG-02, V1-ENG-07, V1-AIP-01, V1-SEC-03, V1-TRP-01 | PLANNED | - |
+| V1-STR-02 | V1 | System Translation | Background execution + recovery of translation jobs (Android WorkManager/foreground service; iOS pauses honestly); queue states stay V1-TSK-01 – owner req 2026-11-06 S5 | P1 | V1-TSK-01, V1-ENG-05 | PLANNED | - |
+| V2-STR-01 | V2 | System Translation | Android Share-to-Translate (ACTION_SEND text/files) – owner req 2026-11-06 S5 | P1 | V1-STR-01 | PLANNED | - |
+| V2-STR-02 | V2 | System Translation | iOS Share Extension → app (App Group handoff) – owner req 2026-11-06 S5 | P2 | V2-STR-01 | PLANNED | - |
+| V2-STR-03 | V2 | System Translation | Android selected-text translation via ACTION_PROCESS_TEXT (only in supporting apps) – owner req 2026-11-06 S5 | P1 | V1-STR-01 | PLANNED | - |
+| V2-STR-04 | V2 | System Translation | iOS selected text via Action Extension – evaluation only – owner req 2026-11-06 S5 | P3 | V2-STR-02 | PLANNED | - |
+| V2-STR-05 | V2 | System Translation | User-triggered clipboard translation (no background clipboard reading) – owner req 2026-11-06 S5 | P2 | V1-STR-01 | PLANNED | - |
+| V2-STR-06 | V2 | System Translation | URL/article import + translation (readability extraction, sanitising, no paywall bypass) – owner req 2026-11-06 S5 | P2 | V1-STR-01, V1-ENC-01, V1-SEC-02 | PLANNED | - |
+| V2-STR-07 | V2 | System Translation | Optional floating translation bubble (Android, overlay permission, off by default; not on iOS) – owner req 2026-11-06 S5 | P3 | V2-STR-05 | PLANNED | - |
+| V3-STR-01 | V3 | System Translation | Optional accessibility-based translation (Android; Play declaration + separate consent; never required) – owner req 2026-11-06 S5 | P3 | V2-STR-03 | PLANNED | - |
+| V3-STR-02 | V3 | System Translation | Advanced webpage translation with structure preservation – owner req 2026-11-06 S5 | P2 | V2-STR-06 | PLANNED | - |
+| V1-TTS-01 | V1 | Read Aloud | TtsEngine interface + Android system TTS adapter (Hindi/English, voice detection) – READ_ALOUD_TTS.md – owner req 2026-11-06 S5 | P1 | V1-ENC-03 | PLANNED | - |
+| V1-TTS-02 | V1 | Read Aloud | iOS native speech adapter (AVSpeechSynthesizer), evaluated independently – owner req 2026-11-06 S5 | P1 | V1-TTS-01 | PLANNED | - |
+| V1-TTS-03 | V1 | Read Aloud | Read original (L2→L1) or translation (L4→L3) only; refuse L0/unvalidated OCR/legacy text – owner req 2026-11-06 S5 | P0 | V1-LEG-03, V1-EDT-01 | PLANNED | - |
+| V1-TTS-04 | V1 | Read Aloud | Reading scopes: selection, paragraph, chapter, continuous; Hindi/English sentence chunking – owner req 2026-11-06 S5 | P1 | V1-TTS-01, V1-IMP-07 | PLANNED | - |
+| V1-TTS-05 | V1 | Read Aloud | Playback controls, voice, speed, pitch (per-language settings) – owner req 2026-11-06 S5 | P1 | V1-TTS-04 | PLANNED | - |
+| V1-TTS-06 | V1 | Read Aloud | Save/restore reading position (paragraph-id anchored) – owner req 2026-11-06 S5 | P1 | V1-STO-01, V1-TTS-04 | PLANNED | - |
+| V1-TTS-07 | V1 | Read Aloud | Background playback, media notification, audio focus/interruptions, lifecycle – owner req 2026-11-06 S5 | P1 | V1-TTS-05 | PLANNED | - |
+| V1-TTS-08 | V1 | Read Aloud | Secure BYOK AI TTS configuration architecture (no network in V1, no auto-paid) – owner req 2026-11-06 S5 | P2 | V1-AIP-02, V1-SEC-01, V1-SEC-03 | PLANNED | - |
+| V1-TTS-09 | V1 | Read Aloud | Mixed-script segments (Hindi + English words), digit policy – owner req 2026-11-06 S5 | P2 | V1-TTS-04, V1-TRP-02 | PLANNED | - |
+| V2-TTS-01 | V2 | Read Aloud | Real AI TTS provider integration (consent, cost shown, fallback only after asking) – owner req 2026-11-06 S5 | P1 | V1-TTS-08 | PLANNED | - |
+| V2-TTS-02 | V2 | Read Aloud | Provider-specific AI TTS adapters with declared capabilities – owner req 2026-11-06 S5 | P1 | V1-AIP-01 | PLANNED | - |
+| V2-TTS-03 | V2 | Read Aloud | Audio chunking, caching (hash+provider+voice+settings), resume – owner req 2026-11-06 S5 | P1 | V2-TTS-01, V1-TTS-06 | PLANNED | - |
+| V2-TTS-04 | V2 | Read Aloud | Sentence/word highlighting where reliable (grapheme-safe fallback) – owner req 2026-11-06 S5 | P2 | V1-TTS-04 | PLANNED | - |
+| V2-TTS-05 | V2 | Read Aloud | Audio export + My Recordings – owner req 2026-11-06 S5 | P2 | V2-TTS-03 | PLANNED | - |
+| V2-TTS-06 | V2 | Read Aloud | Explicit free/paid model and quota information, never auto-switch – owner req 2026-11-06 S5 | P1 | V1-AIP-01 | PLANNED | - |
+| V3-TTS-01 | V3 | Read Aloud | Bilingual listening – owner req 2026-11-06 S5 | P2 | V1-TTS-03, V2-TTS-03 | PLANNED | - |
+| V3-TTS-02 | V3 | Read Aloud | Multiple speakers/voices (character register) – owner req 2026-11-06 S5 | P3 | V2-TTS-02, V1-ENG-08 | PLANNED | - |
+| V3-TTS-03 | V3 | Read Aloud | Advanced voice customisation (pronunciation, SSML) – owner req 2026-11-06 S5 | P3 | V2-TTS-02 | PLANNED | - |
 
 > VERIFIED here means automated tests passed in GitHub Actions (run 42146771459, commit 529643f). No real-device testing yet.
