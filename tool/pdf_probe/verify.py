@@ -160,7 +160,16 @@ for c in cases['cases']:
         small.save(buf, 'PNG', optimize=True)
         print(f'PNGB64 {cid} {base64.b64encode(buf.getvalue()).decode()}')
 
+review_file = Path(__file__).with_name(f"{cases['engine'].replace('engine_a_dart_pdf', 'engine_a')}_visual_review.json")
+review = json.loads(review_file.read_text()) if review_file.exists() else {'cases': {}}
+for r in results:
+    v = review['cases'].get(r['id'])
+    if v:
+        r['visual'] = v['visual']
+        r['visual_why'] = v['why']
+
 report = {'engine': cases['engine'], 'raqm': features.check('raqm'), 'cases': results,
+          'visual_review': review.get('reviewed_by'),
           'note': 'visual = NEEDS_REVIEW: generation success is not visual correctness.'}
 (out / 'report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
 md = ['| case | gen | extract exact | extract w/o ZW | Hindi words | embedded | ToUnicode | no-glyph chars | outside page | visual |',
@@ -178,3 +187,7 @@ print('\n'.join(md))
 for r in results:
     if r.get('generated') and not r['extract_exact']:
         print('MISSING', r['id'], r['missing_in_extract'])
+        exp = norm_ws((out / 'expected' / f"{r['id']}.txt").read_text())
+        got = norm_ws((out / 'extracted' / f"{r['id']}.txt").read_text())
+        print('  expected:', ' '.join(f'{ord(c):04X}' for c in exp))
+        print('  got     :', ' '.join(f'{ord(c):04X}' for c in got))
