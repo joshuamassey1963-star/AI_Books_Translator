@@ -128,7 +128,10 @@ void main() {
     expect(footers, hasLength(3));
     expect(doc.headerFooter.any((c) => c.text.startsWith('Body')), isFalse);
     // Candidates are reported, not deleted: the text is still in the layout.
-    expect(doc.pages.first.paragraphs.any((p) => p.text == 'My Book Title'), isTrue);
+    expect(
+      doc.pages.first.paragraphs.any((p) => p.text == 'My Book Title'),
+      isTrue,
+    );
   });
 
   test('single page: bare page number is a candidate, header is not', () {

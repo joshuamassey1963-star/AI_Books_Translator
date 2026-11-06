@@ -129,10 +129,7 @@ class PdfLayoutAnalyzer {
         final minHeight = math.min(top - bottom, g.box.height);
         if (minHeight > 0 && overlap >= 0.5 * minHeight) {
           groups[i].add(g);
-          bands[i] = (
-            math.min(bottom, g.box.bottom),
-            math.max(top, g.box.top),
-          );
+          bands[i] = (math.min(bottom, g.box.bottom), math.max(top, g.box.top));
           placed = true;
           break;
         }
@@ -265,7 +262,10 @@ class PdfLayoutAnalyzer {
           lines[i - 1].box.bottom - lines[i].box.top,
     ];
     final medianGap = gaps.isEmpty ? medianHeight * 0.4 : _median(gaps);
-    final breakGap = math.max(medianGap * paragraphGapFactor, medianHeight * 0.6);
+    final breakGap = math.max(
+      medianGap * paragraphGapFactor,
+      medianHeight * 0.6,
+    );
     final paragraphs = <PdfParagraph>[];
     var current = <PdfLine>[lines.first];
     for (var i = 1; i < lines.length; i++) {

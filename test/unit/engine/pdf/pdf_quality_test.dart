@@ -58,7 +58,9 @@ void main() {
   });
 
   test('Latin-1 symbol soup (legacy font signal) never passes', () {
-    final report = gate.evaluate([textPage('\u00C3\u00C4\u00C5\u00C6 \u00A5\u00AE')]);
+    final report = gate.evaluate([
+      textPage('\u00C3\u00C4\u00C5\u00C6 \u00A5\u00AE'),
+    ]);
     expect(codes(report), contains(QualityIssueCode.suspiciousLatin1));
     expect(report.verdict, isNot(QualityVerdict.pass));
   });
@@ -74,7 +76,9 @@ void main() {
       encoding: 'Identity-H',
       mappingRisk: UnicodeMappingRisk.high,
     );
-    final report = gate.evaluate([textPage('Some text', fonts: [font])]);
+    final report = gate.evaluate([
+      textPage('Some text', fonts: [font]),
+    ]);
     expect(codes(report), contains(QualityIssueCode.highRiskFont));
     expect(report.score, 80);
     expect(report.verdict, QualityVerdict.warn);

@@ -183,7 +183,9 @@ class ExtractionQualityGate {
   (int, List<QualityIssue>) scorePage(PdfPageInfo page) {
     final issues = <QualityIssue>[];
     if (page.status.ocrRequired) {
-      issues.add(QualityIssue(QualityIssueCode.ocrRequired, page.pageNumber, 1));
+      issues.add(
+        QualityIssue(QualityIssueCode.ocrRequired, page.pageNumber, 1),
+      );
       return (0, issues);
     }
     final d = diagnostics.analyze(page);
@@ -195,12 +197,32 @@ class ExtractionQualityGate {
     }
 
     var score = 100.0;
-    score -= penalty(d.replacementChars, 400, 50, QualityIssueCode.replacementChars);
+    score -= penalty(
+      d.replacementChars,
+      400,
+      50,
+      QualityIssueCode.replacementChars,
+    );
     score -= penalty(d.controlChars, 400, 50, QualityIssueCode.controlChars);
-    score -= penalty(d.privateUseChars, 300, 50, QualityIssueCode.privateUseChars);
-    score -= penalty(d.duplicateGlyphs, 200, 25, QualityIssueCode.duplicateGlyphs);
+    score -= penalty(
+      d.privateUseChars,
+      300,
+      50,
+      QualityIssueCode.privateUseChars,
+    );
+    score -= penalty(
+      d.duplicateGlyphs,
+      200,
+      25,
+      QualityIssueCode.duplicateGlyphs,
+    );
     score -= penalty(d.ligatureChars, 50, 5, QualityIssueCode.ligatureChars);
-    score -= penalty(d.suspiciousLatin1, 150, 40, QualityIssueCode.suspiciousLatin1);
+    score -= penalty(
+      d.suspiciousLatin1,
+      150,
+      40,
+      QualityIssueCode.suspiciousLatin1,
+    );
     final high = page.fonts
         .where((f) => f.mappingRisk == UnicodeMappingRisk.high)
         .length;
@@ -208,12 +230,18 @@ class ExtractionQualityGate {
         .where((f) => f.mappingRisk == UnicodeMappingRisk.unknown)
         .length;
     if (high > 0) {
-      issues.add(QualityIssue(QualityIssueCode.highRiskFont, page.pageNumber, high));
+      issues.add(
+        QualityIssue(QualityIssueCode.highRiskFont, page.pageNumber, high),
+      );
       score -= 20;
     }
     if (unknown > 0) {
       issues.add(
-        QualityIssue(QualityIssueCode.unknownRiskFont, page.pageNumber, unknown),
+        QualityIssue(
+          QualityIssueCode.unknownRiskFont,
+          page.pageNumber,
+          unknown,
+        ),
       );
       score -= 5;
     }

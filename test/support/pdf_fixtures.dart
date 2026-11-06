@@ -298,7 +298,9 @@ Uint8List layoutPdf(List<List<PlacedText>> pages) {
   final kids = [for (var i = 0; i < pages.length; i++) '${4 + 2 * i} 0 R'];
   final objects = <PdfObj>[
     PdfObj('<< /Type /Catalog /Pages 2 0 R >>'),
-    PdfObj('<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${pages.length} >>'),
+    PdfObj(
+      '<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${pages.length} >>',
+    ),
     PdfObj(_helvetica),
   ];
   for (var i = 0; i < pages.length; i++) {

@@ -43,12 +43,10 @@ void main() {
     expect(page.glyphs, isNotEmpty);
     final layout = analyzer.analyzePage(page);
     expect(layout.columnCount, 2);
-    expect([for (final l in layout.lines) l.text], [
-      'Left one',
-      'Left two',
-      'Right one',
-      'Right two',
-    ]);
+    expect(
+      [for (final l in layout.lines) l.text],
+      ['Left one', 'Left two', 'Right one', 'Right two'],
+    );
   });
 
   test('header and page numbers repeat across pages → candidates', () async {
