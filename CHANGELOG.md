@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 8 / DEV-01, 2026-11-06)
+- Debug-only Developer Tests screen (More → Developer Tests): text encoding inspection, Kruti Dev 010 conversion with copy, TXT parser diagnostics.
+- CI: debug APK artifact named `ai-book-translator-<version>-debug-<sha>.apk`, size and SHA-256 in the run summary, kept 14 days.
 ### Added (Session 7 / M2b-2a, 2026-11-06)
 - Kruti Dev 010 → Unicode converter (port of SIL KrutiDev010.map, MIT) behind `LegacyFontRegistry` (confirmed font only, no double conversion, warnings for unmapped characters).
 ### Added (Session 6 / M2b-1c, 2026-11-06)

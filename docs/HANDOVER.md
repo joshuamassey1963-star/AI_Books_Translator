@@ -57,6 +57,15 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
 - Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
 
+## Session 8 (PR #4 merge + DEV-01 Developer Tests screen)
+- A: PR #4 merged into develop, merge commit 721fe4f (head 99d64eb; runs 42175449447 push + 42175456385 PR green, 130/130).
+- B/C: branch `feature/dev-test-screen`. Code: `lib/features/dev_tests/dev_diagnostics.dart` (pure helpers), `dev_tests_screen.dart` (3 tabs); route `/more/dev-tests` and More row guarded by `kDebugMode`. CI: APK named with version+sha, 14-day retention.
+- Commits: 19206c0 feat → f3f4e14 format bot → 0026d3c ci → aae6c9e fix (field named `override` shadowed the annotation; run 42176812211 failed on analyze).
+- CI run 42176973417 on aae6c9e: analyze ✅ 142/142 ✅ Android ✅ iOS ✅. Artifact `app-debug-apk` id 13483862416 (zip 97,614,530 bytes, expires 2026-11-20 12:27 IST) contains `ai-book-translator-0.1.0-1-debug-aae6c9e.apk` (186,534,786 bytes, universal debug, SHA-256 2acca946…f349).
+- Working: encoding inspection (typed text → UTF-8/UTF-8 BOM/UTF-16 LE/BE BOM/UTF-16 LE no BOM/invalid UTF-8 bytes, override, status/issues, original vs NFC, lossy preview), Kruti Dev 010 (3 test examples, font choice + confirm, refusal, warnings, copy), TXT parser (same byte samples, format/chapters/paragraphs/SHA-256/errors).
+- Not done (shown disabled): file picker for TXT/EPUB/DOCX/PDF, PDF page count/quality. Not checked on a real phone yet.
+- Owner phone checklist: open More → Developer Tests; Encoding: Inspect (expect decoded), choose "UTF-16 LE without BOM" (expect needsConfirmation), set override UTF-16 LE (expect decoded), "Invalid UTF-8" (expect refused + preview); Kruti Dev: tap Hkkjr, Convert without tick (expect fontNotConfirmed), tick + Convert (expect भारत), Copy; choose Chanakya + tick (expect unsupportedFont); type Devanagari (expect alreadyUnicode); TXT: Parse (expect parsed, 2 chapters).
+
 ## Next exact task – M2b-2b (only after owner/tech-lead go; review/merge PR #4 first)
 - Chanakya / Walkman-Chanakya905 table; needs owner sample documents kept outside git (RC-001).
 

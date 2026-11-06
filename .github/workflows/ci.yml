@@ -62,12 +62,30 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
       - run: flutter pub get
+      # Universal debug APK (all ABIs, incl. arm64-v8a). Debug-signed only.
       - run: flutter build apk --debug
+      - name: Name APK with version and commit
+        run: |
+          VERSION=$(grep -E '^version:' pubspec.yaml | awk '{print $2}' | tr '+' '-')
+          SHORT=${GITHUB_SHA::7}
+          NAME="ai-book-translator-${VERSION}-debug-${SHORT}.apk"
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-debug.apk "dist/$NAME"
+          echo "APK_NAME=$NAME" >> "$GITHUB_ENV"
+          ls -l dist
+          sha256sum "dist/$NAME"
+          {
+            echo "### Debug APK"
+            echo "- File: \`$NAME\`"
+            echo "- Size: $(stat -c %s "dist/$NAME") bytes"
+            echo "- SHA-256: \`$(sha256sum "dist/$NAME" | cut -d' ' -f1)\`"
+            echo "- Commit: $GITHUB_SHA"
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         with:
           name: app-debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
-          retention-days: 7
+          path: dist/${{ env.APK_NAME }}
+          retention-days: 14
 
   build-ios-unsigned:
     name: iOS build (no code signing)

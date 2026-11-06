@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,8 +15,19 @@ class MoreScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('More')),
       body: ListView.builder(
-        itemCount: moreScreens.length,
+        itemCount: moreScreens.length + (kDebugMode ? 1 : 0),
         itemBuilder: (context, index) {
+          if (index == moreScreens.length) {
+            // Debug builds only (DEV-01); compiled out of release builds.
+            return ListTile(
+              key: const ValueKey('more-dev-tests'),
+              leading: const Icon(Icons.bug_report_outlined),
+              title: const Text('Developer Tests'),
+              subtitle: const Text('Debug build only · engine diagnostics'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.go(AppRoutes.devTests),
+            );
+          }
           final screen = moreScreens[index];
           return ListTile(
             key: ValueKey('more-${screen.id}'),
