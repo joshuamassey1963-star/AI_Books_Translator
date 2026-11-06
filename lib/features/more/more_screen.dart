@@ -1,0 +1,34 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../app/router.dart';
+import '../../app/screen_registry.dart';
+
+/// Lists workspace tools, settings and help. Every row opens a real route;
+/// each row shows the screen's version and honest status.
+class MoreScreen extends StatelessWidget {
+  const MoreScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('More')),
+      body: ListView.builder(
+        itemCount: moreScreens.length,
+        itemBuilder: (context, index) {
+          final screen = moreScreens[index];
+          return ListTile(
+            key: ValueKey('more-${screen.id}'),
+            leading: Icon(screen.icon),
+            title: Text(screen.title),
+            subtitle: Text(
+              '${screen.version.label} · ${screen.status.userLabel}',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.go(AppRoutes.moreSub(screen)),
+          );
+        },
+      ),
+    );
+  }
+}

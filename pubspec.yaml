@@ -1,0 +1,28 @@
+name: ai_book_translator
+description: >-
+  Cross-platform (Android/iOS) AI book translator. English to Hindi first,
+  architecture ready for more languages.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
+
+# Session 1 keeps dependencies minimal on purpose. Each new dependency is
+# added in the milestone that needs it and recorded in docs/DEPENDENCIES.md.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.4.3
+  go_router: ^18.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
