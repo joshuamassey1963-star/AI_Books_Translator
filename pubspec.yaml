@@ -3,7 +3,7 @@ description: >-
   Cross-platform (Android/iOS) AI book translator. English to Hindi first,
   architecture ready for more languages.
 publish_to: 'none'
-version: 0.1.0+1
+version: 0.1.1+2
 
 environment:
   sdk: ^3.13.0
@@ -25,6 +25,9 @@ dependencies:
   pdfrx_engine: ^0.9.1
   # M2b-1c Unicode NFC (MIT, Unicode 18 data, see docs/DEPENDENCIES.md)
   unorm_dart: ^0.3.3
+  # M-DEV-02a scoped system file picker (BSD-3, flutter.dev) and build info (BSD-3)
+  file_selector: ^1.1.0
+  package_info_plus: ^10.2.2
 
 dev_dependencies:
   flutter_test:

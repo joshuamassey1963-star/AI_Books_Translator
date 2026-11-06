@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import '../engine/legacy/legacy_font_converter.dart';
 import '../engine/parser/book_parser.dart';
+import '../engine/parser/import_limits.dart';
 import '../engine/parser/parse_exception.dart';
 import '../engine/text/text_encoding.dart';
 import '../engine/text/unicode_normalizer.dart';
@@ -145,4 +146,81 @@ ParseDiagnostics parseForDiagnostics(
   } on ParseException catch (e) {
     return ParseDiagnostics(byteCount: bytes.length, error: e);
   }
+}
+
+/// Max characters rendered in the TXT preview (bounded UI, M-DEV-02a).
+const devPreviewMaxChars = 3000;
+
+/// Diagnostics for a real TXT file picked by the user (M-DEV-02a).
+class TxtFileDiagnostics {
+  const TxtFileDiagnostics({
+    required this.fileName,
+    required this.byteCount,
+    required this.parse,
+    this.encoding,
+    this.preview,
+    this.previewTruncated = false,
+  });
+
+  final String fileName;
+  final int byteCount;
+
+  /// Detector report; `null` when the file was refused before reading.
+  final EncodingReport? encoding;
+  final ParseDiagnostics parse;
+
+  /// First [devPreviewMaxChars] characters of the decoded original text.
+  final String? preview;
+  final bool previewTruncated;
+
+  bool get needsEncodingChoice =>
+      encoding?.status == EncodingStatus.needsConfirmation;
+}
+
+/// Size check done before any bytes are read.
+ParseException? checkPickedSize(int size, {ImportLimits limits = const ImportLimits()}) {
+  if (size <= 0) return const ParseException(ParseErrorCode.empty);
+  if (size > limits.maxFileBytes) {
+    return ParseException(ParseErrorCode.tooLarge, '$size bytes');
+  }
+  return null;
+}
+
+TxtFileDiagnostics refusedBeforeRead(String fileName, int size, ParseException e) =>
+    TxtFileDiagnostics(
+      fileName: fileName,
+      byteCount: size,
+      parse: ParseDiagnostics(byteCount: size, error: e),
+    );
+
+/// Runs the encoding detector and the real [BookParser] on [bytes].
+/// [bytes] are never modified.
+TxtFileDiagnostics inspectTxtFile(
+  String fileName,
+  Uint8List bytes, {
+  TextEncoding? encoding,
+}) {
+  final report = const EncodingDetector().detect(bytes, override: encoding);
+  final parse = parseForDiagnostics(
+    bytes,
+    fileName: fileName,
+    textEncoding: encoding,
+  );
+  final text = report.status == EncodingStatus.decoded ? report.text : null;
+  final truncated = text != null && text.length > devPreviewMaxChars;
+  return TxtFileDiagnostics(
+    fileName: fileName,
+    byteCount: bytes.length,
+    encoding: report,
+    parse: parse,
+    preview: truncated ? text.substring(0, devPreviewMaxChars) : text,
+    previewTruncated: truncated,
+  );
+}
+
+/// A picked file kept in memory for re-parsing with a chosen encoding.
+class LoadedTxt {
+  const LoadedTxt(this.name, this.bytes);
+  final String name;
+  final Uint8List bytes;
 }

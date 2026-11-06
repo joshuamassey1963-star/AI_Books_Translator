@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/router.dart';
 import '../../app/screen_registry.dart';
+import 'build_info.dart';
 
 /// Lists workspace tools, settings and help. Every row opens a real route;
 /// each row shows the screen's version and honest status.
@@ -15,8 +16,12 @@ class MoreScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('More')),
       body: ListView.builder(
-        itemCount: moreScreens.length + (kDebugMode ? 1 : 0),
+        itemCount: moreScreens.length + (kDebugMode ? 2 : 1),
         itemBuilder: (context, index) {
+          // Last row: build information (all builds).
+          if (index == moreScreens.length + (kDebugMode ? 1 : 0)) {
+            return const BuildInfoTile();
+          }
           if (index == moreScreens.length) {
             // Debug builds only (DEV-01); compiled out of release builds.
             return ListTile(

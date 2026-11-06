@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../engine/legacy/legacy_font_converter.dart';
+import '../engine/parser/parse_exception.dart';
 import '../engine/text/text_encoding.dart';
 import 'dev_diagnostics.dart';
+import 'txt_file_picker.dart';
 
 /// Developer Tests (DEV-01). Debug builds only: the route and the More
 /// entry are guarded by `kDebugMode`, so release builds never include it.
@@ -339,14 +342,203 @@ class _KrutiTabState extends State<_KrutiTab> {
   }
 }
 
-class _ParserTab extends StatefulWidget {
+class _ParserTab extends ConsumerStatefulWidget {
   const _ParserTab();
 
   @override
-  State<_ParserTab> createState() => _ParserTabState();
+  ConsumerState<_ParserTab> createState() => _ParserTabState();
 }
 
-class _ParserTabState extends State<_ParserTab> {
+class _ParserTabState extends ConsumerState<_ParserTab> {
+  // Real file (M-DEV-02a). Bytes stay in memory only while this tab lives.
+  bool _picking = false;
+  String? _pickMessage;
+  LoadedTxt? _loaded;
+  TxtFileDiagnostics? _file;
+
+  Future<void> _chooseFile() async {
+    setState(() {
+      _picking = true;
+      _pickMessage = null;
+    });
+    try {
+      final picked = await ref.read(txtFilePickerProvider).pickTxt();
+      if (!mounted) return;
+      if (picked == null) {
+        setState(() => _pickMessage = 'No file chosen (cancelled).');
+        return;
+      }
+      final sizeError = checkPickedSize(picked.size);
+      if (sizeError != null) {
+        setState(() {
+          _loaded = null;
+          _file = refusedBeforeRead(picked.name, picked.size, sizeError);
+        });
+        return;
+      }
+      final bytes = await picked.readBytes();
+      if (!mounted) return;
+      // The plugin may report a different length than it delivers; recheck.
+      final readError = checkPickedSize(bytes.length);
+      setState(() {
+        _loaded = readError == null ? LoadedTxt(picked.name, bytes) : null;
+        _file = readError == null
+            ? inspectTxtFile(picked.name, bytes)
+            : refusedBeforeRead(picked.name, bytes.length, readError);
+      });
+    } catch (e) {
+      if (!mounted) return;
+      // Never include file contents in the message.
+      setState(
+        () => _pickMessage =
+            'Could not open the file (${e.runtimeType}). Try another file.',
+      );
+    } finally {
+      if (mounted) setState(() => _picking = false);
+    }
+  }
+
+  void _reparse(TextEncoding? encoding) {
+    final loaded = _loaded;
+    if (loaded == null) return;
+    setState(
+      () => _file = inspectTxtFile(
+        loaded.name,
+        loaded.bytes,
+        encoding: encoding,
+      ),
+    );
+  }
+
+  List<Widget> _fileSection() {
+    final f = _file;
+    final rep = f?.encoding;
+    final p = f?.parse;
+    return [
+      const Text(
+        'Real TXT file',
+        style: TextStyle(fontWeight: FontWeight.w600),
+      ),
+      const SizedBox(height: 4),
+      FilledButton.icon(
+        key: const ValueKey('txt-choose-file'),
+        icon: const Icon(Icons.file_open_outlined),
+        label: Text(_picking ? 'Opening…' : 'Choose TXT File'),
+        onPressed: _picking ? null : _chooseFile,
+      ),
+      if (_pickMessage != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Text(_pickMessage!, key: const ValueKey('txt-pick-message')),
+        ),
+      if (f != null && p != null) ...[
+        const SizedBox(height: 8),
+        _row('File', f.fileName, key: const ValueKey('file-name')),
+        _row('Size', '${f.byteCount} bytes', key: const ValueKey('file-size')),
+        _row(
+          'Encoding',
+          rep == null
+              ? '— (not read)'
+              : '${rep.encoding?.label ?? 'none'} · ${rep.status.name}'
+                    '${rep.source == null ? '' : ' · ${rep.source!.name}'}'
+                    '${rep.hadBom ? ' · BOM' : ''}',
+          key: const ValueKey('file-encoding'),
+        ),
+        if (rep != null && rep.issues.isNotEmpty)
+          _row('Encoding issues', rep.issues.join(', ')),
+        if (f.needsEncodingChoice) ...[
+          const Text(
+            'This looks like UTF-16 without a byte-order mark. '
+            'Choose the encoding to continue:',
+          ),
+          Wrap(
+            spacing: 8,
+            children: [
+              OutlinedButton(
+                key: const ValueKey('file-confirm-utf16le'),
+                onPressed: () => _reparse(TextEncoding.utf16le),
+                child: const Text('UTF-16 LE'),
+              ),
+              OutlinedButton(
+                key: const ValueKey('file-confirm-utf16be'),
+                onPressed: () => _reparse(TextEncoding.utf16be),
+                child: const Text('UTF-16 BE'),
+              ),
+            ],
+          ),
+        ],
+        if (p.ok) ...[
+          _row('Status', 'parsed', key: const ValueKey('file-status')),
+          _row('Chapters', '${p.chapters}', key: const ValueKey('file-chapters')),
+          _row(
+            'Paragraphs',
+            '${p.paragraphs}',
+            key: const ValueKey('file-paragraphs'),
+          ),
+          _row('SHA-256', p.sha256!, key: const ValueKey('file-sha')),
+          _row('Warnings', p.warnings.isEmpty ? 'none' : p.warnings.join(', ')),
+        ] else ...[
+          _row(
+            'Status',
+            'refused: ${p.error!.code.name}',
+            key: const ValueKey('file-status'),
+          ),
+          _row('Why', p.error!.code.userMessage),
+          _row('What to do', _advice(p.error!.code)),
+        ],
+        if (f.preview != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            f.previewTruncated
+                ? 'Preview (first $devPreviewMaxChars characters)'
+                : 'Preview (whole text)',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          Container(
+            height: 220,
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+            padding: const EdgeInsets.all(8),
+            child: SingleChildScrollView(
+              child: SelectableText(
+                f.preview!,
+                key: const ValueKey('file-preview'),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: const ValueKey('file-copy-preview'),
+              icon: const Icon(Icons.copy),
+              label: const Text('Copy preview'),
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: f.preview!));
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Preview copied')));
+              },
+            ),
+          ),
+        ],
+      ],
+      const Divider(height: 32),
+      const Text(
+        'Synthetic sample',
+        style: TextStyle(fontWeight: FontWeight.w600),
+      ),
+    ];
+  }
+
+  static String _advice(ParseErrorCode code) => switch (code) {
+    ParseErrorCode.empty => 'Choose a TXT file that contains text.',
+    ParseErrorCode.tooLarge => 'Choose a smaller file (limit 200 MB).',
+    ParseErrorCode.invalidEncoding =>
+      'Save the file as UTF-8 (or UTF-16 with BOM) and try again.',
+    ParseErrorCode.encodingNeedsConfirmation =>
+      'Pick UTF-16 LE or UTF-16 BE above.',
+    _ => 'Try another TXT file.',
+  };
+
   final _input = TextEditingController(
     text: 'Chapter 1\n\nभारत एक देश है।\n\nChapter 2\n\nSecond part.',
   );
@@ -367,6 +559,7 @@ class _ParserTabState extends State<_ParserTab> {
       padding: const EdgeInsets.all(16),
       children: [
         _note,
+        ..._fileSection(),
         _SampleControls(
           controller: _input,
           sample: _sample,
@@ -419,8 +612,8 @@ class _ParserTabState extends State<_ParserTab> {
           key: ValueKey('dev-file-picker-disabled'),
           enabled: false,
           leading: Icon(Icons.folder_off_outlined),
-          title: Text('Pick a TXT / EPUB / DOCX / PDF file'),
-          subtitle: Text('Needs a scoped file picker – future checklist'),
+          title: Text('Pick an EPUB / DOCX / PDF file'),
+          subtitle: Text('Only TXT files are supported in this build'),
         ),
         const ListTile(
           enabled: false,
