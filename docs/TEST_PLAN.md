@@ -26,6 +26,12 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - TTS: fake-engine contract tests; `TextSourceSelector` refuses L0/unvalidated OCR/legacy; sentence splitter (danda, abbreviations, numbers, mixed script) with "chunks concatenate to source"; position store + edit anchoring; audio-focus/interruption state machine; log scrubber proves keys never logged; no auto-switch to paid.
 - Manual device checklists: Android Hindi + English voices, call/alarm/Bluetooth interruptions, screen off 30 min; iOS speech voices.
 
+## Developer Tests screen (DEV-01, debug builds only)
+- Unit: `test/unit/dev_tests/dev_diagnostics_test.dart` – UTF-8/UTF-16 BOM decode, BOM-less UTF-16 needs confirmation + override, invalid UTF-8 refused, NFC shown separately, Kruti Dev examples, wrong font refused, TXT parse + error codes.
+- Widget: `test/widget/dev_tests_screen_test.dart` – More entry opens screen, encoding status, Kruti Dev refusal then conversion, TXT parse, disabled file-picker item.
+- Manual (owner, phone): install CI debug APK → More → Developer Tests → checklist in HANDOVER.md.
+- Release exclusion: route and More row are behind `kDebugMode` (compiled out of release); verify when release builds exist (D-013).
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 
