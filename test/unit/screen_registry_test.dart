@@ -76,10 +76,13 @@ void main() {
     });
 
     test('codes match the Feature Matrix vocabulary', () {
-      expect(
-        FeatureStatus.values.map((s) => s.code),
-        ['PLANNED', 'IN PROGRESS', 'IMPLEMENTED', 'VERIFIED', 'BLOCKED'],
-      );
+      expect(FeatureStatus.values.map((s) => s.code), [
+        'PLANNED',
+        'IN PROGRESS',
+        'IMPLEMENTED',
+        'VERIFIED',
+        'BLOCKED',
+      ]);
     });
   });
 }

@@ -29,50 +29,60 @@ GoRouter buildRouter({String initialLocation = AppRoutes.home}) {
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),
         branches: [
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.home,
-              builder: (_, _) => const HomeScreen(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.library,
-              builder: (_, _) => PlannedScreen(screen: bottomTabs[1]),
-              routes: [
-                GoRoute(
-                  path: bookDetailsScreen.path,
-                  builder: (_, _) =>
-                      const PlannedScreen(screen: bookDetailsScreen),
-                ),
-              ],
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.translate,
-              builder: (_, _) => PlannedScreen(screen: bottomTabs[2]),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.tasks,
-              builder: (_, _) => PlannedScreen(screen: bottomTabs[3]),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.more,
-              builder: (_, _) => const MoreScreen(),
-              routes: [
-                for (final screen in moreScreens)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (_, _) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.library,
+                builder: (_, _) => PlannedScreen(screen: bottomTabs[1]),
+                routes: [
                   GoRoute(
-                    path: screen.path,
-                    builder: (_, _) => PlannedScreen(screen: screen),
+                    path: bookDetailsScreen.path,
+                    builder: (_, _) =>
+                        const PlannedScreen(screen: bookDetailsScreen),
                   ),
-              ],
-            ),
-          ]),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.translate,
+                builder: (_, _) => PlannedScreen(screen: bottomTabs[2]),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.tasks,
+                builder: (_, _) => PlannedScreen(screen: bottomTabs[3]),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.more,
+                builder: (_, _) => const MoreScreen(),
+                routes: [
+                  for (final screen in moreScreens)
+                    GoRoute(
+                      path: screen.path,
+                      builder: (_, _) => PlannedScreen(screen: screen),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ],
       ),
     ],

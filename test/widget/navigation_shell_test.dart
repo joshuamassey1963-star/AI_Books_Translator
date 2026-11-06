@@ -26,10 +26,13 @@ void main() {
     }
   });
 
-  testWidgets('each planned tab shows a Not-available status, no buttons',
-      (tester) async {
+  testWidgets('each planned tab shows a Not-available status, no buttons', (
+    tester,
+  ) async {
     await _pumpApp(tester);
-    for (final tab in bottomTabs.where((t) => t.title != 'Home' && t.title != 'More')) {
+    for (final tab in bottomTabs.where(
+      (t) => t.title != 'Home' && t.title != 'More',
+    )) {
       await tester.tap(find.byKey(ValueKey('tab-${tab.id}')));
       await tester.pumpAndSettle();
       expect(find.widgetWithText(AppBar, tab.title), findsOneWidget);
@@ -50,12 +53,18 @@ void main() {
 
     for (final screen in moreScreens) {
       final row = find.byKey(ValueKey('more-${screen.id}'));
-      await tester.scrollUntilVisible(row, 100,
-          scrollable: find.byType(Scrollable).first);
+      await tester.scrollUntilVisible(
+        row,
+        100,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.tap(row);
       await tester.pumpAndSettle();
-      expect(find.widgetWithText(AppBar, screen.title), findsOneWidget,
-          reason: screen.id);
+      expect(
+        find.widgetWithText(AppBar, screen.title),
+        findsOneWidget,
+        reason: screen.id,
+      );
       expect(find.byKey(const ValueKey('planned-status')), findsOneWidget);
       // Back to the More list.
       await tester.tap(find.byType(BackButton));
@@ -70,7 +79,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(ValueKey('more-${moreScreens.first.id}')));
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(AppBar, moreScreens.first.title), findsOneWidget);
+    expect(
+      find.widgetWithText(AppBar, moreScreens.first.title),
+      findsOneWidget,
+    );
 
     await tester.tap(find.byKey(const ValueKey('tab-SCR-HOME')));
     await tester.pumpAndSettle();
@@ -78,11 +90,15 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('tab-SCR-MORE')));
     await tester.pumpAndSettle();
-    expect(find.widgetWithText(AppBar, moreScreens.first.title), findsOneWidget);
+    expect(
+      find.widgetWithText(AppBar, moreScreens.first.title),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Book Details route resolves to its planned screen',
-      (tester) async {
+  testWidgets('Book Details route resolves to its planned screen', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
