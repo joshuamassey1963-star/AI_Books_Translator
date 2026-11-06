@@ -31,12 +31,11 @@ class _FakePicker implements TxtFilePicker {
   }
 }
 
-PickedTxtFile _file(String name, Uint8List bytes, {int? size}) =>
-    PickedTxtFile(
-      name: name,
-      size: size ?? bytes.length,
-      readBytes: () async => bytes,
-    );
+PickedTxtFile _file(String name, Uint8List bytes, {int? size}) => PickedTxtFile(
+  name: name,
+  size: size ?? bytes.length,
+  readBytes: () async => bytes,
+);
 
 Future<void> _open(WidgetTester tester, TxtFilePicker picker) async {
   tester.view.physicalSize = const Size(900, 4000);
@@ -94,10 +93,7 @@ void main() {
         _file('n.txt', SampleBytes.utf16leNoBom.encode('Hello world text.')),
       ),
     );
-    expect(
-      _text(tester, 'file-status'),
-      'refused: encodingNeedsConfirmation',
-    );
+    expect(_text(tester, 'file-status'), 'refused: encodingNeedsConfirmation');
     await tester.tap(find.byKey(const ValueKey('file-confirm-utf16le')));
     await tester.pumpAndSettle();
     expect(_text(tester, 'file-status'), 'parsed');
@@ -145,17 +141,13 @@ void main() {
   testWidgets('picker failure shows a recoverable message', (tester) async {
     await _open(tester, _FakePicker(null, fail: true));
     expect(
-      tester
-          .widget<Text>(find.byKey(const ValueKey('txt-pick-message')))
-          .data,
+      tester.widget<Text>(find.byKey(const ValueKey('txt-pick-message'))).data,
       contains('Could not open the file'),
     );
     expect(find.text('Choose TXT File'), findsOneWidget);
   });
 
-  testWidgets('More shows build information from the package', (
-    tester,
-  ) async {
+  testWidgets('More shows build information from the package', (tester) async {
     PackageInfo.setMockInitialValues(
       appName: 'AI Book Translator',
       packageName: 'test',

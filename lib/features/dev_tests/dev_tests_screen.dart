@@ -402,11 +402,8 @@ class _ParserTabState extends ConsumerState<_ParserTab> {
     final loaded = _loaded;
     if (loaded == null) return;
     setState(
-      () => _file = inspectTxtFile(
-        loaded.name,
-        loaded.bytes,
-        encoding: encoding,
-      ),
+      () =>
+          _file = inspectTxtFile(loaded.name, loaded.bytes, encoding: encoding),
     );
   }
 
@@ -469,7 +466,11 @@ class _ParserTabState extends ConsumerState<_ParserTab> {
         ],
         if (p.ok) ...[
           _row('Status', 'parsed', key: const ValueKey('file-status')),
-          _row('Chapters', '${p.chapters}', key: const ValueKey('file-chapters')),
+          _row(
+            'Chapters',
+            '${p.chapters}',
+            key: const ValueKey('file-chapters'),
+          ),
           _row(
             'Paragraphs',
             '${p.paragraphs}',

@@ -178,7 +178,10 @@ class TxtFileDiagnostics {
 }
 
 /// Size check done before any bytes are read.
-ParseException? checkPickedSize(int size, {ImportLimits limits = const ImportLimits()}) {
+ParseException? checkPickedSize(
+  int size, {
+  ImportLimits limits = const ImportLimits(),
+}) {
   if (size <= 0) return const ParseException(ParseErrorCode.empty);
   if (size > limits.maxFileBytes) {
     return ParseException(ParseErrorCode.tooLarge, '$size bytes');
@@ -186,12 +189,15 @@ ParseException? checkPickedSize(int size, {ImportLimits limits = const ImportLim
   return null;
 }
 
-TxtFileDiagnostics refusedBeforeRead(String fileName, int size, ParseException e) =>
-    TxtFileDiagnostics(
-      fileName: fileName,
-      byteCount: size,
-      parse: ParseDiagnostics(byteCount: size, error: e),
-    );
+TxtFileDiagnostics refusedBeforeRead(
+  String fileName,
+  int size,
+  ParseException e,
+) => TxtFileDiagnostics(
+  fileName: fileName,
+  byteCount: size,
+  parse: ParseDiagnostics(byteCount: size, error: e),
+);
 
 /// Runs the encoding detector and the real [BookParser] on [bytes].
 /// [bytes] are never modified.

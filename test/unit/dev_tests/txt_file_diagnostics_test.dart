@@ -8,7 +8,8 @@ import 'package:ai_book_translator/features/engine/text/text_encoding.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const mixed = 'Chapter 1\n\nभारत एक देश है। India has 28 states.\n\n'
+  const mixed =
+      'Chapter 1\n\nभारत एक देश है। India has 28 states.\n\n'
       'Chapter 2\n\nदूसरा भाग। Second part.';
 
   group('M-DEV-02a TXT file diagnostics', () {
@@ -93,9 +94,8 @@ void main() {
   });
 
   test('Android manifest requests no storage permissions', () {
-    final manifest = File(
-      'android/app/src/main/AndroidManifest.xml',
-    ).readAsStringSync();
+    final manifest = File('android/app/src/main/AndroidManifest.xml')
+        .readAsStringSync();
     for (final p in [
       'READ_EXTERNAL_STORAGE',
       'WRITE_EXTERNAL_STORAGE',
