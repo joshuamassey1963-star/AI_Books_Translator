@@ -17,6 +17,9 @@ const cases = {
   'c01_kitab': 'C01 किताब: i-matra reordering',
   'c02_kshetra': 'C02 क्षेत्र: conjunct ligatures + zero-width e-matra',
   'c03_rashtra_mixed': 'C03 राष्ट्र धर्म India 123: conjuncts, reph, two fonts',
+  'c04_zwj': 'C04 क्\u200Dष: virama + ZWJ (half form)',
+  'c05_zwnj': 'C05 क्\u200Cष: virama + ZWNJ (explicit virama, no conjunct)',
+  'c06_composite': 'C06 आज: composite TrueType glyph uni0906',
 };
 
 void main() {
@@ -99,6 +102,19 @@ void main() {
           '${e.value} – hb-subset retain-gids fonts',
           expected,
           const GlyphPdfWriter().write(run: run, fonts: subFonts),
+          extra: {
+            'fonts': [for (final f in subFonts) f.bytes.length],
+          },
+        );
+        emit(
+          '${e.key}_word_subset',
+          '${e.value} – default Engine C: word /ActualText + strict ToUnicode + subset fonts',
+          expected,
+          const GlyphPdfWriter().write(
+            run: run,
+            fonts: subFonts,
+            scope: ActualTextScope.word,
+          ),
           extra: {
             'fonts': [for (final f in subFonts) f.bytes.length],
           },

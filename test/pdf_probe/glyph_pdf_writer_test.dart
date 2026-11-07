@@ -43,6 +43,44 @@ void main() {
     }
   });
 
+  test('C04/C05/C06: ZWJ, ZWNJ and composite fixtures (M2b-3b-2c-2)', () {
+    HbFixture load(String c) => HbFixture.load('$dir/$c.hb.json');
+    String txt(String c) => File('$dir/$c.txt').readAsStringSync();
+    expect(cps(txt('c04_zwj')), '0915 094D 200D 0937');
+    expect(cps(txt('c05_zwnj')), '0915 094D 200C 0937');
+    expect(cps(txt('c06_composite')), '0906 091C');
+    for (final c in ['c04_zwj', 'c05_zwnj', 'c06_composite']) {
+      final f = load(c);
+      expect(f.text, txt(c), reason: 'source code points unchanged: $c');
+      final run = f.run();
+      final content = writer.contentStream(run, ActualTextScope.word);
+      expect(checkActualText(content, txt(c)), isEmpty, reason: c);
+      // Default-ignorables are never dropped from /ActualText.
+      final at = pdfUtf16BeHex(txt(c));
+      expect(content.contains(at), isTrue, reason: c);
+    }
+    // ZWJ: half form uni0915094D (gid 235) + zero-width glyph for ZWJ.
+    final zwj = load('c04_zwj').run().clusters();
+    expect(zwj.map((c) => c.text).toList(), ['क्\u200D', 'ष']);
+    expect(zwj.first.glyphs.map((g) => g.glyphId).toList(), [235, 3]);
+    expect(zwj.first.glyphs.last.xAdvance, 0);
+    // ZWNJ: full क + visible virama (gid 106, negative x offset) + ZWNJ.
+    final zwnj = load('c05_zwnj').run().clusters();
+    expect(zwnj.map((c) => c.text).toList(), ['क्', '\u200C', 'ष']);
+    expect(zwnj.first.glyphs.map((g) => g.glyphId).toList(), [57, 106]);
+    expect(zwnj.first.glyphs.last.xOffset, -293);
+    // Composite: uni0906 (gid 6) = uni0905 (gid 5) + uni093E (gid 31),
+    // verified with fontTools when the fixture was made.
+    final comp = load('c06_composite');
+    expect(comp.run().glyphs.map((g) => g.glyphId).toList(), [6, 64]);
+    final info = (comp.font(0)['composites']! as List).single as Map;
+    expect(info['gid'], 6);
+    expect([for (final k in info['components']! as List) (k as Map)['gid']], [
+      5,
+      31,
+    ]);
+  });
+
   test('C01: i-matra glyph first, text stays logical', () {
     final clusters = fx['c01_kitab']!.run().clusters();
     expect(clusters.map((c) => c.text).toList(), ['कि', 'ता', 'ब']);
