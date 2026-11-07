@@ -143,7 +143,7 @@ def main():
     (out / 'expected').mkdir(parents=True, exist_ok=True)
     gen_path = out / 'generation.json'
     gen = json.loads(gen_path.read_text()) if gen_path.exists() else {'engine': 'engine_c_hb_actualtext', 'cases': [], 'generation': []}
-    for j in sorted(hb_dir.glob('*.hb.json')):
+    for j in sorted(hb_dir.glob('c0[1-3]_*.hb.json')):  # experiment stays on C01–C03 (D-031)
         fx = json.loads(j.read_text())
         fonts = {f['index']: f for f in fx['fonts']}
         def fb(i):

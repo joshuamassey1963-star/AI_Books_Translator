@@ -61,6 +61,9 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - CI: pdfjs-dist 4.10.38 + 6.5.438 getTextContent (+ includeMarkedContent dump), real Firefox viewer via Selenium (copy handler + find, screenshots), probe experiments (`cluster_cid_experiment.py`), regression gate `interop_expectations.json` (fails CI if an EXACT extractor regresses).
 - Manual: `docs/PDF_VIEWER_MANUAL_TEST.md` for Chrome, Acrobat, Android (not automatable here).
 
+## Engine C C04–C06 (M2b-3b-2c-2)
+- C04 ZWJ, C05 ZWNJ, C06 composite (आज, uni0906). Variants: full, subset, word, word_subset (default). Composite check + `--self-test-composite` negative test. Gate entries in `interop_expectations.json`.
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 

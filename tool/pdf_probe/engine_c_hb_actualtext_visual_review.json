@@ -1,6 +1,6 @@
 {
   "engine": "engine_c_hb_actualtext",
-  "reviewed_by": "Hark (agent), comparing pdftoppm renders with HarfBuzz/raqm references (same fonts: NotoSerifDevanagari-Regular sha256 e272d11d..., NotoSerif-Regular sha256 19e72cd8...), CI run 42380725570 (commit 97f1841). Owner visual check still pending. Experiment variants reviewed in CI run 42384778543 (commit 1334cfe).",
+  "reviewed_by": "Hark (agent), comparing pdftoppm renders with HarfBuzz/raqm references (same fonts: NotoSerifDevanagari-Regular sha256 e272d11d..., NotoSerif-Regular sha256 19e72cd8...), CI run 42380725570 (commit 97f1841). Owner visual check still pending. Experiment variants reviewed in CI run 42384778543 (commit 1334cfe). C04–C06 and *_word_subset reviewed in run 42387645150 (commit 67aa0b9).",
   "rule": "Visual only. overall_c = qpdf ok + visual PASS + Poppler and MuPDF exact (extract_compare.py). The _word variants draw the same glyphs as the full-font PDFs (only /ActualText grouping differs).",
   "cases": {
     "c01_kitab": {
@@ -82,6 +82,66 @@
     "c03_rashtra_mixed_word_clustertu": {
       "visual": "PASS",
       "why": "EXPERIMENT: same glyphs and positions; matches reference (run 42384778543)"
+    },
+    "c01_kitab_word_subset": {
+      "visual": "PASS",
+      "why": "pixel-identical to c01_kitab_word (already PASS); run 42387645150 (commit 67aa0b9)"
+    },
+    "c02_kshetra_word_subset": {
+      "visual": "PASS",
+      "why": "pixel-identical to c02_kshetra_word (already PASS); run 42387645150 (commit 67aa0b9)"
+    },
+    "c03_rashtra_mixed_word_subset": {
+      "visual": "PASS",
+      "why": "pixel-identical to c03_rashtra_mixed_word (already PASS); run 42387645150 (commit 67aa0b9)"
+    },
+    "c04_zwj": {
+      "visual": "PASS",
+      "why": "half form क् (uni0915094D) joined to ष, no visible virama; matches raqm reference; run 42387645150 (commit 67aa0b9)"
+    },
+    "c04_zwj_subset": {
+      "visual": "PASS",
+      "why": "half form क् (uni0915094D) joined to ष, no visible virama; matches raqm reference; run 42387645150 (commit 67aa0b9); subset pixel-identical to full"
+    },
+    "c04_zwj_word": {
+      "visual": "PASS",
+      "why": "half form क् (uni0915094D) joined to ष, no visible virama; matches raqm reference; run 42387645150 (commit 67aa0b9)"
+    },
+    "c04_zwj_word_subset": {
+      "visual": "PASS",
+      "why": "half form क् (uni0915094D) joined to ष, no visible virama; matches raqm reference; run 42387645150 (commit 67aa0b9); subset pixel-identical to full"
+    },
+    "c05_zwnj": {
+      "visual": "PASS",
+      "why": "full क with visible virama, then ष; no conjunct; matches raqm reference; run 42387645150 (commit 67aa0b9)"
+    },
+    "c05_zwnj_subset": {
+      "visual": "PASS",
+      "why": "full क with visible virama, then ष; no conjunct; matches raqm reference; run 42387645150 (commit 67aa0b9); subset pixel-identical to full"
+    },
+    "c05_zwnj_word": {
+      "visual": "PASS",
+      "why": "full क with visible virama, then ष; no conjunct; matches raqm reference; run 42387645150 (commit 67aa0b9)"
+    },
+    "c05_zwnj_word_subset": {
+      "visual": "PASS",
+      "why": "full क with visible virama, then ष; no conjunct; matches raqm reference; run 42387645150 (commit 67aa0b9); subset pixel-identical to full"
+    },
+    "c06_composite": {
+      "visual": "PASS",
+      "why": "आ (composite uni0906 = अ + ा) then ज; matches raqm reference; run 42387645150 (commit 67aa0b9)"
+    },
+    "c06_composite_subset": {
+      "visual": "PASS",
+      "why": "आ (composite uni0906 = अ + ा) then ज; matches raqm reference; run 42387645150 (commit 67aa0b9); subset pixel-identical to full"
+    },
+    "c06_composite_word": {
+      "visual": "PASS",
+      "why": "आ (composite uni0906 = अ + ा) then ज; matches raqm reference; run 42387645150 (commit 67aa0b9)"
+    },
+    "c06_composite_word_subset": {
+      "visual": "PASS",
+      "why": "आ (composite uni0906 = अ + ा) then ज; matches raqm reference; run 42387645150 (commit 67aa0b9); subset pixel-identical to full"
     }
   }
 }

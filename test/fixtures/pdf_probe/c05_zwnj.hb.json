@@ -1,0 +1,95 @@
+{
+  "id": "c05_zwnj",
+  "text": "क्‌ष",
+  "codepoints": [
+    "U+0915",
+    "U+094D",
+    "U+200C",
+    "U+0937"
+  ],
+  "harfbuzz": "15.0.0",
+  "uharfbuzz": "0.57.0",
+  "runs": [
+    {
+      "font": 0,
+      "start": 0,
+      "end": 4
+    }
+  ],
+  "fonts": [
+    {
+      "index": 0,
+      "file": "NotoSerifDevanagari-Regular.ttf",
+      "sha256": "e272d11d271c61a8d5d0f65764fd368ae53b9f9dabcce244a8941aa8f32ccc70",
+      "bytes": 280180,
+      "num_glyphs": 997,
+      "upem": 1000,
+      "bbox": [
+        -526,
+        -660,
+        1413,
+        1397
+      ],
+      "ascent": 930,
+      "descent": -625,
+      "cap_height": 715,
+      "glyph_to_unicode": {
+        "3": 32,
+        "57": 2325,
+        "88": 2359,
+        "106": 2381
+      },
+      "composites": [],
+      "subset": {
+        "file": "fonts/c05_zwnj.NotoSerifDevanagari-Regular.subset.ttf",
+        "bytes": 10888,
+        "sha256": "c081d0f292a9b95cec2ad79ae95c90c1c45c8a79d6fcdad1694e96836e827bcb",
+        "reduction_pct": 96.1,
+        "checks": "PASS",
+        "problems": []
+      }
+    }
+  ],
+  "glyphs": [
+    {
+      "font": 0,
+      "gid": 57,
+      "cluster": 0,
+      "ax": 711,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0915"
+    },
+    {
+      "font": 0,
+      "gid": 106,
+      "cluster": 0,
+      "ax": 0,
+      "ay": 0,
+      "dx": -293,
+      "dy": 0,
+      "name": "uni094D"
+    },
+    {
+      "font": 0,
+      "gid": 3,
+      "cluster": 2,
+      "ax": 0,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "space"
+    },
+    {
+      "font": 0,
+      "gid": 88,
+      "cluster": 3,
+      "ax": 530,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0937"
+    }
+  ]
+}

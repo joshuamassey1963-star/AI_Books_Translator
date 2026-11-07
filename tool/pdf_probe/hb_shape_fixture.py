@@ -118,6 +118,29 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     font_dir = Path(args[0])
     datas = [(font_dir / f).read_bytes() for f in FONT_FILES]
+    if '--self-test-composite' in sys.argv:
+        # Negative test (M2b-3b-2c-2): hb-subset always keeps composite
+        # components, so we blank one component AFTER subsetting and the
+        # check must detect it. Glyph: uni0906 (आ) = uni0905 + uni093E.
+        text = '\u0906\u091c'
+        cps = [ord(c) for c in text]
+        shaped = shape_run(datas[0], cps, 0, len(cps))
+        gids = sorted({g[0] for g in shaped})
+        good = Path('/tmp/selftest.composite.good.ttf')
+        good.write_bytes(subset(datas[0], gids, cps))
+        ok = check_subset(font_dir / FONT_FILES[0], good, gids, cps, 0, len(cps), shaped)
+        tt = TTFont(str(good))
+        comp = tt['glyf']['uni0906']
+        assert comp.isComposite(), 'uni0906 must be composite'
+        victim = comp.components[-1].glyphName
+        from fontTools.ttLib.tables._g_l_y_f import Glyph
+        tt['glyf'][victim] = Glyph()
+        bad = Path('/tmp/selftest.composite.bad.ttf')
+        tt.save(str(bad))
+        problems = check_subset(font_dir / FONT_FILES[0], bad, gids, cps, 0, len(cps), shaped)
+        print('composite self-test: complete subset problems:', ok)
+        print(f'composite self-test: blanked component {victim} -> problems:', problems)
+        sys.exit(0 if (not ok and problems) else 1)
     if '--self-test-subset' in sys.argv:
         # Negative test: a subset missing one used glyph must be detected.
         text = 'क्षेत्र'
@@ -161,13 +184,28 @@ def main():
                      'sha256': hashlib.sha256(datas[fi]).hexdigest(),
                      'bytes': len(datas[fi]), 'num_glyphs': tt['maxp'].numGlyphs,
                      **metrics(tt),
-                     'glyph_to_unicode': {str(g): rev[g] for g in used if g in rev}}
+                     'glyph_to_unicode': {str(g): rev[g] for g in used if g in rev},
+                     # Verified with fontTools, never assumed from appearance.
+                     'composites': [{'gid': g, 'name': order[g],
+                                     'components': [{'name': c.glyphName, 'gid': tt.getGlyphID(c.glyphName)}
+                                                    for c in tt['glyf'][order[g]].components]}
+                                    for g in used if tt['glyf'][order[g]].isComposite()]}
+            if do_subset and entry['composites']:
+                print(cid, 'composite glyphs used:', entry['composites'])
             if do_subset:
                 run_cps = [cps[i] for r in runs if r['font'] == fi for i in range(r['start'], r['end'])]
                 sub = subset(datas[fi], used, run_cps)
                 sp = out / 'fonts' / f'{cid}.{f[:-4]}.subset.ttf'
                 sp.write_bytes(sub)
                 problems = []
+                st = TTFont(str(sp))
+                for c in entry['composites']:
+                    sg = st['glyf'][st.getGlyphOrder()[c['gid']]]
+                    if not sg.isComposite():
+                        problems.append(f"gid {c['gid']}: not composite in subset")
+                    for k in c['components']:
+                        if st['glyf'][st.getGlyphOrder()[k['gid']]].numberOfContours == 0:
+                            problems.append(f"gid {c['gid']}: component {k['name']} (gid {k['gid']}) empty in subset")
                 for r in runs:
                     if r['font'] != fi:
                         continue

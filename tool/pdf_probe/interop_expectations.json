@@ -1,5 +1,5 @@
 {
-  "note": "M2b-3b-2c-1 interop regression gate (extract_compare.py). EXACT entries must stay EXACT (CI fails otherwise). KNOWN_DIFF entries are documented limitations; if one becomes EXACT the report says IMPROVED and this file should be updated after review.",
+  "note": "M2b-3b-2c-1 interop regression gate (extract_compare.py). EXACT entries must stay EXACT (CI fails otherwise). KNOWN_DIFF entries are documented limitations; if one becomes EXACT the report says IMPROVED and this file should be updated after review. C04–C06 added in M2b-3b-2c-2 (run 42387645150).",
   "cases": {
     "c01_kitab": {
       "poppler": "EXACT",
@@ -63,6 +63,111 @@
       "pdfjs4": "KNOWN_DIFF",
       "pdfjs6": "KNOWN_DIFF",
       "pdfium": "EXACT"
+    },
+    "c01_kitab_word_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c02_kshetra_word_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c03_rashtra_mixed_word_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c04_zwj": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c05_zwnj": {
+      "poppler": "KNOWN_DIFF",
+      "mupdf": "EXACT",
+      "pdfium": "KNOWN_DIFF",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c06_composite": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "EXACT",
+      "pdfjs6": "EXACT"
+    },
+    "c04_zwj_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c05_zwnj_subset": {
+      "poppler": "KNOWN_DIFF",
+      "mupdf": "EXACT",
+      "pdfium": "KNOWN_DIFF",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c06_composite_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "EXACT",
+      "pdfjs6": "EXACT"
+    },
+    "c04_zwj_word": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c05_zwnj_word": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c06_composite_word": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c04_zwj_word_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c05_zwnj_word_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c06_composite_word_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
     }
   }
 }
