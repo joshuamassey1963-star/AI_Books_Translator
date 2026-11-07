@@ -142,6 +142,54 @@
     "c06_composite_word_subset": {
       "visual": "PASS",
       "why": "आ (composite uni0906 = अ + ा) then ज; matches raqm reference; run 42387645150 (commit 67aa0b9); subset pixel-identical to full"
+    },
+    "c01_kitab_cand": {
+      "visual": "PASS",
+      "why": "pixel-identical to c01_kitab_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c01_kitab_cand0": {
+      "visual": "PASS",
+      "why": "pixel-identical to c01_kitab_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c02_kshetra_cand": {
+      "visual": "PASS",
+      "why": "pixel-identical to c02_kshetra_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c02_kshetra_cand0": {
+      "visual": "PASS",
+      "why": "pixel-identical to c02_kshetra_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c03_rashtra_mixed_cand": {
+      "visual": "PASS",
+      "why": "pixel-identical to c03_rashtra_mixed_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c03_rashtra_mixed_cand0": {
+      "visual": "PASS",
+      "why": "pixel-identical to c03_rashtra_mixed_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c04_zwj_cand": {
+      "visual": "PASS",
+      "why": "pixel-identical to c04_zwj_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c04_zwj_cand0": {
+      "visual": "PASS",
+      "why": "pixel-identical to c04_zwj_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c05_zwnj_cand": {
+      "visual": "PASS",
+      "why": "pixel-identical to c05_zwnj_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c05_zwnj_cand0": {
+      "visual": "PASS",
+      "why": "pixel-identical to c05_zwnj_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c06_composite_cand": {
+      "visual": "PASS",
+      "why": "pixel-identical to c06_composite_word_subset (PASS); run 42403192250 (commit 824c63d)"
+    },
+    "c06_composite_cand0": {
+      "visual": "PASS",
+      "why": "pixel-identical to c06_composite_word_subset (PASS); run 42403192250 (commit 824c63d)"
     }
   }
 }
