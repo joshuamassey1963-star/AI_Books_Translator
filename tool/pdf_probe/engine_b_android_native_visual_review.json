@@ -1,0 +1,10 @@
+{
+  "engine": "engine_b_android_native",
+  "reviewed_by": "Hark (agent), comparing pdftoppm render with a HarfBuzz/raqm reference using the same emulator fonts (NotoSansDevanagari-VF, Roboto-Regular), CI run 42367039900 (commit d94537d, Android 14 / API 34 emulator). Owner visual check still pending.",
+  "rule": "Visual only. A case is a full PASS only when visual is PASS and the extracted text matches the source exactly (see 'overall').",
+  "cases": {
+    "s01_kitab": {"visual": "PASS", "why": "short i-matra drawn before क, same glyphs and spacing as reference"},
+    "s02_kshetra": {"visual": "PASS", "why": "क्ष conjunct, e-matra and त्र rakar form match reference"},
+    "s03_rashtra_mixed": {"visual": "PASS", "why": "ष्ट्र conjunct with rakar, reph on म in धर्म, Latin and digits in Roboto match reference"}
+  }
+}
