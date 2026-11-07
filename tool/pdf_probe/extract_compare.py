@@ -102,6 +102,19 @@ for r in report['cases']:
     else:
         r['overall_c'] = 'PARTIAL'
 
+# full-font vs subset-font render, pixel by pixel (same pdftoppm settings)
+try:
+    from PIL import Image, ImageChops
+    for r in report['cases']:
+        if r['id'].endswith('_subset'):
+            base = r['id'][:-len('_subset')]
+            pa, pb = sorted((out / 'png').glob(f'{base}-*.png')), sorted((out / 'png').glob(f"{r['id']}-*.png"))
+            if pa and pb:
+                ia, ib = Image.open(pa[0]).convert('L'), Image.open(pb[0]).convert('L')
+                r['subset_render_identical_to_full'] = ia.size == ib.size and ImageChops.difference(ia, ib).getbbox() is None
+except ImportError:
+    pass
+
 # fonts report
 fr = out / 'fonts-report'
 fr.mkdir(exist_ok=True)
@@ -152,6 +165,8 @@ for r in report['cases']:
         j=x['pdfjs']['result'], f=x['pdfium']['result'], w=x['poppler'].get('words_found', ''),
         e=r.get('fonts_embedded'), u=' '.join(f['uni'] for f in r.get('fonts', [])), b=r['pdf_bytes'],
         o=r['overall_c']))
+md += ['', '## Full vs subset render (pixel identical)', '']
+md += [f"- {r['id']}: {r.get('subset_render_identical_to_full')}" for r in report['cases'] if r['id'].endswith('_subset')]
 md += ['', '## Extractor output (code points)', '']
 for r in report['cases']:
     md.append(f"- **{r['id']}** expected `{r['expected_codepoints']}`" + (f" (control: {r['control']})" if r['control'] else ''))

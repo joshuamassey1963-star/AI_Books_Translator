@@ -1,10 +1,18 @@
 {
   "engine": "engine_c_hb_actualtext",
-  "reviewed_by": "Hark (agent), comparing pdftoppm render with a HarfBuzz/raqm reference (same font NotoSerifDevanagari-Regular, sha256 e272d11d...), CI run 42373414737 (commit bb7173c). Owner visual check still pending.",
-  "rule": "Visual only. A case is a full PASS only when visual is PASS, extraction is exact and qpdf --check is ok (see 'overall').",
+  "reviewed_by": "Hark (agent), comparing pdftoppm renders with HarfBuzz/raqm references (same fonts: NotoSerifDevanagari-Regular sha256 e272d11d..., NotoSerif-Regular sha256 19e72cd8...), CI run 42380725570 (commit 97f1841). Owner visual check still pending.",
+  "rule": "Visual only. overall_c = qpdf ok + visual PASS + Poppler and MuPDF exact (extract_compare.py). The _word variants draw the same glyphs as the full-font PDFs (only /ActualText grouping differs).",
   "cases": {
-    "c01_kitab": {"visual": "PASS", "why": "i-matra glyph (uni093F.04) drawn before क, ता and ब as reference"},
-    "c01_kitab_run": {"visual": "PASS", "why": "same glyph drawing as c01_kitab (only the /ActualText scope differs)"},
-    "c01_kitab_control": {"visual": "PASS", "why": "same glyphs; this control has no /ActualText, so its extraction is expected to fail"}
+    "c01_kitab": {"visual": "PASS", "why": "i-matra glyph (uni093F.04) before क; ता, ब as reference"},
+    "c01_kitab_subset": {"visual": "PASS", "why": "render pixel-identical to full-font PDF (run 42380725570)"},
+    "c01_kitab_word": {"visual": "PASS", "why": "same glyph drawing as c01_kitab"},
+    "c01_kitab_control_no_actualtext": {"visual": "PASS", "why": "same glyphs; control for extraction only"},
+    "c02_kshetra": {"visual": "PASS", "why": "क्ष ligature + e-matra placed over it, त्र ligature, as reference"},
+    "c02_kshetra_subset": {"visual": "PASS", "why": "render pixel-identical to full-font PDF (run 42380725570)"},
+    "c02_kshetra_word": {"visual": "PASS", "why": "same glyph drawing as c02_kshetra"},
+    "c02_kshetra_control_cmapall": {"visual": "PASS", "why": "same glyphs; control for extraction only"},
+    "c03_rashtra_mixed": {"visual": "PASS", "why": "रा, ष्ट्र conjunct with rakar, ध, reph on म, Latin India 123 in Noto Serif, spaces and order as reference"},
+    "c03_rashtra_mixed_subset": {"visual": "PASS", "why": "render pixel-identical to full-font PDF (run 42380725570)"},
+    "c03_rashtra_mixed_word": {"visual": "PASS", "why": "same glyph drawing as c03_rashtra_mixed"}
   }
 }

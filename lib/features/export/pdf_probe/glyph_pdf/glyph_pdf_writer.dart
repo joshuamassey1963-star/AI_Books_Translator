@@ -10,6 +10,11 @@ enum ActualTextScope {
   /// One `/Span` per shaped cluster (default).
   cluster,
 
+  /// One `/Span` per word: clusters between spaces, split at font changes
+  /// (M2b-3b-2b experiment for PDFium, which adds spaces between
+  /// per-cluster spans).
+  word,
+
   /// One `/Span` around the whole run.
   run,
 
@@ -83,20 +88,51 @@ class GlyphPdfWriter {
   final double originX;
   final double baselineY;
 
+  /// Clusters grouped into the units that get one `/ActualText` span each
+  /// (for [ActualTextScope.none] the grouping is per cluster, unused).
+  static List<List<GlyphCluster>> spanGroups(
+    ShapedRun run,
+    ActualTextScope scope,
+  ) {
+    final clusters = run.clusters();
+    if (scope == ActualTextScope.run) {
+      return [clusters];
+    }
+    if (scope != ActualTextScope.word) {
+      return [
+        for (final c in clusters) [c],
+      ];
+    }
+    final groups = <List<GlyphCluster>>[];
+    for (final c in clusters) {
+      final space = c.text.trim().isEmpty;
+      final prev = groups.isEmpty ? null : groups.last.last;
+      final join =
+          prev != null &&
+          !space &&
+          prev.text.trim().isNotEmpty &&
+          prev.font == c.font;
+      if (join) {
+        groups.last.add(c);
+      } else {
+        groups.add([c]);
+      }
+    }
+    return groups;
+  }
+
   /// Content stream text (ASCII). Exposed for tests.
   String contentStream(ShapedRun run, ActualTextScope scope) {
-    final clusters = run.clusters();
+    final groups = spanGroups(run, scope);
     final ops = <String>['BT'];
-    if (scope == ActualTextScope.run) {
-      ops.add(_bdc(run.text));
-    }
     var x = originX;
     int? currentFont;
-    for (final c in clusters) {
-      if (scope == ActualTextScope.cluster) {
-        ops.add(_bdc(c.text));
+    for (final group in groups) {
+      final marked = scope != ActualTextScope.none;
+      if (marked) {
+        ops.add(_bdc(group.map((c) => c.text).join()));
       }
-      for (final g in c.glyphs) {
+      for (final g in [for (final c in group) ...c.glyphs]) {
         if (g.font != currentFont) {
           currentFont = g.font;
           ops.add('/F${g.font + 1} ${_n(fontSize)} Tf');
@@ -107,28 +143,36 @@ class GlyphPdfWriter {
         ops.add('1 0 0 1 ${_n(gx)} ${_n(gy)} Tm <${_hex4(g.glyphId)}> Tj');
         x += g.xAdvance * scale;
       }
-      if (scope == ActualTextScope.cluster) {
+      if (marked) {
         ops.add('EMC');
       }
-    }
-    if (scope == ActualTextScope.run) {
-      ops.add('EMC');
     }
     ops.add('ET');
     return ops.join('\n');
   }
 
   /// ToUnicode entries (glyph id → code point) for [font] under [policy].
+  /// Under [ToUnicodePolicy.strict] the unit is the `/ActualText` span of
+  /// [scope]: a glyph is mapped only if every span drawing it is that one
+  /// glyph and its text is exactly the glyph's code point.
   static Map<int, int> toUnicodeEntries(
     ShapedRun run,
     int font,
     Map<int, int> glyphToUnicode,
-    ToUnicodePolicy policy,
-  ) {
-    final clusters = run.clusters().where((c) => c.font == font).toList();
+    ToUnicodePolicy policy, {
+    ActualTextScope scope = ActualTextScope.cluster,
+  }) {
+    final spans = [
+      for (final g in spanGroups(run, scope))
+        if (g.first.font == font)
+          (
+            text: g.map((c) => c.text).join(),
+            glyphs: [for (final c in g) ...c.glyphs],
+          ),
+    ];
     final used = {
-      for (final c in clusters)
-        for (final g in c.glyphs) g.glyphId,
+      for (final sp in spans)
+        for (final g in sp.glyphs) g.glyphId,
     };
     final result = <int, int>{};
     for (final gid in used) {
@@ -137,10 +181,11 @@ class GlyphPdfWriter {
         continue;
       }
       if (policy == ToUnicodePolicy.strict) {
-        final ok = clusters
-            .where((c) => c.glyphs.any((g) => g.glyphId == gid))
+        final ok = spans
+            .where((sp) => sp.glyphs.any((g) => g.glyphId == gid))
             .every(
-              (c) => c.glyphs.length == 1 && c.text == String.fromCharCode(cp),
+              (sp) =>
+                  sp.glyphs.length == 1 && sp.text == String.fromCharCode(cp),
             );
         if (!ok) {
           continue;
@@ -194,7 +239,13 @@ class GlyphPdfWriter {
       }
       final ids = widths.keys.toList()..sort();
       final w = ids.map((id) => '$id [${widths[id]}]').join(' ');
-      final tu = toUnicodeEntries(run, fi, f.glyphToUnicode, toUnicode);
+      final tu = toUnicodeEntries(
+        run,
+        fi,
+        f.glyphToUnicode,
+        toUnicode,
+        scope: scope,
+      );
       final bf = [
         for (final gid in tu.keys.toList()..sort())
           '<${_hex4(gid)}> <${pdfUtf16BeHex(String.fromCharCode(tu[gid]!)).substring(4)}>',

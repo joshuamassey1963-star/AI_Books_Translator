@@ -12,7 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'hb_fixture.dart';
 
 /// M2b-3b-2a/2b. Uses the committed HarfBuzz output
-/// (test/fixtures/pdf_probe/<case>.hb.json, Noto Serif Devanagari Regular +
+/// (`test/fixtures/pdf_probe/<case>.hb.json`, Noto Serif Devanagari Regular +
 /// Noto Serif Regular, HarfBuzz 15.0.0) and fake font blobs; no font file is
 /// needed here. Visual correctness is NOT claimed by these tests.
 const dir = 'test/fixtures/pdf_probe';
@@ -117,6 +117,33 @@ void main() {
       }
     },
   );
+
+  test('word scope: one span per word, split at spaces and font changes', () {
+    final c03 = fx['c03_rashtra_mixed']!.run();
+    expect(
+      GlyphPdfWriter.spanGroups(
+        c03,
+        ActualTextScope.word,
+      ).map((g) => g.map((c) => c.text).join()).toList(),
+      ['राष्ट्र', ' ', 'धर्म', ' ', 'India', ' ', '123'],
+    );
+    for (final c in cases) {
+      final content = writer.contentStream(fx[c]!.run(), ActualTextScope.word);
+      expect(checkActualText(content, expected[c]!), isEmpty, reason: c);
+    }
+    final c03fx = fx['c03_rashtra_mixed']!;
+    expect(
+      GlyphPdfWriter.toUnicodeEntries(
+        c03,
+        1,
+        c03fx.glyphToUnicode(1),
+        ToUnicodePolicy.strict,
+        scope: ActualTextScope.word,
+      ),
+      {3: 0x20},
+      reason: 'inside a word span only a lone space glyph is mapped',
+    );
+  });
 
   test('ActualText checker catches duplicates, nesting and bad encoding', () {
     final src = expected['c01_kitab']!;

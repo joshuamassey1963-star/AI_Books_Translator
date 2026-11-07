@@ -42,7 +42,7 @@ void main() {
     skip:
         pdfiumPath == null ||
             outDir == null ||
-            !Directory('${outDir ?? ''}/pdf').existsSync()
+            !Directory('$outDir/pdf').existsSync()
         ? 'needs PDFIUM_PATH and PDF_PROBE_C_OUT_DIR with PDFs (CI)'
         : false,
   );

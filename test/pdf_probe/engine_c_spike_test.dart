@@ -103,6 +103,16 @@ void main() {
             'fonts': [for (final f in subFonts) f.bytes.length],
           },
         );
+        emit(
+          '${e.key}_word',
+          '${e.value} – full fonts, one /ActualText span per word',
+          expected,
+          const GlyphPdfWriter().write(
+            run: run,
+            fonts: fullFonts,
+            scope: ActualTextScope.word,
+          ),
+        );
         if (e.key == 'c01_kitab') {
           emit(
             'c01_kitab_control_no_actualtext',
