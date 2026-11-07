@@ -96,13 +96,17 @@ class ShapedRun {
     var last = -1;
     for (final g in glyphs) {
       if (g.glyphId == 0) {
-        throw ShapedRunException('missing glyph (.notdef) at cluster ${g.cluster}');
+        throw ShapedRunException(
+          'missing glyph (.notdef) at cluster ${g.cluster}',
+        );
       }
       if (g.glyphId < 0 || g.glyphId > 0xFFFF) {
         throw ShapedRunException('glyph id ${g.glyphId} out of range');
       }
       if (g.font < 0 || g.font >= unitsPerEm.length) {
-        throw ShapedRunException('glyph ${g.glyphId} has unknown font ${g.font}');
+        throw ShapedRunException(
+          'glyph ${g.glyphId} has unknown font ${g.font}',
+        );
       }
       if (g.cluster < 0 || g.cluster >= runes.length) {
         throw ShapedRunException(

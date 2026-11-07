@@ -96,30 +96,40 @@ void main() {
     expect(() => decodePdfUtf16BeHex('0915'), throwsFormatException);
   });
 
-  test('every case: spans cover the source exactly once, all glyphs inside', () {
-    for (final c in cases) {
-      final run = fx[c]!.run();
-      final content = writer.contentStream(run, ActualTextScope.cluster);
-      expect(checkActualText(content, expected[c]!), isEmpty, reason: c);
-      expect(markedContentBalanced(content), isTrue, reason: c);
-      expect(
-        RegExp(r'\bTj\b').allMatches(content).length,
-        run.glyphs.length,
-        reason: c,
-      );
-      expect(
-        RegExp(r'\bBDC\b').allMatches(content).length,
-        run.clusters().length,
-        reason: c,
-      );
-    }
-  });
+  test(
+    'every case: spans cover the source exactly once, all glyphs inside',
+    () {
+      for (final c in cases) {
+        final run = fx[c]!.run();
+        final content = writer.contentStream(run, ActualTextScope.cluster);
+        expect(checkActualText(content, expected[c]!), isEmpty, reason: c);
+        expect(markedContentBalanced(content), isTrue, reason: c);
+        expect(
+          RegExp(r'\bTj\b').allMatches(content).length,
+          run.glyphs.length,
+          reason: c,
+        );
+        expect(
+          RegExp(r'\bBDC\b').allMatches(content).length,
+          run.clusters().length,
+          reason: c,
+        );
+      }
+    },
+  );
 
   test('ActualText checker catches duplicates, nesting and bad encoding', () {
     final src = expected['c01_kitab']!;
-    final ok = writer.contentStream(fx['c01_kitab']!.run(), ActualTextScope.cluster);
-    final span = '/Span <</ActualText <${pdfUtf16BeHex('ब')}>>> BDC <0050> Tj EMC';
-    expect(checkActualText('$ok\n$span', src), contains(contains('duplicates')));
+    final ok = writer.contentStream(
+      fx['c01_kitab']!.run(),
+      ActualTextScope.cluster,
+    );
+    final span =
+        '/Span <</ActualText <${pdfUtf16BeHex('ब')}>>> BDC <0050> Tj EMC';
+    expect(
+      checkActualText('$ok\n$span', src),
+      contains(contains('duplicates')),
+    );
     expect(
       checkActualText(
         '/Span <</ActualText <${pdfUtf16BeHex('कि')}>>> BDC '
@@ -129,7 +139,10 @@ void main() {
       contains('nested /ActualText span'),
     );
     expect(
-      checkActualText('/Span <</ActualText <0915093F>>> BDC <0001> Tj EMC', 'कि'),
+      checkActualText(
+        '/Span <</ActualText <0915093F>>> BDC <0001> Tj EMC',
+        'कि',
+      ),
       contains('replacement text is not UTF-16BE with BOM'),
     );
     expect(
@@ -205,10 +218,16 @@ void main() {
     final i = s.indexOf('0000000015 00000 n');
     expect(i, greaterThan(0));
     final bad = s.replaceRange(i, i + 10, '0000000016');
-    expect(checkPdfStructure(Uint8List.fromList(latin1.encode(bad))), isNotEmpty);
+    expect(
+      checkPdfStructure(Uint8List.fromList(latin1.encode(bad))),
+      isNotEmpty,
+    );
     final cut = Uint8List.sublistView(pdf, 0, pdf.length - 7);
     expect(checkPdfStructure(cut), isNotEmpty);
-    expect(checkPdfStructure(Uint8List.fromList(utf8.encode('hello'))), isNotEmpty);
+    expect(
+      checkPdfStructure(Uint8List.fromList(utf8.encode('hello'))),
+      isNotEmpty,
+    );
   });
 
   test('missing or too small embedded fonts are refused', () {
@@ -216,12 +235,18 @@ void main() {
     expect(sfntNumGlyphs(fakeTtf(600)), 600);
     expect(sfntNumGlyphs(Uint8List(0)), isNull);
     expect(
-      () => writer.write(run: c01.run(), fonts: c01.pdfFonts((_) => Uint8List(0))),
+      () => writer.write(
+        run: c01.run(),
+        fonts: c01.pdfFonts((_) => Uint8List(0)),
+      ),
       throwsArgumentError,
     );
     // glyph 558 cannot exist in a font with 100 glyphs (e.g. a bad subset).
     expect(
-      () => writer.write(run: c01.run(), fonts: c01.pdfFonts((_) => fakeTtf(100))),
+      () => writer.write(
+        run: c01.run(),
+        fonts: c01.pdfFonts((_) => fakeTtf(100)),
+      ),
       throwsA(isA<ShapedRunException>()),
     );
     expect(
@@ -232,11 +257,8 @@ void main() {
 
   test('missing glyphs and malformed clusters fail loudly', () {
     final src = expected['c01_kitab']!;
-    ShapedRun runOf(List<ShapedGlyph> g, {int fonts = 1}) => ShapedRun(
-      text: src,
-      glyphs: g,
-      unitsPerEm: List.filled(fonts, 1000),
-    );
+    ShapedRun runOf(List<ShapedGlyph> g, {int fonts = 1}) =>
+        ShapedRun(text: src, glyphs: g, unitsPerEm: List.filled(fonts, 1000));
     const g0 = ShapedGlyph(glyphId: 57, cluster: 0, xAdvance: 700);
     void bad(ShapedRun r) =>
         expect(r.clusters, throwsA(isA<ShapedRunException>()));
@@ -246,7 +268,9 @@ void main() {
     bad(runOf([const ShapedGlyph(glyphId: 1, cluster: 1, xAdvance: 1)]));
     bad(runOf([]));
     bad(runOf([const ShapedGlyph(glyphId: 70000, cluster: 0, xAdvance: 1)]));
-    bad(runOf([const ShapedGlyph(glyphId: 5, cluster: 0, xAdvance: 1, font: 1)]));
+    bad(
+      runOf([const ShapedGlyph(glyphId: 5, cluster: 0, xAdvance: 1, font: 1)]),
+    );
     bad(
       runOf([
         g0,
@@ -259,7 +283,9 @@ void main() {
     final c03 = fx['c03_rashtra_mixed']!;
     final run = c03.run();
     expect(
-      () => run.glyphs.add(const ShapedGlyph(glyphId: 1, cluster: 0, xAdvance: 1)),
+      () => run.glyphs.add(
+        const ShapedGlyph(glyphId: 1, cluster: 0, xAdvance: 1),
+      ),
       throwsUnsupportedError,
     );
     expect(() => run.unitsPerEm.add(1), throwsUnsupportedError);

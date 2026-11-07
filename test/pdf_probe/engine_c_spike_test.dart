@@ -60,9 +60,8 @@ void main() {
 
       for (final e in cases.entries) {
         final fx = HbFixture.load('$hbDir/${e.key}.hb.json');
-        final expected = File(
-          'test/fixtures/pdf_probe/${e.key}.txt',
-        ).readAsStringSync();
+        final expected = File('test/fixtures/pdf_probe/${e.key}.txt')
+            .readAsStringSync();
         expect(fx.text, expected, reason: 'shaped text = fixture');
         final run = fx.run();
         final content = const GlyphPdfWriter().contentStream(
@@ -134,9 +133,7 @@ void main() {
         expect(run.text, expected, reason: 'source unchanged');
       }
       File('$outDir/generation.json').writeAsStringSync(
-        const JsonEncoder.withIndent(
-          '  ',
-        ).convert({
+        const JsonEncoder.withIndent('  ').convert({
           'engine': 'engine_c_hb_actualtext',
           'cases': meta,
           'generation': generation,

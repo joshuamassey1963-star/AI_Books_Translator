@@ -34,7 +34,8 @@ void main() {
           sourceName: '$id.pdf',
         );
         final text = await doc.pages.first.loadStructuredText();
-        File('$outDir/extracted/$id.pdfium.txt').writeAsStringSync(text.fullText);
+        File('$outDir/extracted/$id.pdfium.txt')
+            .writeAsStringSync(text.fullText);
         await doc.dispose();
       }
     },
