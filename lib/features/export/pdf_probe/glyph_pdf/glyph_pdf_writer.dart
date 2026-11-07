@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'pdf_text_string.dart';
 import 'shaped_run.dart';
+import 'truetype_info.dart';
 
 /// Where `/ActualText` replacement text is attached.
 enum ActualTextScope {
@@ -16,23 +17,64 @@ enum ActualTextScope {
   none,
 }
 
-/// M2b-3b-2a spike: a tiny one-page PDF writer for one HarfBuzz-shaped run.
+/// Which glyphs get a ToUnicode entry.
+enum ToUnicodePolicy {
+  /// Only glyphs that, everywhere in this run, are the single glyph of a
+  /// cluster whose source text is exactly the glyph's `cmap` code point.
+  /// ToUnicode then never disagrees with `/ActualText` (D-030).
+  strict,
+
+  /// Every glyph that is the direct `cmap` image of a code point (Session 12
+  /// behaviour). Kept as a control: MuPDF then repeats a zero-width matra.
+  cmapAll,
+}
+
+/// One font to embed (TrueType outlines, full file or a retain-gids subset).
+class PdfFontInput {
+  const PdfFontInput({
+    required this.bytes,
+    required this.name,
+    this.glyphToUnicode = const {},
+    this.bbox = const [-500, -400, 1500, 1100],
+    this.ascent = 1069,
+    this.descent = -400,
+    this.capHeight = 714,
+  });
+
+  final Uint8List bytes;
+
+  /// PDF font name (letters, digits, hyphen).
+  final String name;
+
+  /// Glyph id → code point for glyphs that are the direct `cmap` image of one
+  /// code point (from the font's `cmap`; computed outside the writer).
+  final Map<int, int> glyphToUnicode;
+
+  /// Font metrics in 1/1000 em, read from the font's head/hhea/OS2 tables.
+  final List<int> bbox;
+  final int ascent;
+  final int descent;
+  final int capHeight;
+}
+
+/// M2b-3b-2 spike: a tiny one-page PDF writer for one HarfBuzz-shaped line.
 ///
-/// Font: Type0 / CIDFontType2, `Identity-H`, `CIDToGIDMap /Identity`, so the
-/// 2-byte codes in the content stream are glyph ids. The whole font file is
-/// embedded (no subsetting yet). Each glyph is placed with its own text
-/// matrix from the HarfBuzz advances/offsets. The logical source text is kept
-/// in marked content `/Span <</ActualText <FEFF...>>> BDC ... EMC`, so glyphs
-/// drawn in visual order (i-matra first) still extract in source order.
+/// Each font: Type0 / CIDFontType2, `Identity-H`, `CIDToGIDMap /Identity`,
+/// so the 2-byte codes in the content stream are glyph ids; the font file is
+/// embedded as `FontFile2`. Each glyph is placed with its own text matrix
+/// from the HarfBuzz advances/offsets. The logical source text is kept in
+/// marked content `/Span <</ActualText <FEFF...>>> BDC ... EMC`, so glyphs
+/// drawn in visual order (i-matra first, reph last) still extract in source
+/// order.
 ///
-/// Not a production writer: one line, one font, LTR only, no wrapping.
+/// Not a production writer: one line, LTR only, no wrapping, no pages.
 class GlyphPdfWriter {
   const GlyphPdfWriter({
-    this.fontSize = 36,
-    this.pageWidth = 300,
-    this.pageHeight = 200,
-    this.originX = 50,
-    this.baselineY = 100,
+    this.fontSize = 28,
+    this.pageWidth = 360,
+    this.pageHeight = 100,
+    this.originX = 20,
+    this.baselineY = 50,
   });
 
   final double fontSize;
@@ -44,24 +86,25 @@ class GlyphPdfWriter {
   /// Content stream text (ASCII). Exposed for tests.
   String contentStream(ShapedRun run, ActualTextScope scope) {
     final clusters = run.clusters();
-    final scale = fontSize / run.unitsPerEm;
-    final ops = <String>['BT', '/F1 ${_n(fontSize)} Tf'];
+    final ops = <String>['BT'];
     if (scope == ActualTextScope.run) {
       ops.add(_bdc(run.text));
     }
     var x = originX;
+    int? currentFont;
     for (final c in clusters) {
       if (scope == ActualTextScope.cluster) {
         ops.add(_bdc(c.text));
       }
       for (final g in c.glyphs) {
-        if (g.glyphId < 0 || g.glyphId > 0xFFFF) {
-          throw ShapedRunException('glyph id ${g.glyphId} out of range');
+        if (g.font != currentFont) {
+          currentFont = g.font;
+          ops.add('/F${g.font + 1} ${_n(fontSize)} Tf');
         }
+        final scale = fontSize / run.unitsPerEm[g.font];
         final gx = x + g.xOffset * scale;
         final gy = baselineY + g.yOffset * scale;
-        final hex = g.glyphId.toRadixString(16).toUpperCase().padLeft(4, '0');
-        ops.add('1 0 0 1 ${_n(gx)} ${_n(gy)} Tm <$hex> Tj');
+        ops.add('1 0 0 1 ${_n(gx)} ${_n(gy)} Tm <${_hex4(g.glyphId)}> Tj');
         x += g.xAdvance * scale;
       }
       if (scope == ActualTextScope.cluster) {
@@ -75,63 +118,124 @@ class GlyphPdfWriter {
     return ops.join('\n');
   }
 
-  /// Writes the PDF. [glyphToUnicode] lists only glyphs that are the direct
-  /// `cmap` image of one code point; shaped-only glyphs get no ToUnicode
-  /// entry (their text comes from `/ActualText`).
+  /// ToUnicode entries (glyph id → code point) for [font] under [policy].
+  static Map<int, int> toUnicodeEntries(
+    ShapedRun run,
+    int font,
+    Map<int, int> glyphToUnicode,
+    ToUnicodePolicy policy,
+  ) {
+    final clusters = run.clusters().where((c) => c.font == font).toList();
+    final used = {
+      for (final c in clusters)
+        for (final g in c.glyphs) g.glyphId,
+    };
+    final result = <int, int>{};
+    for (final gid in used) {
+      final cp = glyphToUnicode[gid];
+      if (cp == null) {
+        continue;
+      }
+      if (policy == ToUnicodePolicy.strict) {
+        final ok = clusters
+            .where((c) => c.glyphs.any((g) => g.glyphId == gid))
+            .every(
+              (c) => c.glyphs.length == 1 && c.text == String.fromCharCode(cp),
+            );
+        if (!ok) {
+          continue;
+        }
+      }
+      result[gid] = cp;
+    }
+    return result;
+  }
+
+  /// Writes the PDF. [fonts] are indexed by [ShapedGlyph.font].
   Uint8List write({
     required ShapedRun run,
-    required Uint8List fontBytes,
-    required String fontName,
-    Map<int, int> glyphToUnicode = const {},
+    required List<PdfFontInput> fonts,
     ActualTextScope scope = ActualTextScope.cluster,
+    ToUnicodePolicy toUnicode = ToUnicodePolicy.strict,
   }) {
-    if (!RegExp(r'^[A-Za-z0-9-]+$').hasMatch(fontName)) {
-      throw ArgumentError.value(fontName, 'fontName', 'PDF name chars only');
+    if (fonts.length != run.unitsPerEm.length) {
+      throw ArgumentError('one PdfFontInput per font index is required');
     }
     final content = ascii.encode(contentStream(run, scope));
-    final upem = run.unitsPerEm;
-    final widths = <int, int>{};
-    for (final g in run.glyphs) {
-      widths.putIfAbsent(g.glyphId, () => (g.xAdvance * 1000 / upem).round());
-    }
-    final ids = widths.keys.toList()..sort();
-    final w = ids.map((id) => '$id [${widths[id]}]').join(' ');
-    final used = ids.toSet();
-    final bf = [
-      for (final e in glyphToUnicode.entries)
-        if (used.contains(e.key))
-          '<${_hex4(e.key)}> <${pdfUtf16BeHex(String.fromCharCode(e.value)).substring(4)}>',
-    ];
-
-    final objs = <Uint8List>[
+    final objs = <Uint8List?>[
       _a('<< /Type /Catalog /Pages 2 0 R /MarkInfo << /Marked true >> >>'),
       _a('<< /Type /Pages /Kids [3 0 R] /Count 1 >>'),
-      _a(
-        '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${_n(pageWidth)} '
-        '${_n(pageHeight)}] /Resources << /Font << /F1 5 0 R >> >> '
-        '/Contents 4 0 R >>',
-      ),
+      null, // page, written once the font object numbers are known
       _stream('', content),
-      _a(
-        '<< /Type /Font /Subtype /Type0 /BaseFont /$fontName '
-        '/Encoding /Identity-H /DescendantFonts [6 0 R]'
-        '${bf.isEmpty ? '' : ' /ToUnicode 9 0 R'} >>',
-      ),
-      _a(
-        '<< /Type /Font /Subtype /CIDFontType2 /BaseFont /$fontName '
-        '/CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) '
-        '/Supplement 0 >> /FontDescriptor 7 0 R /CIDToGIDMap /Identity '
-        '/W [$w] /DW 1000 >>',
-      ),
-      _a(
-        '<< /Type /FontDescriptor /FontName /$fontName /Flags 4 '
-        '/FontBBox [-500 -400 1500 1100] /ItalicAngle 0 /Ascent 1069 '
-        '/Descent -400 /CapHeight 714 /StemV 80 /FontFile2 8 0 R >>',
-      ),
-      _stream(' /Length1 ${fontBytes.length}', fontBytes),
-      if (bf.isNotEmpty) _stream('', ascii.encode(_toUnicodeCMap(bf))),
     ];
-    return _assemble(objs);
+    final fontRefs = <String>[];
+    for (var fi = 0; fi < fonts.length; fi++) {
+      final f = fonts[fi];
+      final glyphs = run.glyphs.where((g) => g.font == fi).toList();
+      if (glyphs.isEmpty) {
+        continue;
+      }
+      if (!RegExp(r'^[A-Za-z0-9-]+$').hasMatch(f.name)) {
+        throw ArgumentError.value(f.name, 'name', 'PDF name chars only');
+      }
+      final numGlyphs = sfntNumGlyphs(f.bytes);
+      if (numGlyphs == null) {
+        throw ArgumentError('font ${f.name}: no embeddable TrueType font data');
+      }
+      final upem = run.unitsPerEm[fi];
+      final widths = <int, int>{};
+      for (final g in glyphs) {
+        if (g.glyphId >= numGlyphs) {
+          throw ShapedRunException(
+            'glyph ${g.glyphId} missing from font ${f.name} ($numGlyphs glyphs)',
+          );
+        }
+        widths.putIfAbsent(g.glyphId, () => (g.xAdvance * 1000 / upem).round());
+      }
+      final ids = widths.keys.toList()..sort();
+      final w = ids.map((id) => '$id [${widths[id]}]').join(' ');
+      final tu = toUnicodeEntries(run, fi, f.glyphToUnicode, toUnicode);
+      final bf = [
+        for (final gid in tu.keys.toList()..sort())
+          '<${_hex4(gid)}> <${pdfUtf16BeHex(String.fromCharCode(tu[gid]!)).substring(4)}>',
+      ];
+      final n = objs.length + 1;
+      objs
+        ..add(
+          _a(
+            '<< /Type /Font /Subtype /Type0 /BaseFont /${f.name} '
+            '/Encoding /Identity-H /DescendantFonts [${n + 1} 0 R]'
+            '${bf.isEmpty ? '' : ' /ToUnicode ${n + 4} 0 R'} >>',
+          ),
+        )
+        ..add(
+          _a(
+            '<< /Type /Font /Subtype /CIDFontType2 /BaseFont /${f.name} '
+            '/CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) '
+            '/Supplement 0 >> /FontDescriptor ${n + 2} 0 R '
+            '/CIDToGIDMap /Identity /W [$w] /DW 1000 >>',
+          ),
+        )
+        ..add(
+          _a(
+            '<< /Type /FontDescriptor /FontName /${f.name} /Flags 4 '
+            '/FontBBox [${f.bbox.join(' ')}] /ItalicAngle 0 '
+            '/Ascent ${f.ascent} /Descent ${f.descent} '
+            '/CapHeight ${f.capHeight} /StemV 80 /FontFile2 ${n + 3} 0 R >>',
+          ),
+        )
+        ..add(_stream(' /Length1 ${f.bytes.length}', f.bytes));
+      if (bf.isNotEmpty) {
+        objs.add(_stream('', ascii.encode(_toUnicodeCMap(bf))));
+      }
+      fontRefs.add('/F${fi + 1} $n 0 R');
+    }
+    objs[2] = _a(
+      '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${_n(pageWidth)} '
+      '${_n(pageHeight)}] /Resources << /Font << ${fontRefs.join(' ')} >> >> '
+      '/Contents 4 0 R >>',
+    );
+    return _assemble([for (final o in objs) o!]);
   }
 
   static String _bdc(String text) =>
@@ -190,13 +294,10 @@ class GlyphPdfWriter {
     return out.toBytes();
   }
 
-  static String _hex4(int v) =>
-      v.toRadixString(16).toUpperCase().padLeft(4, '0');
+  static String _hex4(int v) => v.toRadixString(16).toUpperCase().padLeft(4, '0');
 
   static String _n(double v) {
     final s = v.toStringAsFixed(3);
-    return s.contains('.')
-        ? s.replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '')
-        : s;
+    return s.replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
   }
 }

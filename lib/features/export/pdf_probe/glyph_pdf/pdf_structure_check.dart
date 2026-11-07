@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'pdf_text_string.dart';
+
 /// Minimal structural check for the spike's own PDFs (header, xref table,
 /// object offsets, trailer, `%%EOF`). Not a general PDF validator; CI also
 /// runs `qpdf --check`. Returns a list of problems (empty = OK).
@@ -65,4 +67,53 @@ bool markedContentBalanced(String content) {
     }
   }
   return depth == 0;
+}
+
+/// Checks a spike content stream against the [source] text: spans must not
+/// nest, every `Tj` must sit inside an `/ActualText` span, every replacement
+/// must be UTF-16BE with BOM, and the replacements in order must equal the
+/// source exactly once (no missing or duplicated text). Returns problems.
+List<String> checkActualText(String content, String source) {
+  final problems = <String>[];
+  final texts = <String>[];
+  var inSpan = false;
+  final tokens = RegExp(
+    r'/Span <</ActualText <([^>]*)>>> BDC|\bBDC\b|\bEMC\b|\bTj\b',
+  ).allMatches(content);
+  for (final m in tokens) {
+    final t = m.group(0)!;
+    if (t.startsWith('/Span')) {
+      if (inSpan) {
+        problems.add('nested /ActualText span');
+      }
+      inSpan = true;
+      try {
+        texts.add(decodePdfUtf16BeHex(m.group(1)!));
+      } on FormatException {
+        problems.add('replacement text is not UTF-16BE with BOM');
+      }
+    } else if (t == 'BDC') {
+      problems.add('marked content without /ActualText');
+      inSpan = true;
+    } else if (t == 'EMC') {
+      if (!inSpan) {
+        problems.add('EMC without BDC');
+      }
+      inSpan = false;
+    } else if (!inSpan) {
+      problems.add('glyph drawn outside an /ActualText span');
+    }
+  }
+  if (inSpan) {
+    problems.add('unclosed span');
+  }
+  final joined = texts.join();
+  if (joined != source) {
+    problems.add(
+      joined.length > source.length
+          ? 'replacement text duplicates source text'
+          : 'replacement text differs from source text',
+    );
+  }
+  return problems;
 }

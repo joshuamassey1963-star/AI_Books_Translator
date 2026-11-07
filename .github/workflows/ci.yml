@@ -127,7 +127,7 @@ jobs:
         run: |
           sudo apt-get update -q
           sudo apt-get install -y -q poppler-utils libraqm0 libfribidi0 libharfbuzz0b qpdf
-          python3 -m pip install --quiet pillow fonttools uharfbuzz==0.57.0
+          python3 -m pip install --quiet pillow fonttools uharfbuzz==0.57.0 pymupdf==2.1
           python3 -c "from PIL import features; print('raqm:', features.check('raqm'))"
           python3 -c "import uharfbuzz as hb; print('uharfbuzz', hb.__version__, 'harfbuzz', hb.version_string())"
           qpdf --version | head -1
@@ -148,26 +148,54 @@ jobs:
           name: pdf-export-probe-engine-a
           path: build/pdf_probe
           retention-days: 30
-      - name: Engine C spike – shape the fixture with HarfBuzz (uharfbuzz 0.57.0)
+      - name: Engine C – shape C01–C03 with HarfBuzz, hb-subset (retain-gids) + subset checks
         run: |
-          mkdir -p build/pdf_probe_c
-          python3 tool/pdf_probe/hb_shape_fixture.py "$RUNNER_TEMP/probe-fonts/NotoSerifDevanagari-Regular.ttf" test/fixtures/pdf_probe/c01_kitab.txt build/pdf_probe_c/hb_c01_kitab.json
-          python3 -c "import json,sys; a=json.load(open('build/pdf_probe_c/hb_c01_kitab.json')); b=json.load(open('test/fixtures/pdf_probe/c01_kitab.hb.json')); k=('glyphs','upem','font_sha256','glyph_to_unicode'); same=all(a[x]==b[x] for x in k); print('CI shaping == committed fixture:', same); sys.exit(0 if same else 1)"
-      - name: Engine C spike – write PDFs (Dart GlyphPdfWriter, /ActualText)
+          python3 tool/pdf_probe/hb_shape_fixture.py "$RUNNER_TEMP/probe-fonts" build/hb test/fixtures/pdf_probe/c01_kitab.txt test/fixtures/pdf_probe/c02_kshetra.txt test/fixtures/pdf_probe/c03_rashtra_mixed.txt --subset
+          echo "-- negative test: a subset missing a used glyph must be detected"
+          python3 tool/pdf_probe/hb_shape_fixture.py "$RUNNER_TEMP/probe-fonts" --self-test-subset
+          echo "-- fresh shaping must equal the committed fixtures (not a visual claim)"
+          python3 - <<'PY'
+          import json, sys
+          bad = []
+          for c in ('c01_kitab', 'c02_kshetra', 'c03_rashtra_mixed'):
+              a = json.load(open(f'build/hb/{c}.hb.json'))
+              b = json.load(open(f'test/fixtures/pdf_probe/{c}.hb.json'))
+              strip = lambda d: [{k: f[k] for k in ('index', 'file', 'sha256', 'upem', 'glyph_to_unicode')} for f in d['fonts']]
+              same = a['glyphs'] == b['glyphs'] and a['runs'] == b['runs'] and strip(a) == strip(b)
+              print(c, 'CI shaping == committed fixture:', same)
+              if not same:
+                  bad.append(c)
+          sys.exit(1 if bad else 0)
+          PY
+      - name: Engine C – write PDFs (Dart GlyphPdfWriter, full + subset + controls)
         env:
-          PDF_PROBE_HB_JSON: ${{ github.workspace }}/build/pdf_probe_c/hb_c01_kitab.json
+          PDF_PROBE_HB_DIR: ${{ github.workspace }}/build/hb
           PDF_PROBE_FONT_DIR: ${{ runner.temp }}/probe-fonts
           PDF_PROBE_C_OUT_DIR: ${{ github.workspace }}/build/pdf_probe_c
         run: flutter test test/pdf_probe/engine_c_spike_test.dart --reporter expanded
-      - name: Engine C spike – independent checks (qpdf, render, extract, fonts)
+      - name: Engine C – PDFium text extraction (pdfrx, chromium/8125)
+        env:
+          PDF_PROBE_C_OUT_DIR: ${{ github.workspace }}/build/pdf_probe_c
+        run: |
+          mkdir -p "$RUNNER_TEMP/pdfium"
+          curl -fsSL --retry 3 "https://github.com/bblanchon/pdfium-binaries/releases/download/chromium%2F8125/pdfium-linux-x64.tgz" | tar xz -C "$RUNNER_TEMP/pdfium"
+          PDFIUM_PATH="$RUNNER_TEMP/pdfium/lib/libpdfium.so" flutter test test/pdf_probe/engine_c_pdfium_extract_test.dart --reporter expanded
+      - name: Engine C – PDF.js text extraction (pdfjs-dist 4.10.38)
+        run: |
+          mkdir -p "$RUNNER_TEMP/pdfjs" && cd "$RUNNER_TEMP/pdfjs" && npm init -y >/dev/null && npm install --silent --no-audit --no-fund pdfjs-dist@4.10.38
+          cd "$GITHUB_WORKSPACE"
+          node "$GITHUB_WORKSPACE/tool/pdf_probe/pdfjs_extract.mjs" "$RUNNER_TEMP/pdfjs/node_modules/pdfjs-dist" build/pdf_probe_c/extracted build/pdf_probe_c/pdf/*.pdf
+          node -p "'pdfjs-dist ' + require('$RUNNER_TEMP/pdfjs/node_modules/pdfjs-dist/package.json').version" > build/pdf_probe_c/extracted/PDFJS_VERSION
+      - name: Engine C – independent checks (qpdf, render + raqm reference, pdffonts, Poppler, MuPDF, PDF.js, PDFium)
         run: |
           python3 tool/pdf_probe/verify.py build/pdf_probe_c "$RUNNER_TEMP/probe-fonts" --print-png-base64
-          for f in build/pdf_probe_c/pdf/*.pdf; do echo "== $f"; qpdf --check "$f" | tail -2; pdftotext -enc UTF-8 -nopgbrk "$f" - | od -An -tx1 | head -2; done
-          echo "## Engine C spike (M2b-3b-2a)" >> "$GITHUB_STEP_SUMMARY"
+          python3 tool/pdf_probe/extract_compare.py build/pdf_probe_c build/hb
+          mkdir -p build/pdf_probe_c/fonts-report/subset-fonts-not-committed && cp build/hb/fonts/*.ttf build/pdf_probe_c/fonts-report/subset-fonts-not-committed/
+          (cd build/pdf_probe_c && find pdf png compare expected extracted -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
           cat build/pdf_probe_c/report.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         with:
-          name: pdf-export-probe-engine-c-spike
+          name: pdf-export-probe-engine-c-3cases
           path: build/pdf_probe_c
           retention-days: 30
 

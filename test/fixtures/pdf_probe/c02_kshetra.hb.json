@@ -1,0 +1,84 @@
+{
+  "id": "c02_kshetra",
+  "text": "क्षेत्र",
+  "codepoints": [
+    "U+0915",
+    "U+094D",
+    "U+0937",
+    "U+0947",
+    "U+0924",
+    "U+094D",
+    "U+0930"
+  ],
+  "harfbuzz": "15.0.0",
+  "uharfbuzz": "0.57.0",
+  "runs": [
+    {
+      "font": 0,
+      "start": 0,
+      "end": 7
+    }
+  ],
+  "fonts": [
+    {
+      "index": 0,
+      "file": "NotoSerifDevanagari-Regular.ttf",
+      "sha256": "e272d11d271c61a8d5d0f65764fd368ae53b9f9dabcce244a8941aa8f32ccc70",
+      "bytes": 280180,
+      "num_glyphs": 997,
+      "upem": 1000,
+      "bbox": [
+        -526,
+        -660,
+        1413,
+        1397
+      ],
+      "ascent": 930,
+      "descent": -625,
+      "cap_height": 715,
+      "glyph_to_unicode": {
+        "40": 2375
+      },
+      "subset": {
+        "file": "fonts/c02_kshetra.NotoSerifDevanagari-Regular.subset.ttf",
+        "bytes": 17972,
+        "sha256": "dedd12e004fbf3216d24ef61040252189869aee8436f58883547e399a0056c04",
+        "reduction_pct": 93.6,
+        "checks": "PASS",
+        "problems": []
+      }
+    }
+  ],
+  "glyphs": [
+    {
+      "font": 0,
+      "gid": 92,
+      "cluster": 0,
+      "ax": 695,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0915094D0937"
+    },
+    {
+      "font": 0,
+      "gid": 40,
+      "cluster": 0,
+      "ax": 0,
+      "ay": 0,
+      "dx": -95,
+      "dy": 0,
+      "name": "uni0947"
+    },
+    {
+      "font": 0,
+      "gid": 307,
+      "cluster": 4,
+      "ax": 575,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0924094D0930"
+    }
+  ]
+}
