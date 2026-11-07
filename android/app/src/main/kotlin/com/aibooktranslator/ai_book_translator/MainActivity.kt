@@ -19,6 +19,13 @@ class MainActivity : FlutterActivity() {
                     } catch (e: Exception) {
                         result.error("render_failed", e.toString(), null)
                     }
+                    "saveToDownloads" -> try {
+                        val name = call.argument<String>("name")!!
+                        val bytes = call.argument<ByteArray>("bytes")!!
+                        result.success(saveToDownloads(name, bytes))
+                    } catch (e: Exception) {
+                        result.error("save_failed", e.toString(), null)
+                    }
                     "probeOutputDir" -> result.success(getExternalFilesDir("pdf_probe")?.absolutePath)
                     "deviceInfo" -> result.success(
                         mapOf(
@@ -30,5 +37,21 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    // Probe evidence only: files in Downloads survive the test-run uninstall,
+    // so CI can adb-pull them. Needs API 29+ (no storage permission).
+    private fun saveToDownloads(name: String, bytes: ByteArray): String? {
+        if (android.os.Build.VERSION.SDK_INT < 29) return null
+        val values = android.content.ContentValues().apply {
+            put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "application/octet-stream")
+            put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, "Download/pdf_probe_b")
+        }
+        val uri = contentResolver.insert(
+            android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values,
+        ) ?: return null
+        contentResolver.openOutputStream(uri)!!.use { it.write(bytes) }
+        return uri.toString()
     }
 }

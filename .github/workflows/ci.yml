@@ -188,7 +188,7 @@ jobs:
             mkdir -p build/pdf_probe_b build/android_fonts
             flutter test integration_test/pdf_probe_android_test.dart -d emulator-5554 --reporter expanded > build/pdf_probe_b_test.log 2>&1 || (cat build/pdf_probe_b_test.log; exit 1)
             cat build/pdf_probe_b_test.log | grep -v "PROBE [0-9]"
-            adb pull /sdcard/Android/data/com.aibooktranslator.ai_book_translator/files/pdf_probe/manifest.json build/pdf_probe_b/manifest.json || echo "manifest not on device; using log"
+            adb pull /sdcard/Download/pdf_probe_b/manifest.json build/pdf_probe_b/manifest.json || echo "manifest not on device; using log"
             adb shell ls /system/fonts > build/android_fonts/list.txt
             for f in $(tr -d '\r' < build/android_fonts/list.txt | grep -E 'Devanagari|^Roboto'); do adb pull /system/fonts/$f build/android_fonts/ > /dev/null; done
       - name: Unpack Engine B output

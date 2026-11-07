@@ -48,6 +48,11 @@ void main() {
         ..createSync(recursive: true)
         ..writeAsStringSync(manifest);
     }
+    final saved = await engine.channel.invokeMethod<String>('saveToDownloads', {
+      'name': 'manifest.json',
+      'bytes': Uint8List.fromList(utf8.encode(manifest)),
+    });
+    debugPrint('PROBE_SAVED $saved');
     final b64 = base64.encode(utf8.encode(manifest));
     const chunk = 600;
     final n = (b64.length / chunk).ceil();
