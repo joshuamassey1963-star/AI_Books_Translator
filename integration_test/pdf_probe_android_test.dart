@@ -54,6 +54,8 @@ void main() {
     for (var i = 0; i < n; i++) {
       final end = (i + 1) * chunk < b64.length ? (i + 1) * chunk : b64.length;
       debugPrint('PROBE $i/$n ${b64.substring(i * chunk, end)}');
+      // logcat drops lines when they arrive in a burst; pace them.
+      await Future<void>.delayed(const Duration(milliseconds: 40));
     }
   });
 }

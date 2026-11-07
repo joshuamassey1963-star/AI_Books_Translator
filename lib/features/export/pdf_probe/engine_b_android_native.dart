@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/services.dart';
 
 import 'pdf_export_probe.dart';
@@ -14,12 +12,12 @@ import 'probe_cases.dart';
 /// [render] throws [UnsupportedError] there.
 class AndroidNativePdfEngine implements PdfExportProbe {
   const AndroidNativePdfEngine({
-    MethodChannel channel = const MethodChannel(channelName),
-  }) : _channel = channel;
+    this.channel = const MethodChannel(channelName),
+  });
 
   static const String channelName = 'ai_book_translator/pdf_probe';
 
-  final MethodChannel _channel;
+  final MethodChannel channel;
 
   @override
   String get engineId => 'engine_b_android_native';
@@ -27,7 +25,7 @@ class AndroidNativePdfEngine implements PdfExportProbe {
   @override
   Future<Uint8List> render(ProbeCase probeCase, ProbeFontSet fonts) async {
     try {
-      final bytes = await _channel.invokeMethod<Uint8List>('renderCase', {
+      final bytes = await channel.invokeMethod<Uint8List>('renderCase', {
         'id': probeCase.id,
         'rtl': probeCase.rtl,
         'blocks': [
@@ -48,8 +46,8 @@ class AndroidNativePdfEngine implements PdfExportProbe {
 
   /// App-specific external directory for probe output (no permission).
   Future<String?> outputDir() =>
-      _channel.invokeMethod<String>('probeOutputDir');
+      channel.invokeMethod<String>('probeOutputDir');
 
   Future<Map<Object?, Object?>?> deviceInfo() =>
-      _channel.invokeMethod<Map<Object?, Object?>>('deviceInfo');
+      channel.invokeMethod<Map<Object?, Object?>>('deviceInfo');
 }
