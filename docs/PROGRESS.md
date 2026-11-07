@@ -12,6 +12,7 @@
 - V1-CI-02 Android debug APK in CI
 
 ## In progress (code + unit tests exist, feature not complete)
+- 2026-11-07 (S11) M2b-3b-1: Engine B (Android native PDF) PoC – shaping correct, Unicode copy/search fails (D-028, run 42367039900). No working Hindi PDF engine yet.
 - V1-NAV-03 Home (empty state only)
 - V1-CI-03 iOS build verified (debug, unsigned); release builds + SHA-256 pending
 - V1-IMP-01 EPUB, V1-IMP-02 TXT/DOCX, V1-IMP-04 structure, V1-IMP-05 sniffing/limits, V1-IMP-06 SHA-256, V1-IMP-07 chapters, V1-SEC-02 hardening, V1-IMP-03/V1-PDF-01/V1-PDF-04/V1-OCR-01/V1-OCR-03 (M2b-1a) – engine only; no import screen, no storage, not tried on real books yet

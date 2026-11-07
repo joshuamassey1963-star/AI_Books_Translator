@@ -1,6 +1,6 @@
 # Session ledger — AI Books Translator
 
-**Last synced from GitHub:** 2026-11-07. Historical facts / evidence only; current state may have changed. Read [AGENTS.md](../AGENTS.md) and [PROJECT_MEMORY.md](PROJECT_MEMORY.md) first.
+**Last synced from GitHub:** 2026-11-07 (end of Session 11). Historical facts / evidence only; current state may have changed. Read [AGENTS.md](../AGENTS.md) and [PROJECT_MEMORY.md](PROJECT_MEMORY.md) first.
 
 ## Milestone and PR timeline
 
@@ -17,6 +17,7 @@
 | S8: DEV-01 | Debug-only Developer Tests UI: encoding, Kruti Dev, TXT parser diagnostics. APK artifact identification | PR #5 merged as `bb5a8cb`; [42176973417](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42176973417), 142 tests | No production reader/import/translation, device tests pending |
 | S9: M-DEV-02a | User-initiated real TXT system picker inside debug diagnostics, preview and encoding options; More → build information; v0.1.1+2 | PR #6 merged as `f39b5d8`; [42202007273](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42202007273) successful; 162 tests reported before merge | `file_selector` full memory read, 200MB limit is not peak-memory guarantee; tracked [Issue #7](https://github.com/joshuamassey1963-star/AI_Books_Translator/issues/7) |
 | S10: M2b-3a | **Dart PDF Engine A tested and REJECTED for Hindi shaping**, source Unicode extractable in 11/13 synthetic cases; embedded fonts+ToUnicode; evidence PDF/PNG/HarfBuzz comparisons | [PR #8](https://github.com/joshuamassey1963-star/AI_Books_Translator/pull/8) open at snapshot, head `527a3e7`; latest runs [42204479441](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42204479441) and [42204486293](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42204486293) passed. Report: 165 tests passed, 1 skipped in regular test phase; generator passed in dedicated probe | Engine B/C/D untested, visual phone checks not done, Hindi production PDF export remains blocked by shaping |
+| S11: PR #9 + PR #8 merge, M2b-3b-1 | PR #9 merged `74606e6`, PR #8 merged `19f3630`. **Engine B (Android native PdfDocument) PoC: visual PASS 3/3, Unicode copy FAIL 3/3 → PARTIAL, rejected as-is (D-028)** | Develop CI [42365226139](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42365226139), [42365707590](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42365707590). Branch `feature/m2b-3b-1-shaped-pdf-poc`, run [42367039900](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42367039900): 170 passed + 1 skipped, emulator test passed, artifact `pdf-export-probe-engine-b-android` | Only 3 cases; emulator only; iOS not evaluated; owner visual check pending; PR not merged |
 
 ### Why the Engine A failure matters
 - The `pdf` 3.13.1 probe had fonts embedded, subset and ToUnicode; that is **not enough** for Devanagari visual correctness. GSUB/GPOS positioning, i-matra, conjunct, reph/half-form shaping failed; Hebrew mark positioning also failed.
@@ -24,6 +25,8 @@
 - The runner's `pdf-export-probe-engine-a` artifact includes generated PDFs, expected and extracted text, images, comparisons and JSON/Markdown reports. Artifact expires according to GitHub retention; do not assume perpetual availability.
 
 ## Current task handoff (as at snapshot)
+**Update, end of Session 11:** PR #8 and PR #9 are merged. M2b-3b-1 is done as a PARTIAL result (Engine B shapes Hindi correctly but breaks copy/search). Next: **M2b-3b-2**, HarfBuzz-shaped glyph writer with `/ActualText`, only after owner go. The paragraphs below are the Session 10 snapshot.
+
 **Immediate integration gate:** PR #8 is **open and mergeable** against `develop` at snapshot. Verify its current head and all latest checks, review code and licensing, then merge to `develop` only if safe and approved in the next owner-directed session. `main` must remain untouched.
 
 **Next coding step after integration:** **M2b-3b**, select and evaluate one valid shaped export approach, either:

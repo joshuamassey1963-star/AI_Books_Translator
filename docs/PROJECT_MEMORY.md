@@ -1,6 +1,6 @@
 # Project Memory: AI Books Translator
 
-**Snapshot:** 2026-11-07. **Repository:** https://github.com/joshuamassey1963-star/AI_Books_Translator
+**Snapshot:** 2026-11-07 (updated end of Session 11). **Repository:** https://github.com/joshuamassey1963-star/AI_Books_Translator
 **Purpose:** A durable, public, project-only knowledge base for a new AI coding agent, engineer, maintainer or reviewer. This is **not** a dump of any private AI/user memory. Cross-check all changeable facts with current GitHub state before acting.
 
 > Quick start: Read root [AGENTS.md](../AGENTS.md) first; then this file, [SESSION_LEDGER.md](SESSION_LEDGER.md), the existing [ROADMAP.md](ROADMAP.md), [FEATURE_MATRIX.md](FEATURE_MATRIX.md), [DECISIONS.md](DECISIONS.md), [HANDOVER.md](HANDOVER.md), and [REGRESSION_CASES.md](REGRESSION_CASES.md). The ledger is a historical snapshot, **not** live branch state.
@@ -25,7 +25,7 @@ All requirements must be tracked in FEATURE_MATRIX.md with unique IDs, version, 
 - Encoding/Unicode: `lib/features/engine/text/`, strict UTF-8/UTF-16 + BOM handling, conservative no-BOM handling, NFC helper, no NFKC. Original bytes preserved.
 - Legacy font: `lib/features/engine/legacy/`: **Kruti Dev 010** mapping using SIL MIT-licensed map, explicit confirmed-font-only conversion. Does not auto-apply to pages, does not prove Chanakya works, does not preserve all mixed-font spans yet.
 - Debug diagnostics: `lib/features/dev_tests/` (encoding, Kruti Dev, TXT parser/file picker) and build identity via More. **Debug-only tools are not production import UI.**
-- PDF export probes: `lib/features/export/pdf_probe/` on PR #8 feature branch only, not yet in `develop` at snapshot.
+- PDF export probes: `lib/features/export/pdf_probe/` (Engine A, merged via PR #8) and Engine B Android native probe (`engine_b_android_native.dart` + `android/.../NativePdfProbe.kt`, method channel `ai_book_translator/pdf_probe`, no UI) on `feature/m2b-3b-1-shaped-pdf-poc`. Harness: `tool/pdf_probe/` (verify.py, visual review JSON per engine).
 - Planned translation layers: L0 raw extraction; L1 normalized Unicode; L2 user-corrected source; L3 AI translation; L4 edited translation. Keep each separate; the TTS design consumes validated L2/L1 or L4/L3 only.
 
 Technical decisions, contracts, and architecture diagrams in existing docs take priority over short summaries here. Some older PROGRESS/HANDOVER sections are stale; inspect dated sections and actual HEAD.
@@ -34,20 +34,23 @@ Technical decisions, contracts, and architecture diagrams in existing docs take 
 
 | Item | Snapshot / evidence |
 | --- | --- |
-| Integration branch | `develop` = `f39b5d8b01578bb62110c4056d7bdc49c0fc08eb` |
+| Integration branch | `develop` = `19f3630` (merge of PR #8), after `74606e6` (merge of PR #9); develop CI runs 42365226139 and 42365707590 succeeded |
 | Protected by owner instruction | `main` = `882ff87fa8fc9e8c5d8a6dbd594182a8dd22cdd0`; never merge without explicit permission |
-| PR #6 | M-DEV-02a TXT picker merged into `develop` as `f39b5d8`; develop CI run [42202007273](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42202007273) succeeded |
-| Open PR #8 | [M2b-3a Hindi PDF export Engine A probe](https://github.com/joshuamassey1963-star/AI_Books_Translator/pull/8) `feature/m2b-3a-pdf-export-probe` → `develop`, head `527a3e745cba1a6406ecb8d12cf99bb7298c8636`, **not merged** at snapshot |
-| PR #8 latest CI | [42204479441](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42204479441) and [42204486293](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42204486293) succeeded |
-| Feature Matrix | **187 IDs: 4 VERIFIED, 30 IN PROGRESS, 153 PLANNED** on PR #8 branch; not a completion percentage |
-| UI APK | Last meaningful debug feature build **0.1.1+2**, TXT picker; a test artifact is not an app release |
+| PR #8 | M2b-3a Engine A probe merged as `19f3630` (head `527a3e7`) |
+| PR #9 | Project memory files merged as `74606e6` (head `e1637d6`) |
+| Open feature branch | `feature/m2b-3b-1-shaped-pdf-poc` (M2b-3b-1), PR into `develop`, **not merged**; see HANDOVER Session 11 for its PR number and CI |
+| Feature Matrix | 187 IDs: 4 VERIFIED, 30 IN PROGRESS, 153 PLANNED (unchanged in S11); not a completion percentage |
+| UI APK | Last meaningful debug feature build **0.1.1+2**, TXT picker; no APK published in S10/S11 |
 | Memory risk | New sessions must read current refs, review open PRs, and check current CI instead of assuming the rows here remain current |
 
 ### Critical engineering result (D-027)
 M2b-3a evaluated Dart `pdf` 3.13.1 with pinned-hash OFL Noto fonts and 13 synthetic cases. It **FAILED Devanagari shaping** (i-matra order, conjuncts, reph/rakar, mark positioning, half forms); text extraction matched source in 11/13 cases, fonts were embedded with ToUnicode. Therefore **Engine A is rejected for production Hindi PDF export**. Do **not** call the export feature done or reintroduce untested manual glyph reordering. Evidence and visual comparisons are artifacts of run [42203433139](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42203433139), artifact `pdf-export-probe-engine-a`; see D-027 and PR #8.
 
+### Engineering result (D-028, M2b-3b-1)
+Engine B = Android `PdfDocument` + `StaticLayout` (OS HarfBuzz shaping, system Noto fonts), 3 cases on an Android 14 emulator, run [42367039900](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42367039900): **glyphs visually correct 3/3, but `pdftotext` loses shaped Hindi glyphs 3/3** (किताब → कताब). Overall PARTIAL; rejected as-is. Likely cause: Skia PDF ToUnicode maps one glyph to at most one code point and writes no `/ActualText`. Next proposed: M2b-3b-2 HarfBuzz-shaped glyph writer with `/ActualText` (owner go needed).
+
 ### Open risks and blocked tasks
-1. **Next engineering work is conditional:** review/merge PR #8 into `develop` only after confirming latest CI/diff. Follow with **M2b-3b**, *one* properly shaped alternative for Hindi PDF export. Candidate paths: Android/iOS native text shaping + PDF, or HarfBuzz-shaped glyph placement with a verified extractable ToUnicode text layer. Make and document an evidence-based choice; no broad parallel implementation.
+1. **Next engineering work is conditional:** review the M2b-3b-1 PR; then, only on owner go, **M2b-3b-2**: HarfBuzz-shaped glyph placement with a verified `/ActualText`/ToUnicode text layer, same 3 cases first. No working Hindi PDF engine exists yet (Engine A fails shaping, Engine B fails copy/search). iOS not evaluated.
 2. **Chanakya / Walkman-Chanakya905 mapping (M2b-2b)** deferred pending verified owner-provided samples and legal mapping provenance. Never commit private sample books/fonts or invent mappings.
 3. **M2b-2c** mixed-font confidence / span-specific application remains pending. PDF font info is currently mostly page-level, not reliable per run; do not auto-convert entire page.
 4. **Issue [#7](https://github.com/joshuamassey1963-star/AI_Books_Translator/issues/7)**: `file_selector` reads accepted TXT file into memory. A 200 MB nominal limit does not bound peak memory. Track bounded/streaming read solution before claiming large-file readiness.

@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 11 / M2b-3b-1, 2026-11-07, no app version change)
+- Engine B probe: Android native PDF (`PdfDocument` + `StaticLayout`) behind the `ai_book_translator/pdf_probe` method channel (no UI), 3 PoC cases, CI job `pdf-export-probe-android` on an Android 14 emulator. Result: shaping correct, Unicode copy/search broken (D-028).
+- Project memory files merged (AGENTS.md, docs/PROJECT_MEMORY.md, docs/SESSION_LEDGER.md; PR #9).
 ### Added (Session 10 / M2b-3a, 2026-11-06, no app version change)
 - `PdfExportProbe` interface and Engine A probe (Dart `pdf` package) with 13 synthetic cases; CI job `pdf-export-probe` with poppler + HarfBuzz reference checks and artifact. Result: Engine A fails Devanagari shaping (D-027).
 ### Changed

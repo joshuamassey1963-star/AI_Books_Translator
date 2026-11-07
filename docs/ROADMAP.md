@@ -11,7 +11,7 @@ Requirements source: `docs/AI_Book_Translator_Roadmap_V1_V3.pdf` (03 Nov 2026). 
 | M2b-2 | Legacy font mapping + Unicode conversion prototype | V1-LEG-01..08 | see M2b-2a..c | IN PROGRESS – M2b-2a DONE (PR #4, 721fe4f); M2b-2b DEFERRED (needs verified Chanakya samples + licensing evidence); M2b-2c pending font/span confidence work |
 | DEV-01 | Developer Tests screen v0.1 (debug only, separate from M2b-2b) | V1-DEV-01 | encoding / Kruti Dev / TXT diagnostics + named debug APK artifact | DONE – PR #5 merged (bb5a8cb) |
 | M-DEV-02a | Real TXT file picker + build info, APK 0.1.1+2 (debug tooling, separate from M2b-2b) | V1-DEV-02 | system picker, limits, encoding choice, preview, version/SHA | DONE – PR #6 merged (f39b5d8) |
-| M2b-3 | Hindi PDF export + shaping verification | V1-EXP-04/06/07, V1-FNT-01/02/05 (partial) | see M2b-3a..c | IN PROGRESS – M2b-3a done: Engine A FAILS shaping (PR #8, run 42203433139); M2b-3b next after owner go |
+| M2b-3 | Hindi PDF export + shaping verification | V1-EXP-04/06/07, V1-FNT-01/02/05 (partial) | see M2b-3a..c | IN PROGRESS – M2b-3a done: Engine A FAILS shaping (PR #8 merged 19f3630); M2b-3b-1 done: Engine B (Android native) visual PASS but text layer FAIL (run 42367039900, D-028); M2b-3b-2 next after owner go |
 | M2b-4 | AI provider adapter + mock connection tests | V1-AIP-01/03/04 (interface + mocks) | see below | PLANNED |
 | M2b-5 | Real-book regression tests + integration review | REGRESSION_CASES RC-001..015 | see below | PLANNED |
 | M3 | V1-A Storage | V1-STO-01/02/04, V1-SEC-01, V1-SET-01 | Schema + migration tests; secure-storage test | PLANNED |
@@ -61,7 +61,9 @@ Order: M2b-1 → M2b-2 → M2b-3 → M2b-4 → M2b-5. One sub-milestone (or one 
 ### M2b-3 Hindi PDF export and shaping verification
 - **Scope:** probe engines A–D from TEXT_ENCODING_FONT_COMPATIBILITY.md §8 with test strings T01–T11.
   - **M2b-3a** Engine A (`pdf` package + Noto Serif Devanagari fetched in CI): CI generates PDF + PNG renders (pdftoppm) + `pdftotext`/`pdffonts` checks as artifacts. **Done Session 10: Engine A FAILS Devanagari shaping** (no GSUB/GPOS: i-matra not reordered, no conjuncts/reph/half forms); extraction and embedding pass. Advanced before M2b-2b/2c because it is testable on its own with synthetic text and is the biggest technical risk for Hindi book export. See D-027.
-  - **M2b-3b** one alternative prototype (native platform PDF or HarfBuzz-shaped path), chosen from 3a results.
+  - **M2b-3b** one alternative prototype (native platform PDF or HarfBuzz-shaped path), chosen from 3a results. Split:
+    - **M2b-3b-1** engine selection + 3-case PoC. **Done Session 11:** Engine B = Android `PdfDocument` + `StaticLayout`. Visual PASS 3/3, Unicode copy/search FAIL 3/3 → PARTIAL; rejected as-is (D-028, run 42367039900).
+    - **M2b-3b-2** (next, owner go needed) HarfBuzz-shaped glyph writer with `/ActualText` per cluster, same 3 cases first; then decide whether to extend to all 13 cases.
   - **M2b-3c** comparison table X01–X10, decision record; owner visual check on Android + iOS.
 - **Dependencies:** V1-FNT-02 license check for the bundled font.
 - **Acceptance criteria:** X01–X10 all PASS for the chosen engine; otherwise the export stays "not production-ready".
