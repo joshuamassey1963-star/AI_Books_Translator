@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 10 / M2b-3a, 2026-11-06, no app version change)
+- `PdfExportProbe` interface and Engine A probe (Dart `pdf` package) with 13 synthetic cases; CI job `pdf-export-probe` with poppler + HarfBuzz reference checks and artifact. Result: Engine A fails Devanagari shaping (D-027).
+### Changed
+- CI publishes the debug APK artifact only when the commit message contains `[publish-apk]` (owner APK policy). The APK is still built as a compile check.
 ### Added (Session 9 / M-DEV-02a, version 0.1.1+2, 2026-11-06)
 - Developer Tests → TXT Parser: "Choose TXT File" (system document picker, no storage permission), size limit checked before reading, encoding choice for UTF-16 without BOM, file name/size/encoding/chapters/paragraphs/SHA-256/warnings, bounded scrollable preview with copy.
 - More → About this build: version, build number, build type, commit SHA injected by CI (`--dart-define=GIT_SHA`).

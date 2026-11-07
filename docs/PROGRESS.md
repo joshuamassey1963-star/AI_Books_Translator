@@ -35,3 +35,5 @@
 M2b – see HANDOVER.md.
 
 - 2026-11-06 Session 9: PR #5 merged (bb5a8cb). M-DEV-02a on `feature/m-dev-02a-txt-picker` (PR #6): real TXT picker, About this build, version 0.1.1+2. Run 42184277563: 162/162, Android + iOS green, APK artifact verified (versionCode 2, versionName 0.1.1, GIT_SHA embedded, no storage permissions).
+
+- 2026-11-06 Session 10: PR #6 merged (f39b5d8, develop CI 42202007273 green); issue #7 (streaming file reading). M2b-3a on `feature/m2b-3a-pdf-export-probe` (PR #8): Engine A (Dart pdf) probe; run 42203433139: 165 passed + 1 skipped, probe job green; Engine A FAILS Devanagari shaping (D-027). APK upload now opt-in (`[publish-apk]`).

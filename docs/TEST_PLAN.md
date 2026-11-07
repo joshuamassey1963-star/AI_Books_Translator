@@ -38,6 +38,11 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - CI `Verify APK metadata`: aapt2 badging (versionCode/versionName), aapt2 permissions (fails on storage permissions), GIT_SHA present in the APK, signer certificate printed.
 - Manual: owner picks real TXT files on the phone (checklist in HANDOVER.md).
 
+## Hindi PDF export probe (M2b-3a)
+- Unit `test/pdf_probe/engine_a_probe_test.dart`: probe case ids, NFC, coverage of ZWJ/ZWNJ/halant/i-matra/reph/digits/Greek/Hebrew. The generation test is skipped unless `PDF_PROBE_FONT_DIR` and `PDF_PROBE_OUT_DIR` are set.
+- CI job `pdf-export-probe`: fetches OFL Noto fonts (`tool/pdf_probe/fetch_fonts.sh`, SHA-256 pinned), writes one PDF per case plus the source text separately (`expected/`), then `tool/pdf_probe/verify.py` runs pdftotext/pdffonts/pdftoppm, makes a HarfBuzz reference image per case (`compare/`), and writes `report.json`/`report.md`. Artifact `pdf-export-probe-engine-a`.
+- Visual verdicts come only from a person (`tool/pdf_probe/engine_a_visual_review.json`); without a review a case stays NEEDS_REVIEW.
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 

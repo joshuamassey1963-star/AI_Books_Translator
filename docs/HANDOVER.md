@@ -57,6 +57,15 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
 - Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
 
+## Session 10 (PR #6 merge + M2b-3a Hindi PDF export Engine A)
+- A: PR #6 merged into develop as f39b5d8 (head 4df8614; runs 42185131670 + 42185156679 green). Develop CI after merge: run 42202007273 success. Large-file risk tracked: issue #7 / V1-DEV-03 (picker reads whole file into memory; 200 MB check does not limit peak memory; not production-ready for large files).
+- Owner APK policy: no new testing APK for routine work; version unchanged (0.1.1+2). CI still builds Android/iOS; APK artifact upload only with `[publish-apk]` in the commit message.
+- B/C: branch `feature/m2b-3a-pdf-export-probe`. Commits 1779719 feat → 6682fb4 format bot → 9791581 analyzer fix → 94fe69d visual review + diff printing. (Run 42202809715 failed analyze with 4 infos; fixed.)
+- Code: `lib/features/export/pdf_probe/` (probe_cases.dart, pdf_export_probe.dart, engine_a_dart_pdf.dart), `test/pdf_probe/engine_a_probe_test.dart`, `tool/pdf_probe/` (fetch_fonts.sh, fonts.sha256, verify.py, engine_a_visual_review.json). Dependency `pdf` ^3.13.1 (Apache-2.0). Fonts not in git.
+- CI run 42203433139 on 94fe69d: analyze ✅, tests 165 passed + 1 skipped ✅, PDF probe job ✅, Android ✅, iOS ✅ (no APK artifact published, as intended). Artifact pdf-export-probe-engine-a (id 13495696466, 30 days, expires 2026-12-06 16:04 IST): pdf/, expected/, extracted/, png/, compare/ (left = Engine A, right = HarfBuzz reference), report.json, report.md.
+- Result: Engine A FAIL for Devanagari (11 FAIL/PARTIAL of 13 visually; PASS: digits/punctuation, Latin/Greek). Extraction exact 11/13, fonts embedded + ToUnicode 13/13, nothing outside page. Rejected for Hindi (D-027). Visual review by Hark only; owner check pending.
+- Not done / next: M2b-3b (one shaped alternative: Android PdfDocument/iOS UIGraphicsPDFRenderer, or HarfBuzz-shaped glyph path) – only after owner go. M2b-2b deferred (Chanakya samples + licensing evidence). M2b-2c pending. PR #8 not merged.
+
 ## Session 9 (PR #5 merge + M-DEV-02a real TXT picker, APK 0.1.1+2)
 - A: PR #5 merged into develop, merge commit bb5a8cb (head 9bbe378; runs 42177818518 + 42177841668 green, 142/142). Develop CI after merge not separately checked.
 - Branch `feature/m-dev-02a-txt-picker`. Commits: d479bbd feat → 8d7952f format bot → eb9dc69 ci fix (signer print step was fatal in run 42183428510; tests/iOS were green there).

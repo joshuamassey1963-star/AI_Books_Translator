@@ -2,7 +2,7 @@
 
 Source: *AI Book Translator Roadmap V1–V3* (03 Nov 2026) plus the project brief. Statuses: `PLANNED`, `IN PROGRESS`, `IMPLEMENTED`, `VERIFIED`, `BLOCKED`. **IMPLEMENTED ≠ VERIFIED**: VERIFIED needs passing automated tests, and real-device checks where the roadmap asks for them.
 
-Totals: 186 features — IMPLEMENTED: 0, IN PROGRESS: 28, PLANNED: 154, VERIFIED: 4
+Totals: 187 features — IMPLEMENTED: 0, IN PROGRESS: 30, PLANNED: 153, VERIFIED: 4
 
 Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional.
 
@@ -63,7 +63,7 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-EXP-01 | V1 | Export | TXT export | P0 | V1-ENG-01 | PLANNED | - |
 | V1-EXP-02 | V1 | Export | DOCX export (preserve formatting where possible) | P0 | V1-ENG-01 | PLANNED | - |
 | V1-EXP-03 | V1 | Export | EPUB export (metadata, TOC, chapter order, tag validation) | P0 | V1-ENG-01 | PLANNED | - |
-| V1-EXP-04 | V1 | Export | Unicode Hindi PDF with font embedding (Devanagari ligatures, matras, copy/search) (acceptance V1-EXP-06; not production-ready until shaping verified) | P0 | V1-ENG-01 | PLANNED | - |
+| V1-EXP-04 | V1 | Export | Unicode Hindi PDF with font embedding (Devanagari ligatures, matras, copy/search) (acceptance V1-EXP-06; not production-ready until shaping verified) | P0 | V1-ENG-01 | PLANNED | M2b-3a: Engine A (Dart pdf) FAILS Devanagari shaping (run 42203433139); needs another engine (M2b-3b) |
 | V1-EXP-05 | V1 | Export | Hindi-only and bilingual output; Unicode normalization; pre-export validation | P1 | V1-EXP-01 | PLANNED | - |
 | V1-SEC-01 | V1 | Security | API keys in Android Keystore / iOS Keychain; never in code, logs, git | P0 | - | PLANNED | - |
 | V1-SEC-02 | V1 | Security | Import hardening: path traversal, ZIP bomb, XXE, malformed XML, oversized images, unsafe HTML (+ image safety V1-IMG-05) | P0 | V1-IMP-01 | IN PROGRESS | path traversal, zip bomb ratio/size/count, XXE/entities, malformed XML tested; oversized images + unsafe HTML pending |
@@ -83,7 +83,8 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-CI-01 | V1 | QA/CI | GitHub Actions: analyze + unit/widget tests | P0 | - | VERIFIED | CI run 42146771459 green (analyze: no issues, 14/14 tests) |
 | V1-CI-02 | V1 | QA/CI | Android debug APK build in CI | P0 | V1-CI-01 | VERIFIED | CI run 42146771459: debug APK built + uploaded |
 | V1-DEV-01 | V1 | QA/Dev | Developer Tests screen (debug builds only): text encoding inspection, Kruti Dev 010 conversion, TXT parser diagnostics on synthetic input; file picker + PDF diagnostics not included | P2 | V1-ENC-01, V1-LEG-03 | IN PROGRESS | merged PR #5 (bb5a8cb); run 42176973417 |
-| V1-DEV-02 | V1 | QA/Dev | Developer Tests: real TXT file via system picker (no storage permission), size limit before read, encoding choice for BOM-less UTF-16, metadata + bounded preview + copy; About this build in More (version, build, type, CI-injected commit SHA) | P2 | V1-DEV-01, V1-IMP-01 | IN PROGRESS | run 42184277563: 162/162, APK 0.1.1+2 metadata checked in CI; not yet checked on a phone |
+| V1-DEV-02 | V1 | QA/Dev | Developer Tests: real TXT file via system picker (no storage permission), size limit before read, encoding choice for BOM-less UTF-16, metadata + bounded preview + copy; About this build in More (version, build, type, CI-injected commit SHA) | P2 | V1-DEV-01, V1-IMP-01 | IN PROGRESS | merged PR #6 (f39b5d8); run 42184277563; owner reported the earlier APK works; not re-checked on a phone for 0.1.1+2 |
+| V1-DEV-03 | V1 | QA/Dev | Bounded/streaming file reading for the file picker (peak memory not limited by the 200 MB size check) – PR #6 review | P1 | V1-DEV-02 | PLANNED | GitHub issue #7 |
 | V1-CI-03 | V1 | QA/CI | iOS build on macOS runner; release builds with SHA-256 artifacts | P1 | V1-CI-01 | IN PROGRESS | iOS debug no-codesign build green (run 42149165709); release builds + SHA-256 pending |
 | V1-CI-04 | V1 | QA/CI | Integration tests on emulator | P1 | V1-CI-01 | PLANNED | integration_test/app_launch_test (written, not run) |
 | V1-REL-01 | V1 | Release | Acceptance: 3 EPUBs keep chapter order + paragraph count; force-close resume; Devanagari checks on Android+iOS | P0 | all V1 | PLANNED | - |
@@ -123,8 +124,8 @@ Priority: P0 = release blocker, P1 = important, P2 = nice-to-have, P3 = optional
 | V1-OCR-02 | V1 | OCR (detection) | Garbled-text detection (low score, PUA-heavy, unknown legacy font) – owner req 2026-11-06 | P0 | V1-PDF-04 | IN PROGRESS | PUA/FFFD/control/Latin-1 signals – run 42164277343; legacy detection M2b-2 |
 | V1-OCR-03 | V1 | OCR (detection) | 'OCR required' page status + OcrEngine interface (no engine in V1) – owner req 2026-11-06 | P1 | V1-OCR-01 | IN PROGRESS | ocr_engine_test (2) + classifyPage tests – run 42158726040 |
 | V1-OCR-04 | V1 | OCR (detection) | Original page image preservation (render on demand, cache by page hash) – owner req 2026-11-06 | P1 | V1-PDF-01 | PLANNED | - |
-| V1-EXP-06 | V1 | Export | Hindi PDF acceptance checklist X01–X10 (matras, conjuncts, half letters, mixed text, select/copy, Unicode copy, search, embedding, wrapping, Android+iOS) – owner req 2026-11-06 | P0 | V1-EXP-04, V1-FNT-02 | PLANNED | - |
-| V1-EXP-07 | V1 | Export | Alternative PDF engine prototypes and comparison (pdf pkg, native platform, HarfBuzz-shaped, HTML print) – owner req 2026-11-06 | P0 | V1-EXP-06 | PLANNED | - |
+| V1-EXP-06 | V1 | Export | Hindi PDF acceptance checklist X01–X10 (matras, conjuncts, half letters, mixed text, select/copy, Unicode copy, search, embedding, wrapping, Android+iOS) – owner req 2026-11-06 | P0 | V1-EXP-04, V1-FNT-02 | IN PROGRESS | X01–X10 checked for Engine A in CI (run 42203433139): X05–X08 pass, X01–X03 fail; X10 not tested |
+| V1-EXP-07 | V1 | Export | Alternative PDF engine prototypes and comparison (pdf pkg, native platform, HarfBuzz-shaped, HTML print) – owner req 2026-11-06 | P0 | V1-EXP-06 | IN PROGRESS | Engine A probe + PdfExportProbe interface (run 42203433139); B/C/D not built |
 | V1-TRP-01 | V1 | Text Protection | Paragraph alignment source↔translation by block id – owner req 2026-11-06 | P0 | V1-ENG-07 | PLANNED | - |
 | V1-TRP-02 | V1 | Text Protection | Protect reference words in other scripts (English, Greek, Hebrew, …) via placeholders + validation – owner req 2026-11-06 | P0 | V1-ENG-02, V1-GLO-02 | PLANNED | - |
 | V1-TRP-03 | V1 | Text Protection | Digit policy: user-selected English (ASCII) or Devanagari digits, validated on output – owner req 2026-11-06 | P0 | V1-INS-01 | PLANNED | - |

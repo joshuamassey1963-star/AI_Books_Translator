@@ -101,11 +101,51 @@ jobs:
           "$BT/apksigner" verify --print-certs "$APK" 2>&1 | grep -iE "certificate (DN|SHA-256)" || \
             unzip -p "$APK" 'META-INF/*.RSA' | keytool -printcert | grep -E "Owner|SHA256" || \
             echo "signer certificate could not be printed"
-      - uses: actions/upload-artifact@v7
+      # Owner APK policy (Session 10): the build above is a compile check.
+      # The APK is published only when the commit message contains
+      # [publish-apk] (significant user-facing milestones).
+      - if: contains(github.event.head_commit.message, '[publish-apk]')
+        uses: actions/upload-artifact@v7
         with:
           name: app-debug-apk
           path: dist/${{ env.APK_NAME }}
           retention-days: 14
+
+  pdf-export-probe:
+    name: PDF export probe (M2b-3a, evidence only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      - name: Tools (poppler, fontTools, Pillow with raqm)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q poppler-utils libraqm0 libfribidi0 libharfbuzz0b
+          python3 -m pip install --quiet pillow fonttools
+          python3 -c "from PIL import features; print('raqm:', features.check('raqm'))"
+          pdftotext -v 2>&1 | head -1
+      - name: Fetch OFL Noto fonts (pinned SHA-256, not in git)
+        run: tool/pdf_probe/fetch_fonts.sh "$RUNNER_TEMP/probe-fonts"
+      - name: Generate probe PDFs (Engine A, Dart pdf package)
+        env:
+          PDF_PROBE_FONT_DIR: ${{ runner.temp }}/probe-fonts
+          PDF_PROBE_OUT_DIR: ${{ github.workspace }}/build/pdf_probe
+        run: flutter test test/pdf_probe/ --reporter expanded
+      - name: Independent checks (render, extract, fonts)
+        run: python3 tool/pdf_probe/verify.py build/pdf_probe "$RUNNER_TEMP/probe-fonts" --print-png-base64
+      - name: Summary
+        run: cat build/pdf_probe/report.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-export-probe-engine-a
+          path: build/pdf_probe
+          retention-days: 30
 
   build-ios-unsigned:
     name: iOS build (no code signing)

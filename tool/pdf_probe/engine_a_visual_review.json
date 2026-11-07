@@ -1,0 +1,20 @@
+{
+  "engine": "engine_a_dart_pdf",
+  "reviewed_by": "Hark (agent), comparing pdftoppm render with a HarfBuzz/raqm reference, CI run 42202809715 (commit 6682fb4). Owner visual check still pending.",
+  "rule": "A case FAILS if any glyph cluster differs visibly from the shaped reference, even when text extraction is exact.",
+  "cases": {
+    "p01_paragraphs": {"visual": "FAIL", "why": "i-matra not reordered (वशिाल, हन्दिी); conjunct shown with visible halant"},
+    "p02_mixed": {"visual": "FAIL", "why": "Latin parts correct; Hindi conjuncts broken (शब्द shows halant, अध्ययन)"},
+    "p03_matras": {"visual": "FAIL", "why": "i-matra (ि) drawn after the consonant (कि, हिंदी, स्थिति); other matras OK"},
+    "p04_conjuncts_reph": {"visual": "FAIL", "why": "no conjunct ligatures (क्ष त्र ज्ञ ...), no reph (धर्म), no rakar (प्रकाश)"},
+    "p05_halant": {"visual": "FAIL", "why": "word-final halant OK (वाक्, जगत्); in-word conjuncts broken (विद्यालय, अक्षर)"},
+    "p06_zwj_zwnj": {"visual": "FAIL", "why": "ZWJ half form not produced; same output as explicit halant"},
+    "p07_nukta": {"visual": "PARTIAL", "why": "nukta dot drawn but without GPOS positioning; readable, not typographically correct"},
+    "p08_digits_punct": {"visual": "PASS", "why": "Devanagari and Latin digits, danda, quotes, dashes, ₹, % match reference"},
+    "p09_vedic": {"visual": "PARTIAL", "why": "ॐ ऽ ॰ OK; svara marks drawn unpositioned"},
+    "p10_headings": {"visual": "FAIL", "why": "bold headings and order OK; conjuncts broken (अध्याय, प्रारम्भ, अनुच्छेद)"},
+    "p11_long_wrap": {"visual": "FAIL", "why": "wrapping, paragraph order and page flow OK, nothing clipped; Devanagari shaping broken throughout"},
+    "p12_latin_greek": {"visual": "PASS", "why": "Latin accents and polytonic Greek (precomposed) match reference"},
+    "p13_hebrew": {"visual": "FAIL", "why": "RTL order OK but points (niqqud, dagesh, shin dot) misplaced or missing"}
+  }
+}
