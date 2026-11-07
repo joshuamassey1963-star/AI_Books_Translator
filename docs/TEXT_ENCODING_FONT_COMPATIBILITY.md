@@ -225,7 +225,7 @@ A PDF file being produced is **not** acceptance. Every engine candidate is teste
 |---|---|---|---|---|---|---|
 | X01 | matras correct | rendered PNG (pdftoppm in CI) + owner visual check | FAIL – i-matra not reordered (run 42203433139) | PASS (visual, 3 cases) – i-matra correct (run 42367039900) | PASS (C01–C03, agent visual, run 42381200825) | NOT TESTED |
 | X02 | conjuncts correct | same | FAIL – no conjuncts/reph (run 42203433139) | PASS (visual, 3 cases) – क्ष, त्र, ष्ट्र, reph correct (run 42367039900) | PASS (C02/C03 conjuncts + reph, run 42381200825) | NOT TESTED |
-| X03 | half letters correct | same | FAIL – no half forms, visible halant (run 42203433139) | NOT TESTED – no ZWJ half-form case in the 3-case PoC | NOT TESTED | NOT TESTED |
+| X03 | half letters correct | same | FAIL – no half forms, visible halant (run 42203433139) | NOT TESTED – no ZWJ half-form case in the 3-case PoC | PASS host-side (C04 ZWJ half form, C05 ZWNJ; Poppler/MuPDF/PDFium exact with word spans; PDF.js FAIL) (D-032) | NOT TESTED |
 | X04 | Hindi + English in one paragraph | same | FAIL – Latin OK, Hindi part broken (run 42203433139) | PASS (visual) – s03 Hindi + English + digits (run 42367039900) | PASS (C03 two fonts, run 42381200825) | NOT TESTED |
 | X05 | text selectable/copyable | open in viewer | PASS (CI) – text layer present, ToUnicode yes (run 42203433139) | PARTIAL – text layer present, ToUnicode yes, but Hindi glyphs drop out (run 42367039900) | PASS (CI) – text layer via /ActualText (run 42373414737) | NOT TESTED |
 | X06 | copied text = original Unicode | `pdftotext` diff vs source (NFC) | PASS 11/13 – p08 spaces, p13 Hebrew order differ (run 42203433139) | FAIL 0/3 – e.g. किताब → कताब (run 42367039900) | PASS 3/3 Poppler+MuPDF; PDFium needs word spans; PDF.js FAIL (run 42381200825) | NOT TESTED |
@@ -237,6 +237,7 @@ A PDF file being produced is **not** acceptance. Every engine candidate is teste
 Known risk (to be confirmed in M2b-3, not assumed): pure-Dart PDF writers usually do not apply OpenType Devanagari shaping, so i-matra order, reph and conjuncts may break. An engine that fails X01–X04 is **not production-ready**, whatever else it passes. Copy fidelity (X06) often fails even when the look is right, because ligature glyphs need correct ToUnicode/ActualText mappings – it is checked separately.
 
 ## 9. Change log of this document
+- 2026-11-07: X03 ZWJ/ZWNJ + composite glyph (Session 15, D-032).
 - 2026-11-07: PDF.js + Firefox viewer interop (Session 14, D-031).
 - 2026-11-07: Engine C three cases, subsetting, extractor interop (Session 13, D-030).
 - 2026-11-07: Engine C spike (1 case) results added (Session 12, D-029).

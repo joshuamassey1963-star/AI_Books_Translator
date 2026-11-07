@@ -57,6 +57,13 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
 - Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
 
+## Session 15 (PR #13 merge + M2b-3b-2c-2 ZWJ/ZWNJ + composite) – 2026-11-07
+- A: PR #13 head 0257e0a: push run 42385736480 all green; its pull_request run 42385748755 had an Android debug build job hanging >40 min in `flutter build apk` (runner issue; same tree green on push). Marked ready, merged as **6be8e3a**. Develop CI run 42387497067 after merge: success (all 5 jobs).
+- Branch `feature/m2b-3b-2c-2-zwj-composite`: b22de9d (C04–C06 fixtures, composite checks + self-test, word_subset variant, CI) → 67aa0b9 (dart format bot) → 8ff1d5e (visual review, gate entries) → docs commit.
+- Results: D-032. Owner decision recorded: PDF.js/Firefox failure is a known unresolved failure, not accepted.
+- Evidence: runs 42387645150, 42387951491; artifact `pdf-export-probe-engine-c-interop` on those runs. Tests +185 ~3.
+- Next: owner go for M2b-3b-2c-3 (PDF.js mitigation, no duplicate text) and owner manual viewer results.
+
 ## Session 14 (PR #12 merge + M2b-3b-2c-1 PDF.js / viewer interop) – 2026-11-07
 - A: PR #12 (head 80c0e0d, runs 42381792546 + 42381796924 green; no app dependency changes) merged into develop as **96858c7**. Develop CI run 42383903169 success.
 - Branch `feature/m2b-3b-2c-1-pdfjs-viewers`: 9318769 (PDF.js 4 vs 6, Firefox automation, cluster-CID experiment) → 6505908 (pdfjs 6 loading-task destroy fix after run 42384260237 failed) → 1334cfe (regression gate, word+cluster-ToUnicode experiment, screenshots) → b69420e (visual review of experiments, manual checklist) → docs commit. Tooling and docs only: no Dart/app change, version 0.1.1+2, no APK.
