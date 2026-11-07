@@ -173,6 +173,8 @@ jobs:
           PDF_PROBE_FONT_DIR: ${{ runner.temp }}/probe-fonts
           PDF_PROBE_C_OUT_DIR: ${{ github.workspace }}/build/pdf_probe_c
         run: flutter test test/pdf_probe/engine_c_spike_test.dart --reporter expanded
+      - name: Engine C – EXPERIMENT cluster-CID ToUnicode PDFs (probe only, M2b-3b-2c-1)
+        run: python3 tool/pdf_probe/cluster_cid_experiment.py build/hb build/pdf_probe_c
       - name: Engine C – PDFium text extraction (pdfrx, chromium/8125)
         env:
           PDF_PROBE_C_OUT_DIR: ${{ github.workspace }}/build/pdf_probe_c
@@ -180,22 +182,31 @@ jobs:
           mkdir -p "$RUNNER_TEMP/pdfium"
           curl -fsSL --retry 3 "https://github.com/bblanchon/pdfium-binaries/releases/download/chromium%2F8125/pdfium-linux-x64.tgz" | tar xz -C "$RUNNER_TEMP/pdfium"
           PDFIUM_PATH="$RUNNER_TEMP/pdfium/lib/libpdfium.so" flutter test test/pdf_probe/engine_c_pdfium_extract_test.dart --reporter expanded
-      - name: Engine C – PDF.js text extraction (pdfjs-dist 4.10.38)
+      - name: Engine C – PDF.js text extraction (pdfjs-dist 4.10.38 baseline + 6.5.438 latest stable)
         run: |
-          mkdir -p "$RUNNER_TEMP/pdfjs" && cd "$RUNNER_TEMP/pdfjs" && npm init -y >/dev/null && npm install --silent --no-audit --no-fund pdfjs-dist@4.10.38
-          cd "$GITHUB_WORKSPACE"
-          node "$GITHUB_WORKSPACE/tool/pdf_probe/pdfjs_extract.mjs" "$RUNNER_TEMP/pdfjs/node_modules/pdfjs-dist" build/pdf_probe_c/extracted build/pdf_probe_c/pdf/*.pdf
-          node -p "'pdfjs-dist ' + require('$RUNNER_TEMP/pdfjs/node_modules/pdfjs-dist/package.json').version" > build/pdf_probe_c/extracted/PDFJS_VERSION
+          for v in 4.10.38 6.5.438; do
+            d="$RUNNER_TEMP/pdfjs-$v"; mkdir -p "$d"
+            (cd "$d" && npm init -y >/dev/null && npm install --silent --no-audit --no-fund "pdfjs-dist@$v")
+            tag="pdfjs${v%%.*}"
+            node tool/pdf_probe/pdfjs_extract.mjs "$d/node_modules/pdfjs-dist" build/pdf_probe_c/extracted "$tag" build/pdf_probe_c/pdf/*.pdf
+            cat "build/pdf_probe_c/extracted/PDFJS_VERSION_$tag"; echo
+          done
+      - name: Engine C – real Firefox PDF viewer (automated, headless Selenium + geckodriver)
+        continue-on-error: true
+        run: |
+          firefox --version; geckodriver --version | head -1
+          python3 -m pip install --quiet selenium==4.52.0
+          python3 tool/pdf_probe/firefox_viewer_check.py build/pdf_probe_c
       - name: Engine C – independent checks (qpdf, render + raqm reference, pdffonts, Poppler, MuPDF, PDF.js, PDFium)
         run: |
           python3 tool/pdf_probe/verify.py build/pdf_probe_c "$RUNNER_TEMP/probe-fonts" --print-png-base64
           python3 tool/pdf_probe/extract_compare.py build/pdf_probe_c build/hb
           mkdir -p build/pdf_probe_c/fonts-report/subset-fonts-not-committed && cp build/hb/fonts/*.ttf build/pdf_probe_c/fonts-report/subset-fonts-not-committed/
-          (cd build/pdf_probe_c && find pdf png compare expected extracted -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
+          mkdir -p build/pdf_probe_c/viewer && (cd build/pdf_probe_c && find pdf png compare expected extracted viewer -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
           cat build/pdf_probe_c/report.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         with:
-          name: pdf-export-probe-engine-c-3cases
+          name: pdf-export-probe-engine-c-interop
           path: build/pdf_probe_c
           retention-days: 30
 
