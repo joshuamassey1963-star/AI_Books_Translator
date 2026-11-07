@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 15 / M2b-3b-2c-2, 2026-11-07, no app version change)
+- Engine C probe cases C04 (ZWJ), C05 (ZWNJ), C06 (composite glyph uni0906), default word+subset variant, composite subset checks and negative self-test (D-032). Not used by the app.
 ### Added (Session 14 / M2b-3b-2c-1, 2026-11-07, no app version change)
 - PDF.js 4.10.38 vs 6.5.438 extraction, automated Firefox viewer check, probe-only ToUnicode experiments, interop regression gate, manual viewer checklist (D-031). Not used by the app.
 ### Added (Session 13 / M2b-3b-2b, 2026-11-07, no app version change)

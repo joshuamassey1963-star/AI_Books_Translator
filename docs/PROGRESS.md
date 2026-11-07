@@ -12,6 +12,7 @@
 - V1-CI-02 Android debug APK in CI
 
 ## In progress (code + unit tests exist, feature not complete)
+- 2026-11-07 (S15) M2b-3b-2c-2: C04 ZWJ, C05 ZWNJ, C06 composite EXACT on Poppler/MuPDF/PDFium (word spans); PDF.js/Firefox FAIL (known unresolved) (D-032, run 42387951491).
 - 2026-11-07 (S14) M2b-3b-2c-1: PDF.js 4/6 and Firefox viewer cannot copy/search Engine C Hindi (ignore /ActualText); Chrome/Acrobat/Android not tested (D-031, run 42385050495).
 - 2026-11-07 (S13) M2b-3b-2b: Engine C passes C01–C03 on Poppler + MuPDF with full and subset fonts; PDFium needs word spans; PDF.js fails (D-030, run 42381200825). Not production.
 - 2026-11-07 (S12) M2b-3b-2a: HarfBuzz glyphs + /ActualText spike passes 1 case (किताब) host-side: valid PDF, correct glyphs, exact copy text (D-029, run 42373414737). Not production.

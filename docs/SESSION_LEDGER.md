@@ -1,6 +1,6 @@
 # Session ledger — AI Books Translator
 
-**Last synced from GitHub:** 2026-11-07 (end of Session 14). Historical facts / evidence only; current state may have changed. Read [AGENTS.md](../AGENTS.md) and [PROJECT_MEMORY.md](PROJECT_MEMORY.md) first.
+**Last synced from GitHub:** 2026-11-07 (end of Session 15). Historical facts / evidence only; current state may have changed. Read [AGENTS.md](../AGENTS.md) and [PROJECT_MEMORY.md](PROJECT_MEMORY.md) first.
 
 ## Milestone and PR timeline
 
@@ -21,6 +21,7 @@
 | S12: PR #10 merge, M2b-3b-2a | PR #10 merged `5b07941`. **Engine C spike (HarfBuzz glyphs + /ActualText, own writer): 1 case किताब — qpdf ok, visual PASS, pdftotext exact → PASS; control without /ActualText loses i-matra (D-029)** | Develop CI [42372944456](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42372944456). Branch `feature/m2b-3b-2a-actualtext-spike`, run [42373414737](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42373414737): 179 passed + 2 skipped, artifact `pdf-export-probe-engine-c-spike` | 1 case; host-side HarfBuzz; no subsetting; poppler only; owner visual check pending; PR not merged |
 | S13: PR #11 merge, M2b-3b-2b | PR #11 merged `478aa01`. **Engine C C01–C03: Poppler + MuPDF exact (full + subset), qpdf ok, visual PASS (agent); subsets −93…97 %; PDFium exact only with word spans; PDF.js FAIL (D-030)** | Develop CI [42379956758](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42379956758). Branch `feature/m2b-3b-2b-engine-c-three-cases`, run [42381200825](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42381200825): 184 passed + 3 skipped, artifact `pdf-export-probe-engine-c-3cases` | Host-side only; interactive viewer search untested; PDF.js fails; owner visual check pending; PR not merged |
 | S14: PR #12 merge, M2b-3b-2c-1 | PR #12 merged `96858c7`. **PDF.js 4.10.38 + 6.5.438 FAIL (ignore /ActualText); Firefox 159 viewer: render OK, Hindi copy/search FAIL; Chrome/Acrobat/Android NOT TESTED (D-031)** | Develop CI [42383903169](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42383903169). Branch `feature/m2b-3b-2c-1-pdfjs-viewers`, run [42385050495](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42385050495), artifact `pdf-export-probe-engine-c-interop` | Owner decision on PDF.js; manual viewer tests; PR not merged |
+| S15: PR #13 merge, M2b-3b-2c-2 | PR #13 merged `6be8e3a`. **C04 ZWJ, C05 ZWNJ, C06 composite (uni0906, verified) EXACT on Poppler/MuPDF/PDFium with word spans; cluster spans: C05 Poppler/PDFium DIFF; PDF.js/Firefox FAIL (not accepted) (D-032)** | Develop run 42387497067. Branch `feature/m2b-3b-2c-2-zwj-composite`, runs 42387645150, [42387951491](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42387951491) | PR not merged; next M2b-3b-2c-3 after owner go |
 
 ### Why the Engine A failure matters
 - The `pdf` 3.13.1 probe had fonts embedded, subset and ToUnicode; that is **not enough** for Devanagari visual correctness. GSUB/GPOS positioning, i-matra, conjunct, reph/half-form shaping failed; Hebrew mark positioning also failed.
@@ -28,6 +29,8 @@
 - The runner's `pdf-export-probe-engine-a` artifact includes generated PDFs, expected and extracted text, images, comparisons and JSON/Markdown reports. Artifact expires according to GitHub retention; do not assume perpetual availability.
 
 ## Current task handoff (as at snapshot)
+**Update, end of Session 15:** PR #13 merged. ZWJ/ZWNJ/composite covered (D-032). PDF.js failure not accepted. Next: M2b-3b-2c-3 after owner go.
+
 **Update, end of Session 14:** PR #12 merged. PDF.js/Firefox Hindi copy-search unsupported (D-031). Next: **M2b-3b-2c-2** after owner go.
 
 **Update, end of Session 13:** PR #11 merged. M2b-3b-2b: 3/3 PASS on Poppler + MuPDF. Next: **M2b-3b-2c** after owner go.

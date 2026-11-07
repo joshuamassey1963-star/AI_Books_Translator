@@ -148,16 +148,19 @@ jobs:
           name: pdf-export-probe-engine-a
           path: build/pdf_probe
           retention-days: 30
-      - name: Engine C – shape C01–C03 with HarfBuzz, hb-subset (retain-gids) + subset checks
+      - name: Engine C – shape C01–C06 with HarfBuzz, hb-subset (retain-gids) + subset checks
         run: |
-          python3 tool/pdf_probe/hb_shape_fixture.py "$RUNNER_TEMP/probe-fonts" build/hb test/fixtures/pdf_probe/c01_kitab.txt test/fixtures/pdf_probe/c02_kshetra.txt test/fixtures/pdf_probe/c03_rashtra_mixed.txt --subset
+          python3 tool/pdf_probe/hb_shape_fixture.py "$RUNNER_TEMP/probe-fonts" build/hb test/fixtures/pdf_probe/c0[1-6]_*.txt --subset
+          python3 -c "import json,glob,sys; bad=[(f,x['file'],x['subset']['problems']) for f in sorted(glob.glob('build/hb/*.hb.json')) for x in json.load(open(f))['fonts'] if x['subset']['checks']!='PASS']; print('subset checks FAIL:', bad) if bad else print('subset checks: all PASS'); sys.exit(1 if bad else 0)"
           echo "-- negative test: a subset missing a used glyph must be detected"
           python3 tool/pdf_probe/hb_shape_fixture.py "$RUNNER_TEMP/probe-fonts" --self-test-subset
+          echo "-- negative test: a composite glyph with a blanked component must be detected"
+          python3 tool/pdf_probe/hb_shape_fixture.py "$RUNNER_TEMP/probe-fonts" --self-test-composite
           echo "-- fresh shaping must equal the committed fixtures (not a visual claim)"
           python3 - <<'PY'
           import json, sys
           bad = []
-          for c in ('c01_kitab', 'c02_kshetra', 'c03_rashtra_mixed'):
+          for c in ('c01_kitab', 'c02_kshetra', 'c03_rashtra_mixed', 'c04_zwj', 'c05_zwnj', 'c06_composite'):
               a = json.load(open(f'build/hb/{c}.hb.json'))
               b = json.load(open(f'test/fixtures/pdf_probe/{c}.hb.json'))
               strip = lambda d: [{k: f[k] for k in ('index', 'file', 'sha256', 'upem', 'glyph_to_unicode')} for f in d['fonts']]
