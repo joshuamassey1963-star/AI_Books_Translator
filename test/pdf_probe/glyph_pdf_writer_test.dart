@@ -75,10 +75,10 @@ void main() {
     expect(comp.run().glyphs.map((g) => g.glyphId).toList(), [6, 64]);
     final info = (comp.font(0)['composites']! as List).single as Map;
     expect(info['gid'], 6);
-    expect([for (final k in info['components']! as List) (k as Map)['gid']], [
-      5,
-      31,
-    ]);
+    expect(
+      [for (final k in info['components']! as List) (k as Map)['gid']],
+      [5, 31],
+    );
   });
 
   test('C01: i-matra glyph first, text stays logical', () {
