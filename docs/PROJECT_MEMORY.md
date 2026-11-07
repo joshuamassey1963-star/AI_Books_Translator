@@ -1,6 +1,6 @@
 # Project Memory: AI Books Translator
 
-**Snapshot:** 2026-11-07 (updated end of Session 11). **Repository:** https://github.com/joshuamassey1963-star/AI_Books_Translator
+**Snapshot:** 2026-11-07 (updated end of Session 12). **Repository:** https://github.com/joshuamassey1963-star/AI_Books_Translator
 **Purpose:** A durable, public, project-only knowledge base for a new AI coding agent, engineer, maintainer or reviewer. This is **not** a dump of any private AI/user memory. Cross-check all changeable facts with current GitHub state before acting.
 
 > Quick start: Read root [AGENTS.md](../AGENTS.md) first; then this file, [SESSION_LEDGER.md](SESSION_LEDGER.md), the existing [ROADMAP.md](ROADMAP.md), [FEATURE_MATRIX.md](FEATURE_MATRIX.md), [DECISIONS.md](DECISIONS.md), [HANDOVER.md](HANDOVER.md), and [REGRESSION_CASES.md](REGRESSION_CASES.md). The ledger is a historical snapshot, **not** live branch state.
@@ -34,13 +34,14 @@ Technical decisions, contracts, and architecture diagrams in existing docs take 
 
 | Item | Snapshot / evidence |
 | --- | --- |
-| Integration branch | `develop` = `19f3630` (merge of PR #8), after `74606e6` (merge of PR #9); develop CI runs 42365226139 and 42365707590 succeeded |
+| Integration branch | `develop` = `5b07941` (merge of PR #10), after `19f3630` (PR #8) and `74606e6` (PR #9); develop CI run 42372944456 succeeded |
 | Protected by owner instruction | `main` = `882ff87fa8fc9e8c5d8a6dbd594182a8dd22cdd0`; never merge without explicit permission |
 | PR #8 | M2b-3a Engine A probe merged as `19f3630` (head `527a3e7`) |
 | PR #9 | Project memory files merged as `74606e6` (head `e1637d6`) |
-| Open feature branch | `feature/m2b-3b-1-shaped-pdf-poc` (M2b-3b-1), PR into `develop`, **not merged**; see HANDOVER Session 11 for its PR number and CI |
-| Feature Matrix | 187 IDs: 4 VERIFIED, 30 IN PROGRESS, 153 PLANNED (unchanged in S11); not a completion percentage |
-| UI APK | Last meaningful debug feature build **0.1.1+2**, TXT picker; no APK published in S10/S11 |
+| PR #10 | M2b-3b-1 Engine B PoC merged as `5b07941` (head `a309fd8`) |
+| Open feature branch | `feature/m2b-3b-2a-actualtext-spike` (M2b-3b-2a), PR into `develop`, **not merged**; see HANDOVER Session 12 |
+| Feature Matrix | 187 IDs: 4 VERIFIED, 30 IN PROGRESS, 153 PLANNED (unchanged in S11/S12); not a completion percentage |
+| UI APK | Last meaningful debug feature build **0.1.1+2**, TXT picker; no APK published in S10–S12 |
 | Memory risk | New sessions must read current refs, review open PRs, and check current CI instead of assuming the rows here remain current |
 
 ### Critical engineering result (D-027)
@@ -49,8 +50,11 @@ M2b-3a evaluated Dart `pdf` 3.13.1 with pinned-hash OFL Noto fonts and 13 synthe
 ### Engineering result (D-028, M2b-3b-1)
 Engine B = Android `PdfDocument` + `StaticLayout` (OS HarfBuzz shaping, system Noto fonts), 3 cases on an Android 14 emulator, run [42367039900](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42367039900): **glyphs visually correct 3/3, but `pdftotext` loses shaped Hindi glyphs 3/3** (किताब → कताब). Overall PARTIAL; rejected as-is. Likely cause: Skia PDF ToUnicode maps one glyph to at most one code point and writes no `/ActualText`. Next proposed: M2b-3b-2 HarfBuzz-shaped glyph writer with `/ActualText` (owner go needed).
 
+### Engineering result (D-029, M2b-3b-2a)
+Engine C spike = HarfBuzz-shaped glyph ids (host-side uharfbuzz 0.57.0 / HarfBuzz 15.0.0) written by our own tiny `GlyphPdfWriter` (Type0/CIDFontType2, Identity-H, `/ActualText` per cluster). For **one case** (`किताब`): qpdf ok, glyphs visually correct, `pdftotext` exact. Control without `/ActualText` loses the i-matra. Feasible path; not production (no subsetting, one line/font, no device HarfBuzz, only poppler tested). Next: M2b-3b-2b (owner go).
+
 ### Open risks and blocked tasks
-1. **Next engineering work is conditional:** review the M2b-3b-1 PR; then, only on owner go, **M2b-3b-2**: HarfBuzz-shaped glyph placement with a verified `/ActualText`/ToUnicode text layer, same 3 cases first. No working Hindi PDF engine exists yet (Engine A fails shaping, Engine B fails copy/search). iOS not evaluated.
+1. **Next engineering work is conditional:** review the M2b-3b-2a PR; then, only on owner go, **M2b-3b-2b**: the 3 PoC cases with the HarfBuzz + `/ActualText` writer, subsetting and a second extractor. No production Hindi PDF engine exists yet (A fails shaping, B fails copy/search, C is a 1-case host spike). iOS not evaluated.
 2. **Chanakya / Walkman-Chanakya905 mapping (M2b-2b)** deferred pending verified owner-provided samples and legal mapping provenance. Never commit private sample books/fonts or invent mappings.
 3. **M2b-2c** mixed-font confidence / span-specific application remains pending. PDF font info is currently mostly page-level, not reliable per run; do not auto-convert entire page.
 4. **Issue [#7](https://github.com/joshuamassey1963-star/AI_Books_Translator/issues/7)**: `file_selector` reads accepted TXT file into memory. A 200 MB nominal limit does not bound peak memory. Track bounded/streaming read solution before claiming large-file readiness.

@@ -48,6 +48,10 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - Integration `integration_test/pdf_probe_android_test.dart` runs on an Android 14 emulator in CI job `pdf-export-probe-android` (reactivecircus/android-emulator-runner). PDFs go into a manifest saved to Downloads (survives the test uninstall) and are pulled with adb. The emulator's own fonts are pulled so the HarfBuzz reference uses the same fonts.
 - `verify.py` reports `overall`: PASS only when visual is PASS **and** extraction is exact; otherwise PARTIAL/FAIL. Visual verdicts in `tool/pdf_probe/engine_b_android_native_visual_review.json`. Artifact `pdf-export-probe-engine-b-android`.
 
+## Engine C spike (M2b-3b-2a, HarfBuzz + /ActualText)
+- Unit `test/pdf_probe/glyph_pdf_writer_test.dart` (no font needed; committed HarfBuzz output `test/fixtures/pdf_probe/c01_kitab.hb.json` and expected text `c01_kitab.txt`): exact code points; cluster → source mapping (`कि`, `ता`, `ब`) with the i-matra glyph first; UTF-16BE + BOM encoding incl. a surrogate pair; balanced BDC/EMC, one span per cluster, source text exactly once; run/none scopes; structural check of the written PDF; broken PDFs rejected; unmapped/out-of-range/non-monotonic clusters and bad glyph ids throw; glyph list immutable, source text unchanged.
+- CI (job `pdf-export-probe`): uharfbuzz 0.57.0 shapes the fixture with the pinned font and must equal the committed fixture; `test/pdf_probe/engine_c_spike_test.dart` writes 3 PDFs (per-cluster span, one span, control without span); `verify.py` runs qpdf --check, pdftotext, pdffonts, pdftoppm + raqm reference. Artifact `pdf-export-probe-engine-c-spike`. `overall` needs visual PASS + exact text + qpdf ok.
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 

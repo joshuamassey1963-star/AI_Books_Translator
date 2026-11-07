@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 12 / M2b-3b-2a, 2026-11-07, no app version change)
+- Engine C spike: `GlyphPdfWriter` (CID font, HarfBuzz glyph ids, `/ActualText` per cluster), structure check, host-side HarfBuzz fixture script, CI checks with qpdf. One case (`किताब`) passes end to end (D-029). Not used by the app.
 ### Added (Session 11 / M2b-3b-1, 2026-11-07, no app version change)
 - Engine B probe: Android native PDF (`PdfDocument` + `StaticLayout`) behind the `ai_book_translator/pdf_probe` method channel (no UI), 3 PoC cases, CI job `pdf-export-probe-android` on an Android 14 emulator. Result: shaping correct, Unicode copy/search broken (D-028).
 - Project memory files merged (AGENTS.md, docs/PROJECT_MEMORY.md, docs/SESSION_LEDGER.md; PR #9).

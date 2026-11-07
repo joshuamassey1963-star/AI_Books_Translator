@@ -1,0 +1,65 @@
+{
+  "text": "किताब",
+  "codepoints": [
+    "U+0915",
+    "U+093F",
+    "U+0924",
+    "U+093E",
+    "U+092C"
+  ],
+  "font": "NotoSerifDevanagari-Regular.ttf",
+  "font_sha256": "e272d11d271c61a8d5d0f65764fd368ae53b9f9dabcce244a8941aa8f32ccc70",
+  "upem": 1000,
+  "direction": "ltr",
+  "script": "Deva",
+  "harfbuzz": "15.0.0",
+  "uharfbuzz": "0.57.0",
+  "glyphs": [
+    {
+      "gid": 558,
+      "cluster": 0,
+      "ax": 246,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni093F.04"
+    },
+    {
+      "gid": 57,
+      "cluster": 0,
+      "ax": 711,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0915"
+    },
+    {
+      "gid": 73,
+      "cluster": 2,
+      "ax": 538,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0924"
+    },
+    {
+      "gid": 31,
+      "cluster": 2,
+      "ax": 246,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni093E"
+    },
+    {
+      "gid": 80,
+      "cluster": 4,
+      "ax": 507,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni092C"
+    }
+  ],
+  "glyph_to_unicode": {
+    "31": 2366,
+    "57": 2325,
+    "73": 2340,
+    "80": 2348
+  }
+}

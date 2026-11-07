@@ -145,6 +145,12 @@ for c in cases['cases']:
     unsupported = sorted({f'U+{ord(ch):04X}' for ch in expected
                           if not ch.isspace() and ord(ch) not in ZW and font_for(ord(ch), c['rtl']) is None})
     r['chars_without_glyph_in_fonts'] = unsupported
+    try:
+        q = run('qpdf', '--check', str(pdf))
+        r['qpdf_check'] = {0: 'ok', 3: 'warnings'}.get(q.returncode, 'FAIL')
+        r['qpdf_output'] = (q.stdout + q.stderr).strip()[-500:]
+    except FileNotFoundError:
+        r['qpdf_check'] = 'n/a'
     fonts = pdffonts(pdf)
     r['fonts'] = fonts
     r['fonts_embedded'] = bool(fonts) and all(f['emb'] == 'yes' for f in fonts)
@@ -177,7 +183,8 @@ for r in results:
         r['visual'] = v['visual']
         r['visual_why'] = v['why']
     # Full PASS needs both layers: correct glyphs AND exact Unicode text.
-    r['overall'] = ('PASS' if r['visual'] == 'PASS' and r.get('extract_exact') else
+    structure_ok = r.get('qpdf_check', 'n/a') in ('ok', 'n/a')
+    r['overall'] = ('PASS' if r['visual'] == 'PASS' and r.get('extract_exact') and structure_ok else
                     'NEEDS_REVIEW' if r['visual'] == 'NEEDS_REVIEW' else
                     'FAIL' if r['visual'] == 'FAIL' and not r.get('extract_exact') else 'PARTIAL')
 
@@ -186,16 +193,16 @@ report = {'engine': cases['engine'], 'device': cases.get('device'),
           'visual_review': review.get('reviewed_by'),
           'note': 'visual = NEEDS_REVIEW: generation success is not visual correctness.'}
 (out / 'report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
-md = ['| case | gen | extract exact | extract w/o ZW | Hindi words | embedded | ToUnicode | no-glyph chars | outside page | visual | overall |',
-      '|---|---|---|---|---|---|---|---|---|---|---|']
+md = ['| case | gen | extract exact | extract w/o ZW | Hindi words | embedded | ToUnicode | no-glyph chars | outside page | qpdf | visual | overall |',
+      '|---|---|---|---|---|---|---|---|---|---|---|---|']
 for r in results:
     if not r['generated']:
-        md.append(f"| {r['id']} | FAIL | | | | | | | | | |")
+        md.append(f"| {r['id']} | FAIL | | | | | | | | | | |")
         continue
-    md.append('| {id} | ok | {a} | {b} | {w} | {e} | {u} | {n} | {o} | {v} | {ov} |'.format(
+    md.append('| {id} | ok | {a} | {b} | {w} | {e} | {u} | {n} | {o} | {q} | {v} | {ov} |'.format(
         id=r['id'], a=r['extract_exact'], b=r['extract_ignoring_zw'], w=r['hindi_words_found'],
         e=r['fonts_embedded'], u=r['fonts_tounicode'], n=' '.join(r['chars_without_glyph_in_fonts']) or '-',
-        o=len(r['words_outside_page']), v=r['visual'], ov=r['overall']))
+        o=len(r['words_outside_page']), q=r.get('qpdf_check', 'n/a'), v=r['visual'], ov=r['overall']))
 (out / 'report.md').write_text('\n'.join(md) + '\n')
 print('\n'.join(md))
 for r in results:

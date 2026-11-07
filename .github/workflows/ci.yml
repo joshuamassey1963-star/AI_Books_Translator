@@ -112,7 +112,7 @@ jobs:
           retention-days: 14
 
   pdf-export-probe:
-    name: PDF export probe (M2b-3a, evidence only)
+    name: PDF export probe (M2b-3a Engine A + M2b-3b-2a Engine C spike, evidence only)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -126,9 +126,11 @@ jobs:
       - name: Tools (poppler, fontTools, Pillow with raqm)
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y -q poppler-utils libraqm0 libfribidi0 libharfbuzz0b
-          python3 -m pip install --quiet pillow fonttools
+          sudo apt-get install -y -q poppler-utils libraqm0 libfribidi0 libharfbuzz0b qpdf
+          python3 -m pip install --quiet pillow fonttools uharfbuzz==0.57.0
           python3 -c "from PIL import features; print('raqm:', features.check('raqm'))"
+          python3 -c "import uharfbuzz as hb; print('uharfbuzz', hb.__version__, 'harfbuzz', hb.version_string())"
+          qpdf --version | head -1
           pdftotext -v 2>&1 | head -1
       - name: Fetch OFL Noto fonts (pinned SHA-256, not in git)
         run: tool/pdf_probe/fetch_fonts.sh "$RUNNER_TEMP/probe-fonts"
@@ -145,6 +147,28 @@ jobs:
         with:
           name: pdf-export-probe-engine-a
           path: build/pdf_probe
+          retention-days: 30
+      - name: Engine C spike – shape the fixture with HarfBuzz (uharfbuzz 0.57.0)
+        run: |
+          mkdir -p build/pdf_probe_c
+          python3 tool/pdf_probe/hb_shape_fixture.py "$RUNNER_TEMP/probe-fonts/NotoSerifDevanagari-Regular.ttf" test/fixtures/pdf_probe/c01_kitab.txt build/pdf_probe_c/hb_c01_kitab.json
+          python3 -c "import json,sys; a=json.load(open('build/pdf_probe_c/hb_c01_kitab.json')); b=json.load(open('test/fixtures/pdf_probe/c01_kitab.hb.json')); k=('glyphs','upem','font_sha256','glyph_to_unicode'); same=all(a[x]==b[x] for x in k); print('CI shaping == committed fixture:', same); sys.exit(0 if same else 1)"
+      - name: Engine C spike – write PDFs (Dart GlyphPdfWriter, /ActualText)
+        env:
+          PDF_PROBE_HB_JSON: ${{ github.workspace }}/build/pdf_probe_c/hb_c01_kitab.json
+          PDF_PROBE_FONT_DIR: ${{ runner.temp }}/probe-fonts
+          PDF_PROBE_C_OUT_DIR: ${{ github.workspace }}/build/pdf_probe_c
+        run: flutter test test/pdf_probe/engine_c_spike_test.dart --reporter expanded
+      - name: Engine C spike – independent checks (qpdf, render, extract, fonts)
+        run: |
+          python3 tool/pdf_probe/verify.py build/pdf_probe_c "$RUNNER_TEMP/probe-fonts" --print-png-base64
+          for f in build/pdf_probe_c/pdf/*.pdf; do echo "== $f"; qpdf --check "$f" | tail -2; pdftotext -enc UTF-8 -nopgbrk "$f" - | od -An -tx1 | head -2; done
+          echo "## Engine C spike (M2b-3b-2a)" >> "$GITHUB_STEP_SUMMARY"
+          cat build/pdf_probe_c/report.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pdf-export-probe-engine-c-spike
+          path: build/pdf_probe_c
           retention-days: 30
 
   pdf-export-probe-android:
