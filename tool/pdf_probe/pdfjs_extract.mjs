@@ -11,7 +11,8 @@ import { pathToFileURL } from 'url';
 const [mod, outDir, tag, ...pdfs] = process.argv.slice(2);
 const pdfjs = await import(pathToFileURL(path.join(mod, 'legacy/build/pdf.mjs')).href);
 for (const f of pdfs) {
-  const doc = await pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(f)) }).promise;
+  const task = pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(f)) });
+  const doc = await task.promise;
   const page = await doc.getPage(1);
   const tc = await page.getTextContent();
   const text = tc.items.map((i) => i.str + (i.hasEOL ? '\n' : '')).join('');
@@ -22,6 +23,6 @@ for (const f of pdfs) {
     path.join(outDir, `${id}.${tag}.marked.json`),
     JSON.stringify(marked.items.map((i) => (i.type ? i : { str: i.str })), null, 1),
   );
-  await doc.destroy();
+  await task.destroy();
 }
 fs.writeFileSync(path.join(outDir, `PDFJS_VERSION_${tag}`), `pdfjs-dist ${pdfjs.version}`);
