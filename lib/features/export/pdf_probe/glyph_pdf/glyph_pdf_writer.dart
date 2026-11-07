@@ -190,7 +190,8 @@ class GlyphPdfWriter {
     return out.toBytes();
   }
 
-  static String _hex4(int v) => v.toRadixString(16).toUpperCase().padLeft(4, '0');
+  static String _hex4(int v) =>
+      v.toRadixString(16).toUpperCase().padLeft(4, '0');
 
   static String _n(double v) {
     final s = v.toStringAsFixed(3);

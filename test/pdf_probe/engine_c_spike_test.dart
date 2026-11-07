@@ -18,10 +18,10 @@ void main() {
   test(
     'Engine C spike writes c01 PDFs (cluster, run, control)',
     () {
-      final j = jsonDecode(File(hbJson!).readAsStringSync()) as Map<String, Object?>;
-      final expected = File(
-        'test/fixtures/pdf_probe/c01_kitab.txt',
-      ).readAsStringSync();
+      final j =
+          jsonDecode(File(hbJson!).readAsStringSync()) as Map<String, Object?>;
+      final expected = File('test/fixtures/pdf_probe/c01_kitab.txt')
+          .readAsStringSync();
       expect(j['text'], expected, reason: 'shaped text = fixture');
       final fontBytes = File('$fontDir/${j['font']}').readAsBytesSync();
       expect(sha256.convert(fontBytes).toString(), j['font_sha256']);

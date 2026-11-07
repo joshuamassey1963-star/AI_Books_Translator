@@ -31,10 +31,11 @@ String cps(String s) => s.runes
     .join(' ');
 
 void main() {
-  final fixture =
-      jsonDecode(File('test/fixtures/pdf_probe/c01_kitab.hb.json').readAsStringSync())
-          as Map<String, Object?>;
-  final expected = File('test/fixtures/pdf_probe/c01_kitab.txt').readAsStringSync();
+  final fixture = jsonDecode(
+    File('test/fixtures/pdf_probe/c01_kitab.hb.json').readAsStringSync(),
+  ) as Map<String, Object?>;
+  final expected = File('test/fixtures/pdf_probe/c01_kitab.txt')
+      .readAsStringSync();
   final fakeFont = Uint8List.fromList(utf8.encode('FAKE-FONT-BYTES'));
   const writer = GlyphPdfWriter();
   final toUni = {
@@ -69,9 +70,9 @@ void main() {
       ActualTextScope.cluster,
     );
     expect(markedContentBalanced(content), isTrue);
-    final spans = RegExp(
-      r'/Span <</ActualText <([0-9A-F]+)>>> BDC',
-    ).allMatches(content).map((m) => decodePdfUtf16BeHex(m.group(1)!));
+    final spans = RegExp(r'/Span <</ActualText <([0-9A-F]+)>>> BDC')
+        .allMatches(content)
+        .map((m) => decodePdfUtf16BeHex(m.group(1)!));
     expect(spans.toList(), ['कि', 'ता', 'ब']);
     expect(spans.join(), expected, reason: 'source text exactly once');
     expect(RegExp(r'\bBDC\b').allMatches(content).length, 3);
@@ -122,10 +123,16 @@ void main() {
     final i = s.indexOf('0000000015 00000 n');
     expect(i, greaterThan(0));
     final bad = s.replaceRange(i, i + 10, '0000000016');
-    expect(checkPdfStructure(Uint8List.fromList(latin1.encode(bad))), isNotEmpty);
+    expect(
+      checkPdfStructure(Uint8List.fromList(latin1.encode(bad))),
+      isNotEmpty,
+    );
     final cut = Uint8List.sublistView(pdf, 0, pdf.length - 7);
     expect(checkPdfStructure(cut), isNotEmpty);
-    expect(checkPdfStructure(Uint8List.fromList(utf8.encode('hello'))), isNotEmpty);
+    expect(
+      checkPdfStructure(Uint8List.fromList(utf8.encode('hello'))),
+      isNotEmpty,
+    );
     expect(markedContentBalanced('EMC BDC'), isFalse);
     expect(markedContentBalanced('BDC BDC EMC'), isFalse);
   });
@@ -135,18 +142,21 @@ void main() {
         ShapedRun(text: expected, glyphs: g, unitsPerEm: 1000);
     const g0 = ShapedGlyph(glyphId: 57, cluster: 0, xAdvance: 700);
     expect(
-      () => runOf([g0, const ShapedGlyph(glyphId: 1, cluster: 9, xAdvance: 1)])
-          .clusters(),
+      () =>
+          runOf([g0, const ShapedGlyph(glyphId: 1, cluster: 9, xAdvance: 1)])
+              .clusters(),
       throwsA(isA<ShapedRunException>()),
     );
     expect(
-      () => runOf([const ShapedGlyph(glyphId: 1, cluster: 2, xAdvance: 1), g0])
-          .clusters(),
+      () =>
+          runOf([const ShapedGlyph(glyphId: 1, cluster: 2, xAdvance: 1), g0])
+              .clusters(),
       throwsA(isA<ShapedRunException>()),
     );
     expect(
-      () => runOf([const ShapedGlyph(glyphId: 1, cluster: 1, xAdvance: 1)])
-          .clusters(),
+      () =>
+          runOf([const ShapedGlyph(glyphId: 1, cluster: 1, xAdvance: 1)])
+              .clusters(),
       throwsA(isA<ShapedRunException>()),
     );
     expect(() => runOf([]).clusters(), throwsA(isA<ShapedRunException>()));
@@ -162,7 +172,9 @@ void main() {
   test('glyph list is immutable; source text never modified', () {
     final run = runFromJson(fixture);
     expect(
-      () => run.glyphs.add(const ShapedGlyph(glyphId: 1, cluster: 0, xAdvance: 1)),
+      () => run.glyphs.add(
+        const ShapedGlyph(glyphId: 1, cluster: 0, xAdvance: 1),
+      ),
       throwsUnsupportedError,
     );
     writer.write(run: run, fontBytes: fakeFont, fontName: 'X');
