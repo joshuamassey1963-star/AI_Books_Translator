@@ -57,6 +57,16 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
 - Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
 
+## Session 12 (PR #10 merge + M2b-3b-2a HarfBuzz + /ActualText spike) – 2026-11-07
+- A: PR #10 (head a309fd8, runs 42368189779 + 42368204635 green, no dependency changes, Engine B marked rejected in D-028) merged into develop as **5b07941**. Develop CI run 42372944456 success.
+- B/C: branch `feature/m2b-3b-2a-actualtext-spike`. Code: `lib/features/export/pdf_probe/glyph_pdf/` (`shaped_run.dart`, `pdf_text_string.dart`, `glyph_pdf_writer.dart`, `pdf_structure_check.dart`), `tool/pdf_probe/hb_shape_fixture.py` (uharfbuzz 0.57.0 / HarfBuzz 15.0.0), fixtures `test/fixtures/pdf_probe/c01_kitab.txt` + `c01_kitab.hb.json`, tests `glyph_pdf_writer_test.dart` + `engine_c_spike_test.dart`, visual review `tool/pdf_probe/engine_c_hb_actualtext_visual_review.json`. No app UI, version unchanged (0.1.1+2), no APK.
+- Commits: 97a4c3c feat → bb7173c format bot → 901c823 visual review → docs commit.
+- Result (run 42373414737 on bb7173c; report reproduced on 901c823, run 42373978001, all 5 jobs green): `c01_kitab` qpdf ok, visual PASS (agent), pdftotext exact (U+0915 U+093F U+0924 U+093E U+092C), word found 1/1, font embedded (full, not subset), ToUnicode partial → overall PASS for 1 case. `c01_kitab_run` same. Control without `/ActualText` → `कताब` (PARTIAL), proving `/ActualText` restores the i-matra. D-029.
+- Tests: 179 passed + 2 skipped in Analyze and test (the 2 skipped are the CI-only generators); analyze no issues; Android + iOS builds green.
+- Artifact `pdf-export-probe-engine-c-spike` (run 42373414737, id 13574812241, expires 2026-12-07 18:10 IST).
+- Next: **M2b-3b-2b** (owner go needed): 3 PoC cases incl. Latin/digits in a second font, subsetting (hb-subset retain-gids), second extractor/viewer. Host-side. Not started.
+- Open: PR for M2b-3b-2a (not merged). Owner visual check of A/B/C artifacts. Device HarfBuzz (NDK per ABI, iOS xcframework, FFI) not started. Issue #7 open.
+
 ## Session 11 (PR #9 + PR #8 merge, M2b-3b-1 shaped PDF PoC) – 2026-11-07
 - A: PR #9 (project memory: AGENTS.md, PROJECT_MEMORY, SESSION_LEDGER; head e1637d6, run 42363184408 green) merged into develop as **74606e6**. Develop CI run 42365226139 success. Reviewed: no secrets or personal data; facts match GitHub.
 - B: PR #8 (M2b-3a, head 527a3e7 = verified runs 42204479441 + 42204486293) merged as **19f3630**. No conflicts. Develop CI run 42365707590 success. Engine A stays rejected for Hindi (D-027); harness kept.

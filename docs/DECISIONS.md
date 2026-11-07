@@ -159,3 +159,20 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 - Recommended next (M2b-3b-2, needs owner go): **Path B (HarfBuzz-shaped glyphs + own writer with `/ActualText` per syllable cluster)**, verified with the same harness. Alternative to consider: Engine B visuals plus a separately verified text layer – judged riskier (duplicate or misplaced text in extraction).
 - **Status:** Accepted (Path A tried; rejected as-is for copy/search; Path B recommended).
 
+## D-029 · 2026-11-07 · Engine C spike: HarfBuzz glyphs + `/ActualText` (M2b-3b-2a)
+- Question: can HarfBuzz-shaped glyphs be written to a valid PDF while copy/search returns the original Unicode? One case only: `किताब` (U+0915 U+093F U+0924 U+093E U+092C).
+- Architecture (how visual order and logical text are kept apart):
+  - HarfBuzz output per glyph: glyph id, cluster, x/y advance, x/y offset. Buffer filled with code points, so cluster = index of the first source code point. For `किताब` (Noto Serif Devanagari Regular, HarfBuzz 15.0.0): glyphs `uni093F.04`(cl 0), `uni0915`(0), `uni0924`(2), `uni093E`(2), `uni092C`(4). The i-matra glyph is drawn **before** क, and त + ा share one cluster. A glyph is therefore not one character.
+  - Clusters → source text: cluster i covers code points `[start_i, start_{i+1})` → `कि`, `ता`, `ब`. Non-monotonic clusters (LTR), clusters outside the text, or uncovered code points are rejected.
+  - PDF font: Type0 + CIDFontType2, `/Encoding /Identity-H`, `/CIDToGIDMap /Identity` (2-byte code = glyph id), `/W` widths from HarfBuzz advances, font embedded as `FontFile2` (whole file for now, 280,180 bytes; no subsetting).
+  - ToUnicode: only glyphs that are the direct `cmap` image of one code point (क त ा ब). The contextual i-matra glyph has no entry.
+  - Text: each cluster is wrapped in `/Span <</ActualText <FEFF…>>> BDC … EMC` (UTF-16BE with BOM, ISO 32000-1 §14.9.4); each glyph is placed with its own `Tm` from the HarfBuzz positions; catalog has `/MarkInfo << /Marked true >>`.
+- Result, CI run [42373414737](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42373414737), poppler pdftotext, qpdf 12.3.2:
+  - `c01_kitab` (span per cluster): qpdf --check ok; visual PASS (agent review vs raqm reference, owner check pending); `pdftotext` = exact source code points, no duplicate text; Hindi word found 1/1; font embedded, ToUnicode present. **End-to-end PASS for this one case.**
+  - `c01_kitab_run` (one span for the run): same result.
+  - `c01_kitab_control` (no `/ActualText`): same visual, `pdftotext` = `कताब` (i-matra lost). This shows `/ActualText` is what restores the text.
+- HarfBuzz integration (desk study, nothing built for devices): CI uses uharfbuzz 0.57.0 (Apache-2.0 bindings around HarfBuzz 15.0.0, MIT), pinned; a CI step checks that fresh shaping equals the committed fixture. On devices HarfBuzz is not a public NDK/iOS API, so production needs it bundled: Android `.so` per ABI (arm64-v8a, armeabi-v7a, x86_64) built with the NDK, iOS xcframework; Dart FFI bindings. Size not measured (estimate under ~1–2 MB per ABI). Shaping cannot be done at build time because book text is user content, so runtime FFI is required. Subsetting: `hb-subset` with retain-gids would keep `CIDToGIDMap /Identity` valid – not tried yet.
+- Limits: one case; host-side shaping only; only poppler checked (Acrobat, Chrome/pdf.js, Android/iOS viewers not tested); no subsetting; one font, one line, LTR; FontDescriptor metrics are fixed values, not read from the font.
+- Decision: the HarfBuzz + `/ActualText` path is **feasible** and stays the candidate. Not production-ready. Next: M2b-3b-2b (3 PoC cases incl. multi-font Latin/digits, subsetting, a second extractor/viewer), only after owner go.
+- **Status:** Accepted (spike PASS for 1 case; path continues).
+
