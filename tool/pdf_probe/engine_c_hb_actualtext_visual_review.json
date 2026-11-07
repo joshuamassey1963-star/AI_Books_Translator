@@ -1,0 +1,10 @@
+{
+  "engine": "engine_c_hb_actualtext",
+  "reviewed_by": "Hark (agent), comparing pdftoppm render with a HarfBuzz/raqm reference (same font NotoSerifDevanagari-Regular, sha256 e272d11d...), CI run 42373414737 (commit bb7173c). Owner visual check still pending.",
+  "rule": "Visual only. A case is a full PASS only when visual is PASS, extraction is exact and qpdf --check is ok (see 'overall').",
+  "cases": {
+    "c01_kitab": {"visual": "PASS", "why": "i-matra glyph (uni093F.04) drawn before क, ता and ब as reference"},
+    "c01_kitab_run": {"visual": "PASS", "why": "same glyph drawing as c01_kitab (only the /ActualText scope differs)"},
+    "c01_kitab_control": {"visual": "PASS", "why": "same glyphs; this control has no /ActualText, so its extraction is expected to fail"}
+  }
+}
