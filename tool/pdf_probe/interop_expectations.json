@@ -1,5 +1,5 @@
 {
-  "note": "M2b-3b-2c-1 interop regression gate (extract_compare.py). EXACT entries must stay EXACT (CI fails otherwise). KNOWN_DIFF entries are documented limitations; if one becomes EXACT the report says IMPROVED and this file should be updated after review. C04–C06 added in M2b-3b-2c-2 (run 42387645150).",
+  "note": "M2b-3b-2c-1 interop regression gate (extract_compare.py). EXACT entries must stay EXACT (CI fails otherwise). KNOWN_DIFF entries are documented limitations; if one becomes EXACT the report says IMPROVED and this file should be updated after review. C04–C06 added in M2b-3b-2c-2 (run 42387645150). M2b-3b-2c-3 candidate (_cand), control (_cand0) and MuPDF last-glyph controls added (run 42403192250, D-033).",
   "cases": {
     "c01_kitab": {
       "poppler": "EXACT",
@@ -168,6 +168,100 @@
       "pdfium": "EXACT",
       "pdfjs4": "KNOWN_DIFF",
       "pdfjs6": "KNOWN_DIFF"
+    },
+    "c01_kitab_cand": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c01_kitab_cand0": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c02_kshetra_cand": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c02_kshetra_cand0": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c03_rashtra_mixed_cand": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c03_rashtra_mixed_cand0": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c04_zwj_cand": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c04_zwj_cand0": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c05_zwnj_cand": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c05_zwnj_cand0": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c06_composite_cand": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "EXACT",
+      "pdfjs6": "EXACT"
+    },
+    "c06_composite_cand0": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfium": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF"
+    },
+    "c01_kitab_ctl_lastglyph": {
+      "poppler": "EXACT",
+      "mupdf": "KNOWN_DIFF",
+      "pdfium": "EXACT"
+    },
+    "c06_composite_ctl_lastglyph": {
+      "poppler": "EXACT",
+      "mupdf": "KNOWN_DIFF",
+      "pdfium": "EXACT"
     }
   }
 }

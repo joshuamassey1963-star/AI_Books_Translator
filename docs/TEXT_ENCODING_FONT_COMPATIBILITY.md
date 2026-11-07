@@ -237,6 +237,7 @@ A PDF file being produced is **not** acceptance. Every engine candidate is teste
 Known risk (to be confirmed in M2b-3, not assumed): pure-Dart PDF writers usually do not apply OpenType Devanagari shaping, so i-matra order, reph and conjuncts may break. An engine that fails X01–X04 is **not production-ready**, whatever else it passes. Copy fidelity (X06) often fails even when the look is right, because ligature glyphs need correct ToUnicode/ActualText mappings – it is checked separately.
 
 ## 9. Change log of this document
+- 2026-11-08: PDF.js candidate word-1:1 ToUnicode (Session 16, D-033): improves only fully 1:1 words; Hindi conjuncts still FAIL in PDF.js.
 - 2026-11-07: X03 ZWJ/ZWNJ + composite glyph (Session 15, D-032).
 - 2026-11-07: PDF.js + Firefox viewer interop (Session 14, D-031).
 - 2026-11-07: Engine C three cases, subsetting, extractor interop (Session 13, D-030).

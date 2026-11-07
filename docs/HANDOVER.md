@@ -57,6 +57,13 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
 - Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
 
+## Session 16 (PR #14 merge + M2b-3b-2c-3 PDF.js candidate) – 2026-11-08
+- A: PR #14 head d40587f CI green (push + PR runs); marked ready, merged as **4b998e0**. Develop CI run 42402895825 started after merge (conclusion: see SESSION_LEDGER).
+- Branch `feature/m2b-3b-2c-3-pdfjs-tounicode-candidate`: 824c63d (candidate + gate + CI), 1844932 (gate entries, visual review), docs commit.
+- Result D-033: candidate PASS (limited); MuPDF dup root cause = UTF-8 byte/rune mix in stext-device.c postfix flush. Dart writer unchanged.
+- Evidence: probe job of run 42403192250 (run later cancelled by concurrency after the next push), run 42403464803; artifact `pdf-export-probe-engine-c-interop` with candidate_plan.json, candidate_verdict.json/.md.
+- Next: owner go for M2b-3c technical review, then M2b-4.
+
 ## Session 15 (PR #13 merge + M2b-3b-2c-2 ZWJ/ZWNJ + composite) – 2026-11-07
 - A: PR #13 head 0257e0a: push run 42385736480 all green; its pull_request run 42385748755 had an Android debug build job hanging >40 min in `flutter build apk` (runner issue; same tree green on push). Marked ready, merged as **6be8e3a**. Develop CI run 42387497067 after merge: success (all 5 jobs).
 - Branch `feature/m2b-3b-2c-2-zwj-composite`: b22de9d (C04–C06 fixtures, composite checks + self-test, word_subset variant, CI) → 67aa0b9 (dart format bot) → 8ff1d5e (visual review, gate entries) → docs commit.

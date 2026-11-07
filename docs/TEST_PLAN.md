@@ -64,6 +64,9 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 ## Engine C C04–C06 (M2b-3b-2c-2)
 - C04 ZWJ, C05 ZWNJ, C06 composite (आज, uni0906). Variants: full, subset, word, word_subset (default). Composite check + `--self-test-composite` negative test. Gate entries in `interop_expectations.json`.
 
+## PDF.js candidate gate (M2b-3b-2c-3, D-033)
+- `tounicode_candidate.py` writes `<case>_cand`, `<case>_cand0` (control) and MuPDF last-glyph controls; CI self-checks the mapping rule. `candidate_verdict.py` compares candidate vs default per extractor (exact code points), checks stop conditions (Poppler/MuPDF/PDFium EXACT, no duplicates, render unchanged, qpdf) and writes `candidate_verdict.json/.md`.
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 
