@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 14 / M2b-3b-2c-1, 2026-11-07, no app version change)
+- PDF.js 4.10.38 vs 6.5.438 extraction, automated Firefox viewer check, probe-only ToUnicode experiments, interop regression gate, manual viewer checklist (D-031). Not used by the app.
 ### Added (Session 13 / M2b-3b-2b, 2026-11-07, no app version change)
 - Engine C spike: three cases (C01–C03), two fonts, strict ToUnicode policy, word-level `/ActualText` option, hb-subset (retain-gids) with checks, strict comparison on Poppler, MuPDF, PDF.js and PDFium (D-030). Not used by the app.
 ### Added (Session 12 / M2b-3b-2a, 2026-11-07, no app version change)

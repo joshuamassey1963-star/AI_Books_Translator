@@ -57,6 +57,14 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
 - Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
 
+## Session 14 (PR #12 merge + M2b-3b-2c-1 PDF.js / viewer interop) – 2026-11-07
+- A: PR #12 (head 80c0e0d, runs 42381792546 + 42381796924 green; no app dependency changes) merged into develop as **96858c7**. Develop CI run 42383903169 success.
+- Branch `feature/m2b-3b-2c-1-pdfjs-viewers`: 9318769 (PDF.js 4 vs 6, Firefox automation, cluster-CID experiment) → 6505908 (pdfjs 6 loading-task destroy fix after run 42384260237 failed) → 1334cfe (regression gate, word+cluster-ToUnicode experiment, screenshots) → b69420e (visual review of experiments, manual checklist) → docs commit. Tooling and docs only: no Dart/app change, version 0.1.1+2, no APK.
+- Results: see D-031. PDF.js 4.10.38 + 6.5.438 FAIL (ignore /ActualText; mozilla/pdf.js#12237 open, PR #22315 open). Firefox 159.0 (PDF.js 6.5.10) renders correctly; copy FAIL; Hindi find 0. Poppler/MuPDF/PDFium unchanged (gate green). Experiments: empty-ToUnicode CID approach FAIL; word+cluster ToUnicode helps Latin in Firefox but MuPDF C01 regresses.
+- NOT TESTED: Chrome built-in viewer, Adobe Acrobat Reader, Android viewers → `docs/PDF_VIEWER_MANUAL_TEST.md`.
+- CI evidence: runs 42384778543, 42385050495; artifact `pdf-export-probe-engine-c-interop` (id 13578937852, expires 2026-12-07 20:42 IST; pdf/, png/, compare/, expected/, extracted/ incl. pdfjs4/pdfjs6 text + marked-content dumps, viewer/ Firefox JSON + screenshots, fonts-report/, report.json, report.md, SHA256SUMS).
+- Next: **M2b-3b-2c-2** after owner go (ZWJ + composite glyph; owner decision on PDF.js; owner's manual viewer results).
+
 ## Session 13 (PR #11 merge + M2b-3b-2b Engine C three cases) – 2026-11-07
 - A: PR #11 (head 0683aee, runs 42374519310 + 42374524001 green, no dependency changes; tool-only uharfbuzz in CI) merged into develop as **478aa01**. Develop CI run 42379956758 success.
 - B–E: branch `feature/m2b-3b-2b-engine-c-three-cases`. Commits: f4b42d8 feat (multi-font writer, strict ToUnicode, hb-subset + checks, 4 extractors) → 97f1841 format bot → 7def51c fix (2 analyzer warnings + 1 info from run 42380725570; word-scope variant; subset pixel comparison; visual review) → docs commit.

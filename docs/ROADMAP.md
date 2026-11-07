@@ -66,7 +66,8 @@ Order: M2b-1 → M2b-2 → M2b-3 → M2b-4 → M2b-5. One sub-milestone (or one 
     - **M2b-3b-2** HarfBuzz-shaped glyph writer with `/ActualText` per cluster. Split:
       - **M2b-3b-2a** feasibility spike, 1 case (`किताब`), host-side HarfBuzz. **Done Session 12:** qpdf ok, visual PASS, pdftotext exact; control without `/ActualText` loses the i-matra (D-029, run 42373414737).
       - **M2b-3b-2b** 3 cases + 2 fonts + hb-subset + 4 extractors. **Done Session 13 (D-030, run 42381200825):** Poppler and MuPDF exact 3/3 (full and subset), subsets −93…97 %, PDFium exact with word-level spans, PDF.js fails (ignores /ActualText).
-      - **M2b-3b-2c** (next, owner go needed): interactive viewer check (Chrome/PDFium, Firefox/PDF.js, Acrobat Reader, Android viewer) of the artifact PDFs by the owner or a scripted viewer; decide the PDF.js strategy; X03 ZWJ + one composite-glyph case; still host-side.
+      - **M2b-3b-2c-1** PDF.js + viewer interop. **Done Session 14 (D-031, run 42385050495):** PDF.js 4.10.38 and 6.5.438 FAIL (ignore /ActualText; upstream PR #22315 open); Firefox 159 viewer renders correctly, Hindi copy/search FAIL; Chrome, Acrobat, Android NOT TESTED (manual checklist).
+      - **M2b-3b-2c-2** (next, owner go needed): ZWJ (X03) + one composite-glyph case; owner decision on PDF.js; optional cluster-level ToUnicode fix for MuPDF; owner manual viewer results.
       - Later: HarfBuzz on device (Android NDK per ABI, iOS xcframework, Dart FFI), then all 13 cases.
   - **M2b-3c** comparison table X01–X10, decision record; owner visual check on Android + iOS.
 - **Dependencies:** V1-FNT-02 license check for the bundled font.

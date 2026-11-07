@@ -57,6 +57,10 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - CI `pdf-export-probe`: `hb_shape_fixture.py --subset` (+ `--self-test-subset` negative), fixture equality, `engine_c_spike_test.dart` (full, subset, word, 2 controls), `engine_c_pdfium_extract_test.dart` (PDFium), `pdfjs_extract.mjs` (PDF.js), `verify.py` (qpdf, render, raqm reference, pdffonts) and `extract_compare.py` (strict Poppler/MuPDF/PDF.js/PDFium comparison, subset pixel comparison, fonts-report, tools). Artifact `pdf-export-probe-engine-c-3cases`.
 - Not covered: interactive viewer search/copy (needs a person or a scripted browser), composite glyphs, wrapping.
 
+## PDF reader interoperability (M2b-3b-2c-1)
+- CI: pdfjs-dist 4.10.38 + 6.5.438 getTextContent (+ includeMarkedContent dump), real Firefox viewer via Selenium (copy handler + find, screenshots), probe experiments (`cluster_cid_experiment.py`), regression gate `interop_expectations.json` (fails CI if an EXACT extractor regresses).
+- Manual: `docs/PDF_VIEWER_MANUAL_TEST.md` for Chrome, Acrobat, Android (not automatable here).
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 
