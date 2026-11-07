@@ -43,6 +43,11 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - CI job `pdf-export-probe`: fetches OFL Noto fonts (`tool/pdf_probe/fetch_fonts.sh`, SHA-256 pinned), writes one PDF per case plus the source text separately (`expected/`), then `tool/pdf_probe/verify.py` runs pdftotext/pdffonts/pdftoppm, makes a HarfBuzz reference image per case (`compare/`), and writes `report.json`/`report.md`. Artifact `pdf-export-probe-engine-a`.
 - Visual verdicts come only from a person (`tool/pdf_probe/engine_a_visual_review.json`); without a review a case stays NEEDS_REVIEW.
 
+## Shaped PDF export PoC (M2b-3b-1, Engine B Android native)
+- Unit `test/pdf_probe/engine_b_channel_test.dart`: pinned code points of the 3 PoC strings; method channel receives the text unchanged; empty result → error; no handler (iOS/host) → UnsupportedError; native error passed on.
+- Integration `integration_test/pdf_probe_android_test.dart` runs on an Android 14 emulator in CI job `pdf-export-probe-android` (reactivecircus/android-emulator-runner). PDFs go into a manifest saved to Downloads (survives the test uninstall) and are pulled with adb. The emulator's own fonts are pulled so the HarfBuzz reference uses the same fonts.
+- `verify.py` reports `overall`: PASS only when visual is PASS **and** extraction is exact; otherwise PARTIAL/FAIL. Visual verdicts in `tool/pdf_probe/engine_b_android_native_visual_review.json`. Artifact `pdf-export-probe-engine-b-android`.
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 

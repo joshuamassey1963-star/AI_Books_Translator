@@ -57,6 +57,16 @@ pubspec.yaml, analysis_options.yaml, lib/main.dart, lib/app/{app,router,theme,sc
 - CI run 42174654507 on a04078f: analyze ✅ 130/130 ✅ Android ✅ iOS ✅.
 - Not done: legacy font detection from PDF (V1-LEG-01), per-span application (V1-LEG-05), L0/L1 storage (V1-LEG-06), confidence score, real Kruti Dev documents, Chanakya (M2b-2b).
 
+## Session 11 (PR #9 + PR #8 merge, M2b-3b-1 shaped PDF PoC) – 2026-11-07
+- A: PR #9 (project memory: AGENTS.md, PROJECT_MEMORY, SESSION_LEDGER; head e1637d6, run 42363184408 green) merged into develop as **74606e6**. Develop CI run 42365226139 success. Reviewed: no secrets or personal data; facts match GitHub.
+- B: PR #8 (M2b-3a, head 527a3e7 = verified runs 42204479441 + 42204486293) merged as **19f3630**. No conflicts. Develop CI run 42365707590 success. Engine A stays rejected for Hindi (D-027); harness kept.
+- C: branch `feature/m2b-3b-1-shaped-pdf-poc`. Engine chosen for the PoC: **Android native** `PdfDocument` + `StaticLayout` (D-028). Code: `android/.../NativePdfProbe.kt`, method channel in `MainActivity.kt`, `lib/features/export/pdf_probe/engine_b_android_native.dart`, `shapingPocCases` in `probe_cases.dart`. No screen, no version change (0.1.1+2), no APK publication.
+- Result (run 42367039900, Android 14 emulator): visual PASS 3/3 (agent review, owner check pending); `pdftotext` FAIL 3/3 (किताब → कताब; क्षेत्र → े; राष्ट्र धर्म India 123 → रा धम India 123); fonts embedded + ToUnicode. Overall PARTIAL 3/3. Engine B rejected as-is for production.
+- D: tests: unit 170 passed + 1 skipped, analyze no issues; integration test on emulator passed; iOS + Android builds green (run 42367039900 on d94537d). Reproduced on code head 83cd2a9, run **42367668798**, all 5 jobs green, report shows visual PASS / overall PARTIAL for all 3. Artifact `pdf-export-probe-engine-b-android` id 13571939463 (expires 2026-12-07 16:55 IST).
+- CI fixes on the way: analyzer infos (unnecessary_import, prefer_initializing_formals); logcat dropped PROBE lines (21/76, then 63/76) → manifest now saved to Downloads via MediaStore and adb-pulled.
+- Next: **M2b-3b-2** (owner go needed): HarfBuzz-shaped glyph writer with `/ActualText` per cluster, same 3 cases first. Not started.
+- Open: PR for M2b-3b-1 into develop (not merged). Owner visual check of both artifacts. iOS shaping path not evaluated. Issue #7 open.
+
 ## Session 10 (PR #6 merge + M2b-3a Hindi PDF export Engine A)
 - A: PR #6 merged into develop as f39b5d8 (head 4df8614; runs 42185131670 + 42185156679 green). Develop CI after merge: run 42202007273 success. Large-file risk tracked: issue #7 / V1-DEV-03 (picker reads whole file into memory; 200 MB check does not limit peak memory; not production-ready for large files).
 - Owner APK policy: no new testing APK for routine work; version unchanged (0.1.1+2). CI still builds Android/iOS; APK artifact upload only with `[publish-apk]` in the commit message.

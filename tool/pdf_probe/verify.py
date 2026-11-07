@@ -23,6 +23,13 @@ FONTS = {
     'latin': font_dir / 'NotoSerif-Regular.ttf',
     'hebrew': font_dir / 'NotoSerifHebrew-Regular.ttf',
 }
+# Engine B (Android native) uses the device's own fonts: CI pulls them from
+# the emulator and points the reference at the same files.
+if os.environ.get('PROBE_DEVA_FONT'):
+    FONTS['deva'] = Path(os.environ['PROBE_DEVA_FONT'])
+if os.environ.get('PROBE_LATIN_FONT'):
+    FONTS['latin'] = Path(os.environ['PROBE_LATIN_FONT'])
+LATIN_FIRST = os.environ.get('PROBE_LATIN_FIRST') == '1'
 CMAPS = {k: set(TTFont(str(v)).getBestCmap()) for k, v in FONTS.items()}
 ZW = {0x200C, 0x200D}
 
@@ -37,6 +44,8 @@ def norm_ws(s):
 
 def font_for(cp, rtl):
     order = ['hebrew', 'deva', 'latin'] if rtl else ['deva', 'latin', 'hebrew']
+    if LATIN_FIRST and cp < 0x0900 and cp in CMAPS['latin']:
+        return 'latin'
     for k in order:
         if cp in CMAPS[k]:
             return k
@@ -167,21 +176,26 @@ for r in results:
     if v:
         r['visual'] = v['visual']
         r['visual_why'] = v['why']
+    # Full PASS needs both layers: correct glyphs AND exact Unicode text.
+    r['overall'] = ('PASS' if r['visual'] == 'PASS' and r.get('extract_exact') else
+                    'NEEDS_REVIEW' if r['visual'] == 'NEEDS_REVIEW' else
+                    'FAIL' if r['visual'] == 'FAIL' and not r.get('extract_exact') else 'PARTIAL')
 
-report = {'engine': cases['engine'], 'raqm': features.check('raqm'), 'cases': results,
+report = {'engine': cases['engine'], 'device': cases.get('device'),
+          'reference_fonts': {k: v.name for k, v in FONTS.items()}, 'raqm': features.check('raqm'), 'cases': results,
           'visual_review': review.get('reviewed_by'),
           'note': 'visual = NEEDS_REVIEW: generation success is not visual correctness.'}
 (out / 'report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
-md = ['| case | gen | extract exact | extract w/o ZW | Hindi words | embedded | ToUnicode | no-glyph chars | outside page | visual |',
-      '|---|---|---|---|---|---|---|---|---|---|']
+md = ['| case | gen | extract exact | extract w/o ZW | Hindi words | embedded | ToUnicode | no-glyph chars | outside page | visual | overall |',
+      '|---|---|---|---|---|---|---|---|---|---|---|']
 for r in results:
     if not r['generated']:
-        md.append(f"| {r['id']} | FAIL | | | | | | | | |")
+        md.append(f"| {r['id']} | FAIL | | | | | | | | | |")
         continue
-    md.append('| {id} | ok | {a} | {b} | {w} | {e} | {u} | {n} | {o} | {v} |'.format(
+    md.append('| {id} | ok | {a} | {b} | {w} | {e} | {u} | {n} | {o} | {v} | {ov} |'.format(
         id=r['id'], a=r['extract_exact'], b=r['extract_ignoring_zw'], w=r['hindi_words_found'],
         e=r['fonts_embedded'], u=r['fonts_tounicode'], n=' '.join(r['chars_without_glyph_in_fonts']) or '-',
-        o=len(r['words_outside_page']), v=r['visual']))
+        o=len(r['words_outside_page']), v=r['visual'], ov=r['overall']))
 (out / 'report.md').write_text('\n'.join(md) + '\n')
 print('\n'.join(md))
 for r in results:
