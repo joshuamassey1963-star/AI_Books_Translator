@@ -1,4 +1,5 @@
 {
+  "id": "c01_kitab",
   "text": "किताब",
   "codepoints": [
     "U+0915",
@@ -7,59 +8,98 @@
     "U+093E",
     "U+092C"
   ],
-  "font": "NotoSerifDevanagari-Regular.ttf",
-  "font_sha256": "e272d11d271c61a8d5d0f65764fd368ae53b9f9dabcce244a8941aa8f32ccc70",
-  "upem": 1000,
-  "direction": "ltr",
-  "script": "Deva",
   "harfbuzz": "15.0.0",
   "uharfbuzz": "0.57.0",
+  "runs": [
+    {
+      "font": 0,
+      "start": 0,
+      "end": 5
+    }
+  ],
+  "fonts": [
+    {
+      "index": 0,
+      "file": "NotoSerifDevanagari-Regular.ttf",
+      "sha256": "e272d11d271c61a8d5d0f65764fd368ae53b9f9dabcce244a8941aa8f32ccc70",
+      "bytes": 280180,
+      "num_glyphs": 997,
+      "upem": 1000,
+      "bbox": [
+        -526,
+        -660,
+        1413,
+        1397
+      ],
+      "ascent": 930,
+      "descent": -625,
+      "cap_height": 715,
+      "glyph_to_unicode": {
+        "31": 2366,
+        "57": 2325,
+        "73": 2340,
+        "80": 2348
+      },
+      "subset": {
+        "file": "fonts/c01_kitab.NotoSerifDevanagari-Regular.subset.ttf",
+        "bytes": 9844,
+        "sha256": "930154782b446ee9d7714ea8fb392c8a14a730b75bf31382e08956d2c019f9f4",
+        "reduction_pct": 96.5,
+        "checks": "PASS",
+        "problems": []
+      }
+    }
+  ],
   "glyphs": [
     {
+      "font": 0,
       "gid": 558,
       "cluster": 0,
       "ax": 246,
+      "ay": 0,
       "dx": 0,
       "dy": 0,
       "name": "uni093F.04"
     },
     {
+      "font": 0,
       "gid": 57,
       "cluster": 0,
       "ax": 711,
+      "ay": 0,
       "dx": 0,
       "dy": 0,
       "name": "uni0915"
     },
     {
+      "font": 0,
       "gid": 73,
       "cluster": 2,
       "ax": 538,
+      "ay": 0,
       "dx": 0,
       "dy": 0,
       "name": "uni0924"
     },
     {
+      "font": 0,
       "gid": 31,
       "cluster": 2,
       "ax": 246,
+      "ay": 0,
       "dx": 0,
       "dy": 0,
       "name": "uni093E"
     },
     {
+      "font": 0,
       "gid": 80,
       "cluster": 4,
       "ax": 507,
+      "ay": 0,
       "dx": 0,
       "dy": 0,
       "name": "uni092C"
     }
-  ],
-  "glyph_to_unicode": {
-    "31": 2366,
-    "57": 2325,
-    "73": 2340,
-    "80": 2348
-  }
+  ]
 }

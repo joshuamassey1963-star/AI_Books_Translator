@@ -1,97 +1,157 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:ai_book_translator/features/export/pdf_probe/glyph_pdf/glyph_pdf_writer.dart';
 import 'package:ai_book_translator/features/export/pdf_probe/glyph_pdf/pdf_structure_check.dart';
-import 'package:ai_book_translator/features/export/pdf_probe/glyph_pdf/shaped_run.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// M2b-3b-2a. Runs only in CI job pdf-export-probe, which shapes the fixture
-/// with HarfBuzz (uharfbuzz, pinned) into PDF_PROBE_HB_JSON and provides the
-/// OFL font in PDF_PROBE_FONT_DIR. Writes PDFs for independent checks.
+import 'hb_fixture.dart';
+
+/// M2b-3b-2b. Runs only in CI job pdf-export-probe: HarfBuzz shaping
+/// (uharfbuzz, pinned) writes fresh `<case>.hb.json` + retain-gids subsets
+/// into PDF_PROBE_HB_DIR; OFL fonts are in PDF_PROBE_FONT_DIR. Writes PDFs
+/// for the independent checks in tool/pdf_probe/verify.py.
+const cases = {
+  'c01_kitab': 'C01 किताब: i-matra reordering',
+  'c02_kshetra': 'C02 क्षेत्र: conjunct ligatures + zero-width e-matra',
+  'c03_rashtra_mixed': 'C03 राष्ट्र धर्म India 123: conjuncts, reph, two fonts',
+};
+
 void main() {
-  final hbJson = Platform.environment['PDF_PROBE_HB_JSON'];
+  final hbDir = Platform.environment['PDF_PROBE_HB_DIR'];
   final fontDir = Platform.environment['PDF_PROBE_FONT_DIR'];
   final outDir = Platform.environment['PDF_PROBE_C_OUT_DIR'];
 
   test(
-    'Engine C spike writes c01 PDFs (cluster, run, control)',
+    'Engine C writes full-font, subset and control PDFs for C01–C03',
     () {
-      final j =
-          jsonDecode(File(hbJson!).readAsStringSync()) as Map<String, Object?>;
-      final expected = File('test/fixtures/pdf_probe/c01_kitab.txt')
-          .readAsStringSync();
-      expect(j['text'], expected, reason: 'shaped text = fixture');
-      final fontBytes = File('$fontDir/${j['font']}').readAsBytesSync();
-      expect(sha256.convert(fontBytes).toString(), j['font_sha256']);
-      final run = ShapedRun(
-        text: expected,
-        unitsPerEm: j['upem']! as int,
-        glyphs: [
-          for (final g in (j['glyphs']! as List).cast<Map<String, Object?>>())
-            ShapedGlyph(
-              glyphId: g['gid']! as int,
-              cluster: g['cluster']! as int,
-              xAdvance: g['ax']! as int,
-              xOffset: g['dx']! as int,
-              yOffset: g['dy']! as int,
-            ),
-        ],
-      );
-      final toUni = {
-        for (final e in (j['glyph_to_unicode']! as Map).entries)
-          int.parse(e.key as String): e.value as int,
-      };
-      const variants = {
-        'c01_kitab': ActualTextScope.cluster,
-        'c01_kitab_run': ActualTextScope.run,
-        'c01_kitab_control': ActualTextScope.none,
-      };
-      const titles = {
-        'c01_kitab': 'HarfBuzz glyphs + /ActualText per cluster',
-        'c01_kitab_run': 'HarfBuzz glyphs + one /ActualText for the run',
-        'c01_kitab_control': 'Control: HarfBuzz glyphs, ToUnicode only',
-      };
       Directory('$outDir/pdf').createSync(recursive: true);
       Directory('$outDir/expected').createSync(recursive: true);
+      final meta = <Map<String, Object?>>[];
       final generation = <Map<String, Object?>>[];
-      for (final e in variants.entries) {
-        final pdf = const GlyphPdfWriter().write(
-          run: run,
-          fontBytes: fontBytes,
-          fontName: 'NotoSerifDevanagari-Regular',
-          glyphToUnicode: toUni,
-          scope: e.value,
-        );
-        expect(checkPdfStructure(pdf), isEmpty, reason: e.key);
-        File('$outDir/pdf/${e.key}.pdf').writeAsBytesSync(pdf);
-        File('$outDir/expected/${e.key}.txt').writeAsStringSync(expected);
-        generation.add({'id': e.key, 'generated': true, 'bytes': pdf.length});
+      void emit(
+        String id,
+        String title,
+        String text,
+        Uint8List pdf, {
+        String? control,
+        Map<String, Object?> extra = const {},
+      }) {
+        expect(checkPdfStructure(pdf), isEmpty, reason: id);
+        File('$outDir/pdf/$id.pdf').writeAsBytesSync(pdf);
+        File('$outDir/expected/$id.txt').writeAsStringSync(text);
+        meta.add({
+          'id': id,
+          'title': title,
+          'tCases': ['T01', 'T02'],
+          'rtl': false,
+          'control': ?control,
+        });
+        generation.add({
+          'id': id,
+          'generated': true,
+          'bytes': pdf.length,
+          'sha256': sha256.convert(pdf).toString(),
+          ...extra,
+        });
       }
-      expect(run.text, expected, reason: 'source unchanged');
+
+      for (final e in cases.entries) {
+        final fx = HbFixture.load('$hbDir/${e.key}.hb.json');
+        final expected = File('test/fixtures/pdf_probe/${e.key}.txt')
+            .readAsStringSync();
+        expect(fx.text, expected, reason: 'shaped text = fixture');
+        final run = fx.run();
+        final content = const GlyphPdfWriter().contentStream(
+          run,
+          ActualTextScope.cluster,
+        );
+        expect(checkActualText(content, expected), isEmpty, reason: e.key);
+
+        Uint8List full(int i) {
+          final b = File('$fontDir/${fx.font(i)['file']}').readAsBytesSync();
+          expect(sha256.convert(b).toString(), fx.font(i)['sha256']);
+          return b;
+        }
+
+        Uint8List subset(int i) {
+          final s = fx.font(i)['subset']! as Map<String, Object?>;
+          final b = File('$hbDir/${s['file']}').readAsBytesSync();
+          expect(sha256.convert(b).toString(), s['sha256']);
+          return b;
+        }
+
+        final fullFonts = fx.pdfFonts(full);
+        emit(
+          e.key,
+          '${e.value} – full fonts',
+          expected,
+          const GlyphPdfWriter().write(run: run, fonts: fullFonts),
+          extra: {
+            'fonts': [for (final f in fullFonts) f.bytes.length],
+          },
+        );
+        final subFonts = fx.pdfFonts(subset);
+        emit(
+          '${e.key}_subset',
+          '${e.value} – hb-subset retain-gids fonts',
+          expected,
+          const GlyphPdfWriter().write(run: run, fonts: subFonts),
+          extra: {
+            'fonts': [for (final f in subFonts) f.bytes.length],
+          },
+        );
+        emit(
+          '${e.key}_word',
+          '${e.value} – full fonts, one /ActualText span per word',
+          expected,
+          const GlyphPdfWriter().write(
+            run: run,
+            fonts: fullFonts,
+            scope: ActualTextScope.word,
+          ),
+        );
+        if (e.key == 'c01_kitab') {
+          emit(
+            'c01_kitab_control_no_actualtext',
+            'Control: no /ActualText, ToUnicode (cmapAll) only',
+            expected,
+            const GlyphPdfWriter().write(
+              run: run,
+              fonts: fullFonts,
+              scope: ActualTextScope.none,
+              toUnicode: ToUnicodePolicy.cmapAll,
+            ),
+            control: 'expected to lose the i-matra',
+          );
+        }
+        if (e.key == 'c02_kshetra') {
+          emit(
+            'c02_kshetra_control_cmapall',
+            'Control: /ActualText + ToUnicode for every cmap glyph (S12 policy)',
+            expected,
+            const GlyphPdfWriter().write(
+              run: run,
+              fonts: fullFonts,
+              toUnicode: ToUnicodePolicy.cmapAll,
+            ),
+            control: 'shows extractor disagreement on a zero-width matra',
+          );
+        }
+        expect(run.text, expected, reason: 'source unchanged');
+      }
       File('$outDir/generation.json').writeAsStringSync(
         const JsonEncoder.withIndent('  ').convert({
           'engine': 'engine_c_hb_actualtext',
-          'harfbuzz': j['harfbuzz'],
-          'uharfbuzz': j['uharfbuzz'],
-          'font': j['font'],
-          'font_sha256': j['font_sha256'],
-          'cases': [
-            for (final id in variants.keys)
-              {
-                'id': id,
-                'title': titles[id],
-                'tCases': ['T01', 'T02'],
-                'rtl': false,
-              },
-          ],
+          'cases': meta,
           'generation': generation,
         }),
       );
     },
-    skip: hbJson == null || fontDir == null || outDir == null
-        ? 'needs PDF_PROBE_HB_JSON, PDF_PROBE_FONT_DIR, PDF_PROBE_C_OUT_DIR (CI)'
+    skip: hbDir == null || fontDir == null || outDir == null
+        ? 'needs PDF_PROBE_HB_DIR, PDF_PROBE_FONT_DIR, PDF_PROBE_C_OUT_DIR (CI)'
         : false,
   );
 }

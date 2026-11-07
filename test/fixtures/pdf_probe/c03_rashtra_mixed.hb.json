@@ -1,0 +1,294 @@
+{
+  "id": "c03_rashtra_mixed",
+  "text": "राष्ट्र धर्म India 123",
+  "codepoints": [
+    "U+0930",
+    "U+093E",
+    "U+0937",
+    "U+094D",
+    "U+091F",
+    "U+094D",
+    "U+0930",
+    "U+0020",
+    "U+0927",
+    "U+0930",
+    "U+094D",
+    "U+092E",
+    "U+0020",
+    "U+0049",
+    "U+006E",
+    "U+0064",
+    "U+0069",
+    "U+0061",
+    "U+0020",
+    "U+0031",
+    "U+0032",
+    "U+0033"
+  ],
+  "harfbuzz": "15.0.0",
+  "uharfbuzz": "0.57.0",
+  "runs": [
+    {
+      "font": 0,
+      "start": 0,
+      "end": 13
+    },
+    {
+      "font": 1,
+      "start": 13,
+      "end": 22
+    }
+  ],
+  "fonts": [
+    {
+      "index": 0,
+      "file": "NotoSerifDevanagari-Regular.ttf",
+      "sha256": "e272d11d271c61a8d5d0f65764fd368ae53b9f9dabcce244a8941aa8f32ccc70",
+      "bytes": 280180,
+      "num_glyphs": 997,
+      "upem": 1000,
+      "bbox": [
+        -526,
+        -660,
+        1413,
+        1397
+      ],
+      "ascent": 930,
+      "descent": -625,
+      "cap_height": 715,
+      "glyph_to_unicode": {
+        "3": 32,
+        "31": 2366,
+        "76": 2343,
+        "82": 2350,
+        "84": 2352
+      },
+      "subset": {
+        "file": "fonts/c03_rashtra_mixed.NotoSerifDevanagari-Regular.subset.ttf",
+        "bytes": 14588,
+        "sha256": "61123fd166023871b3e402d4aaa17ff154336ced8a9b11658dbaa429787994b7",
+        "reduction_pct": 94.8,
+        "checks": "PASS",
+        "problems": []
+      }
+    },
+    {
+      "index": 1,
+      "file": "NotoSerif-Regular.ttf",
+      "sha256": "19e72cd8d595fae5bd74a5206f5d938512e1183d4fed7abb1ec1be1d7efa5f88",
+      "bytes": 712444,
+      "num_glyphs": 3830,
+      "upem": 1000,
+      "bbox": [
+        -693,
+        -389,
+        2797,
+        1048
+      ],
+      "ascent": 1069,
+      "descent": -293,
+      "cap_height": 714,
+      "glyph_to_unicode": {
+        "3": 32,
+        "20": 49,
+        "21": 50,
+        "22": 51,
+        "44": 73,
+        "68": 97,
+        "71": 100,
+        "76": 105,
+        "81": 110
+      },
+      "subset": {
+        "file": "fonts/c03_rashtra_mixed.NotoSerif-Regular.subset.ttf",
+        "bytes": 23144,
+        "sha256": "d9931f539216293f4ec5fb45f850b41fcecc3c57cc6ac96f2cc9782503940468",
+        "reduction_pct": 96.8,
+        "checks": "PASS",
+        "problems": []
+      }
+    }
+  ],
+  "glyphs": [
+    {
+      "font": 0,
+      "gid": 84,
+      "cluster": 0,
+      "ax": 374,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0930"
+    },
+    {
+      "font": 0,
+      "gid": 31,
+      "cluster": 0,
+      "ax": 246,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni093E"
+    },
+    {
+      "font": 0,
+      "gid": 472,
+      "cluster": 2,
+      "ax": 530,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0937094D091F"
+    },
+    {
+      "font": 0,
+      "gid": 516,
+      "cluster": 2,
+      "ax": 0,
+      "ay": 0,
+      "dx": -175,
+      "dy": -31,
+      "name": "uni094D0930"
+    },
+    {
+      "font": 0,
+      "gid": 3,
+      "cluster": 7,
+      "ax": 260,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "space"
+    },
+    {
+      "font": 0,
+      "gid": 76,
+      "cluster": 8,
+      "ax": 567,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni0927"
+    },
+    {
+      "font": 0,
+      "gid": 82,
+      "cluster": 9,
+      "ax": 556,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "uni092E"
+    },
+    {
+      "font": 0,
+      "gid": 514,
+      "cluster": 9,
+      "ax": 0,
+      "ay": 0,
+      "dx": -2,
+      "dy": 1,
+      "name": "uni0930094D"
+    },
+    {
+      "font": 0,
+      "gid": 3,
+      "cluster": 12,
+      "ax": 260,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "space"
+    },
+    {
+      "font": 1,
+      "gid": 44,
+      "cluster": 13,
+      "ax": 367,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "I"
+    },
+    {
+      "font": 1,
+      "gid": 81,
+      "cluster": 14,
+      "ax": 645,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "n"
+    },
+    {
+      "font": 1,
+      "gid": 71,
+      "cluster": 15,
+      "ax": 614,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "d"
+    },
+    {
+      "font": 1,
+      "gid": 76,
+      "cluster": 16,
+      "ax": 320,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "i"
+    },
+    {
+      "font": 1,
+      "gid": 68,
+      "cluster": 17,
+      "ax": 563,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "a"
+    },
+    {
+      "font": 1,
+      "gid": 3,
+      "cluster": 18,
+      "ax": 260,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "space"
+    },
+    {
+      "font": 1,
+      "gid": 20,
+      "cluster": 19,
+      "ax": 559,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "one"
+    },
+    {
+      "font": 1,
+      "gid": 21,
+      "cluster": 20,
+      "ax": 559,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "two"
+    },
+    {
+      "font": 1,
+      "gid": 22,
+      "cluster": 21,
+      "ax": 559,
+      "ay": 0,
+      "dx": 0,
+      "dy": 0,
+      "name": "three"
+    }
+  ]
+}
