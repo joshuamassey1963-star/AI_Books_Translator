@@ -215,24 +215,27 @@ Engine B results (M2b-3b-1, Session 11, Android 14 emulator, run 42367039900, D-
 
 Engine C spike (M2b-3b-2a, Session 12, run 42373414737, D-029), **1 case only** (`किताब`, host-side HarfBuzz 15.0.0, Noto Serif Devanagari): qpdf ok, visual PASS (T01/T02 i-matra), `pdftotext` exact, word found; control without `/ActualText` extracts `कताब`. Copy fidelity comes from `/ActualText`, not ToUnicode. Not a full validation.
 
+Engine C three cases (M2b-3b-2b, Session 13, run 42381200825, D-030): C01–C03 qpdf ok, visual PASS (agent), Poppler + MuPDF exact (full and subset fonts), PDFium exact only with word-level spans, PDF.js FAIL (ignores /ActualText). Subsets 93–97 % smaller, pixel-identical renders.
+
 A PDF file being produced is **not** acceptance. Every engine candidate is tested with §4 strings and a 2-chapter sample on Android and iOS:
 
 | # | Check | How | Engine A: `pdf` package | Engine B: native (Android PdfDocument / iOS UIGraphicsPDFRenderer) | Engine C: HarfBuzz-shaped glyphs + own writer with /ActualText (spike) | Engine D: HTML → PDF via platform print |
 |---|---|---|---|---|---|---|
-| X01 | matras correct | rendered PNG (pdftoppm in CI) + owner visual check | FAIL – i-matra not reordered (run 42203433139) | PASS (visual, 3 cases) – i-matra correct (run 42367039900) | PASS (1 case: किताब i-matra, run 42373414737) | NOT TESTED |
-| X02 | conjuncts correct | same | FAIL – no conjuncts/reph (run 42203433139) | PASS (visual, 3 cases) – क्ष, त्र, ष्ट्र, reph correct (run 42367039900) | NOT TESTED | NOT TESTED |
+| X01 | matras correct | rendered PNG (pdftoppm in CI) + owner visual check | FAIL – i-matra not reordered (run 42203433139) | PASS (visual, 3 cases) – i-matra correct (run 42367039900) | PASS (C01–C03, agent visual, run 42381200825) | NOT TESTED |
+| X02 | conjuncts correct | same | FAIL – no conjuncts/reph (run 42203433139) | PASS (visual, 3 cases) – क्ष, त्र, ष्ट्र, reph correct (run 42367039900) | PASS (C02/C03 conjuncts + reph, run 42381200825) | NOT TESTED |
 | X03 | half letters correct | same | FAIL – no half forms, visible halant (run 42203433139) | NOT TESTED – no ZWJ half-form case in the 3-case PoC | NOT TESTED | NOT TESTED |
-| X04 | Hindi + English in one paragraph | same | FAIL – Latin OK, Hindi part broken (run 42203433139) | PASS (visual) – s03 Hindi + English + digits (run 42367039900) | NOT TESTED | NOT TESTED |
+| X04 | Hindi + English in one paragraph | same | FAIL – Latin OK, Hindi part broken (run 42203433139) | PASS (visual) – s03 Hindi + English + digits (run 42367039900) | PASS (C03 two fonts, run 42381200825) | NOT TESTED |
 | X05 | text selectable/copyable | open in viewer | PASS (CI) – text layer present, ToUnicode yes (run 42203433139) | PARTIAL – text layer present, ToUnicode yes, but Hindi glyphs drop out (run 42367039900) | PASS (CI) – text layer via /ActualText (run 42373414737) | NOT TESTED |
-| X06 | copied text = original Unicode | `pdftotext` diff vs source (NFC) | PASS 11/13 – p08 spaces, p13 Hebrew order differ (run 42203433139) | FAIL 0/3 – e.g. किताब → कताब (run 42367039900) | PASS 1/1 – exact code points (run 42373414737) | NOT TESTED |
-| X07 | search finds Hindi words | `pdftotext` + viewer search | PASS – all Hindi words found by pdftotext (run 42203433139) | FAIL – 0 of 4 Hindi words found by pdftotext (run 42367039900) | PASS 1/1 – word found by pdftotext | NOT TESTED |
-| X08 | fonts embedded (subset OK) | `pdffonts` | PASS – all fonts emb=yes sub=yes uni=yes (run 42203433139) | PASS – embedded subsets with ToUnicode (run 42367039900) | PASS – embedded (full font, not subset), ToUnicode partial | NOT TESTED |
+| X06 | copied text = original Unicode | `pdftotext` diff vs source (NFC) | PASS 11/13 – p08 spaces, p13 Hebrew order differ (run 42203433139) | FAIL 0/3 – e.g. किताब → कताब (run 42367039900) | PASS 3/3 Poppler+MuPDF; PDFium needs word spans; PDF.js FAIL (run 42381200825) | NOT TESTED |
+| X07 | search finds Hindi words | `pdftotext` + viewer search | PASS – all Hindi words found by pdftotext (run 42203433139) | FAIL – 0 of 4 Hindi words found by pdftotext (run 42367039900) | PASS programmatic word match (Poppler 6/6 words); interactive viewer search NOT TESTED | NOT TESTED |
+| X08 | fonts embedded (subset OK) | `pdffonts` | PASS – all fonts emb=yes sub=yes uni=yes (run 42203433139) | PASS – embedded subsets with ToUnicode (run 42367039900) | PASS – embedded, hb-subset retain-gids 93–97 % smaller, strict ToUnicode | NOT TESTED |
 | X09 | line wrapping and paragraph order | visual + text order diff | PASS – wrapping/order OK, nothing outside page (run 42203433139) | PASS – single lines, nothing outside page; long wrap not tested | NOT TESTED – one word, no wrapping | NOT TESTED |
 | X10 | correct on Android and iOS | device check by owner | NOT TESTED – no device check (run 42203433139) | NOT TESTED – emulator only, no device; iOS counterpart not built | NOT TESTED – host-side only | NOT TESTED |
 
 Known risk (to be confirmed in M2b-3, not assumed): pure-Dart PDF writers usually do not apply OpenType Devanagari shaping, so i-matra order, reph and conjuncts may break. An engine that fails X01–X04 is **not production-ready**, whatever else it passes. Copy fidelity (X06) often fails even when the look is right, because ligature glyphs need correct ToUnicode/ActualText mappings – it is checked separately.
 
 ## 9. Change log of this document
+- 2026-11-07: Engine C three cases, subsetting, extractor interop (Session 13, D-030).
 - 2026-11-07: Engine C spike (1 case) results added (Session 12, D-029).
 - 2026-11-07: Engine B (Android native) 3-case PoC results added (Session 11, D-028).
 - 2026-11-06: created from owner requirements (Session 3 follow-up). All results `NOT TESTED` except the M2a encoding rows noted.

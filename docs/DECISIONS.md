@@ -176,3 +176,23 @@ Format: ID · date · decision · why · alternatives · status. Versions checke
 - Decision: the HarfBuzz + `/ActualText` path is **feasible** and stays the candidate. Not production-ready. Next: M2b-3b-2b (3 PoC cases incl. multi-font Latin/digits, subsetting, a second extractor/viewer), only after owner go.
 - **Status:** Accepted (spike PASS for 1 case; path continues).
 
+## D-030 · 2026-11-07 · Engine C three cases, subsetting and extractor interoperability (M2b-3b-2b)
+- Scope: C01 `किताब`, C02 `क्षेत्र`, C03 `राष्ट्र धर्म India 123` (Devanagari in Noto Serif Devanagari, `India 123` in Noto Serif; both OFL, SHA-256 pinned in `tool/pdf_probe/fonts.sha256`, not in git). Host-side HarfBuzz 15.0.0 (uharfbuzz 0.57.0). Isolated spike writer; no device code.
+- Shaping facts (fixtures `test/fixtures/pdf_probe/*.hb.json`, CI re-shapes and must match): C02 = 7 code points → 3 glyphs (`क्ष` ligature + zero-width `े` in cluster 0–4, `त्र` ligature 4–7). C03 = 22 code points → 18 glyphs; reph glyph drawn after `म` in cluster `र्म`; font runs `[0,13)` Devanagari incl. trailing space, `[13,22)` Latin; digits stay U+0031 U+0032 U+0033.
+- Writer changes: several fonts (one Type0/CIDFontType2 + FontDescriptor with the font's own bbox/ascent/descent/cap height each), `.notdef` and out-of-range glyph ids refused, font must be a readable sfnt with enough glyphs, `checkActualText` (no nesting, all glyphs inside spans, UTF-16BE+BOM, source exactly once).
+- **ToUnicode policy changed to `strict`:** a glyph gets a ToUnicode entry only if every `/ActualText` span drawing it is that one glyph and its text is exactly that code point. Reason: with the S12 policy (every cmap glyph) MuPDF 1.28.6 output `क्षेे त्र` (U+0947 twice) for C02 — it uses ToUnicode of the zero-width e-matra even inside the span. Control `c02_kshetra_control_cmapall` keeps this evidence.
+- Subsetting (hb-subset, `RETAIN_GIDS`, glyph set = used glyphs, unicode set = run text for layout closure). Checks per used glyph: same outline points, same advance, composite components present, and re-shaping with the subset gives identical glyphs/positions; a negative self-test (subset missing the e-matra glyph) is detected. Result: all subsets PASS. Font bytes: Devanagari 280,180 → 9,844 (C01), 17,972 (C02), 14,588 (C03); Latin 712,444 → 23,144 (C03). PDF bytes: C01 282,161 → 11,820; C02 281,621 → 19,410; C03 996,904 → 42,007. Subset renders are pixel-identical to full-font renders. None of the 3 cases uses a composite glyph, so the composite check is not exercised yet.
+- Results, CI run [42381200825](https://github.com/joshuamassey1963-star/AI_Books_Translator/actions/runs/42381200825) (qpdf 12.3.2; Poppler pdftotext 26.01.0; PyMuPDF 2.1 / MuPDF 1.28.6; pdfjs-dist 4.10.38; PDFium chromium/8125 via pdfrx). Exact = strict equality, only trailing newlines removed:
+
+| PDF | qpdf | visual (agent) | Poppler | MuPDF | PDFium | PDF.js | overall_c |
+|---|---|---|---|---|---|---|---|
+| C01 / C01 subset | ok | PASS | EXACT | EXACT | DIFF (extra spaces) | DIFF | PASS |
+| C02 / C02 subset | ok | PASS | EXACT | EXACT | EXACT | DIFF | PASS |
+| C03 / C03 subset | ok | PASS | EXACT | EXACT | DIFF (extra space) | DIFF | PASS |
+| C01/C02/C03 `_word` (one span per word) | ok | PASS | EXACT | EXACT | **EXACT** | DIFF | PASS |
+
+- Interoperability findings (not hidden): (1) **PDFium** honours `/ActualText` but adds a space between per-cluster spans when a cluster's first glyph is not its leftmost/pen-start glyph (`कि ता ब`, `रा ष्ट्र`); one span per word removes this in all 3 cases. (2) **PDF.js 4.10.38** ignores `/ActualText` completely and returns glyph-id garbage for shaped glyphs — fails for every Engine C PDF. (3) **MuPDF** duplicates a zero-width mark when ToUnicode maps it (fixed by the strict policy).
+- Not tested: interactive search/copy in Chrome, Acrobat, Firefox, Android/iOS viewers; composite glyphs; X03 ZWJ; line wrapping; device HarfBuzz.
+- Decision: Engine C stays the candidate. Use **word-level `/ActualText` spans + strict ToUnicode** as the default for the next step (best result: Poppler, MuPDF and PDFium exact on 3/3). PDF.js compatibility is an open problem (needs a different text strategy or is accepted as a known limitation; owner decision). Not production-ready.
+- **Status:** Accepted (3/3 PASS on Poppler + MuPDF; PDFium PASS with word spans; PDF.js FAIL).
+

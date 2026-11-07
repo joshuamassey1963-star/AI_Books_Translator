@@ -12,6 +12,7 @@
 - V1-CI-02 Android debug APK in CI
 
 ## In progress (code + unit tests exist, feature not complete)
+- 2026-11-07 (S13) M2b-3b-2b: Engine C passes C01–C03 on Poppler + MuPDF with full and subset fonts; PDFium needs word spans; PDF.js fails (D-030, run 42381200825). Not production.
 - 2026-11-07 (S12) M2b-3b-2a: HarfBuzz glyphs + /ActualText spike passes 1 case (किताब) host-side: valid PDF, correct glyphs, exact copy text (D-029, run 42373414737). Not production.
 - 2026-11-07 (S11) M2b-3b-1: Engine B (Android native PDF) PoC – shaping correct, Unicode copy/search fails (D-028, run 42367039900). No working Hindi PDF engine yet.
 - V1-NAV-03 Home (empty state only)

@@ -52,6 +52,11 @@ Public-domain novel, religious/philosophical book, technical book with footnotes
 - Unit `test/pdf_probe/glyph_pdf_writer_test.dart` (no font needed; committed HarfBuzz output `test/fixtures/pdf_probe/c01_kitab.hb.json` and expected text `c01_kitab.txt`): exact code points; cluster → source mapping (`कि`, `ता`, `ब`) with the i-matra glyph first; UTF-16BE + BOM encoding incl. a surrogate pair; balanced BDC/EMC, one span per cluster, source text exactly once; run/none scopes; structural check of the written PDF; broken PDFs rejected; unmapped/out-of-range/non-monotonic clusters and bad glyph ids throw; glyph list immutable, source text unchanged.
 - CI (job `pdf-export-probe`): uharfbuzz 0.57.0 shapes the fixture with the pinned font and must equal the committed fixture; `test/pdf_probe/engine_c_spike_test.dart` writes 3 PDFs (per-cluster span, one span, control without span); `verify.py` runs qpdf --check, pdftotext, pdffonts, pdftoppm + raqm reference. Artifact `pdf-export-probe-engine-c-spike`. `overall` needs visual PASS + exact text + qpdf ok.
 
+## Engine C three cases (M2b-3b-2b)
+- Unit `glyph_pdf_writer_test.dart` (fixtures C01–C03, fake sfnt fonts): exact code points; C02 ligature/e-matra ranges; C03 font runs, reph order, digits; span coverage for every case and scope; `checkActualText` negatives (duplicate, nesting, non-BOM text, glyph outside span, stray EMC); strict vs cmapAll ToUnicode; two-font PDF structure; empty/too-small font refused; `.notdef`, bad cluster, uncovered start, unknown font, cluster split across fonts; immutability; word scope grouping.
+- CI `pdf-export-probe`: `hb_shape_fixture.py --subset` (+ `--self-test-subset` negative), fixture equality, `engine_c_spike_test.dart` (full, subset, word, 2 controls), `engine_c_pdfium_extract_test.dart` (PDFium), `pdfjs_extract.mjs` (PDF.js), `verify.py` (qpdf, render, raqm reference, pdffonts) and `extract_compare.py` (strict Poppler/MuPDF/PDF.js/PDFium comparison, subset pixel comparison, fonts-report, tools). Artifact `pdf-export-probe-engine-c-3cases`.
+- Not covered: interactive viewer search/copy (needs a person or a scripted browser), composite glyphs, wrapping.
+
 ## Reliability scenarios
 Airplane mode, network flapping, 429/503, app kill, device reboot, storage full, low RAM, cancel/resume.
 

@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 13 / M2b-3b-2b, 2026-11-07, no app version change)
+- Engine C spike: three cases (C01–C03), two fonts, strict ToUnicode policy, word-level `/ActualText` option, hb-subset (retain-gids) with checks, strict comparison on Poppler, MuPDF, PDF.js and PDFium (D-030). Not used by the app.
 ### Added (Session 12 / M2b-3b-2a, 2026-11-07, no app version change)
 - Engine C spike: `GlyphPdfWriter` (CID font, HarfBuzz glyph ids, `/ActualText` per cluster), structure check, host-side HarfBuzz fixture script, CI checks with qpdf. One case (`किताब`) passes end to end (D-029). Not used by the app.
 ### Added (Session 11 / M2b-3b-1, 2026-11-07, no app version change)

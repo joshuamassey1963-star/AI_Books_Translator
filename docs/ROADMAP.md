@@ -11,7 +11,7 @@ Requirements source: `docs/AI_Book_Translator_Roadmap_V1_V3.pdf` (03 Nov 2026). 
 | M2b-2 | Legacy font mapping + Unicode conversion prototype | V1-LEG-01..08 | see M2b-2a..c | IN PROGRESS – M2b-2a DONE (PR #4, 721fe4f); M2b-2b DEFERRED (needs verified Chanakya samples + licensing evidence); M2b-2c pending font/span confidence work |
 | DEV-01 | Developer Tests screen v0.1 (debug only, separate from M2b-2b) | V1-DEV-01 | encoding / Kruti Dev / TXT diagnostics + named debug APK artifact | DONE – PR #5 merged (bb5a8cb) |
 | M-DEV-02a | Real TXT file picker + build info, APK 0.1.1+2 (debug tooling, separate from M2b-2b) | V1-DEV-02 | system picker, limits, encoding choice, preview, version/SHA | DONE – PR #6 merged (f39b5d8) |
-| M2b-3 | Hindi PDF export + shaping verification | V1-EXP-04/06/07, V1-FNT-01/02/05 (partial) | see M2b-3a..c | IN PROGRESS – M2b-3a done: Engine A FAILS shaping (PR #8 merged 19f3630); M2b-3b-1 done: Engine B (Android native) visual PASS but text layer FAIL (run 42367039900, D-028); M2b-3b-2a done: HarfBuzz + /ActualText spike PASS for 1 case (run 42373414737, D-029); M2b-3b-2b next after owner go |
+| M2b-3 | Hindi PDF export + shaping verification | V1-EXP-04/06/07, V1-FNT-01/02/05 (partial) | see M2b-3a..c | IN PROGRESS – M2b-3a done: Engine A FAILS shaping (PR #8 merged 19f3630); M2b-3b-1 done: Engine B (Android native) visual PASS but text layer FAIL (run 42367039900, D-028); M2b-3b-2a done: HarfBuzz + /ActualText spike PASS for 1 case (run 42373414737, D-029); M2b-3b-2b done: 3 cases PASS on Poppler+MuPDF, subset −93…97 %, PDFium needs word spans, PDF.js FAIL (D-030, run 42381200825); M2b-3b-2c next after owner go |
 | M2b-4 | AI provider adapter + mock connection tests | V1-AIP-01/03/04 (interface + mocks) | see below | PLANNED |
 | M2b-5 | Real-book regression tests + integration review | REGRESSION_CASES RC-001..015 | see below | PLANNED |
 | M3 | V1-A Storage | V1-STO-01/02/04, V1-SEC-01, V1-SET-01 | Schema + migration tests; secure-storage test | PLANNED |
@@ -65,7 +65,8 @@ Order: M2b-1 → M2b-2 → M2b-3 → M2b-4 → M2b-5. One sub-milestone (or one 
     - **M2b-3b-1** engine selection + 3-case PoC. **Done Session 11:** Engine B = Android `PdfDocument` + `StaticLayout`. Visual PASS 3/3, Unicode copy/search FAIL 3/3 → PARTIAL; rejected as-is (D-028, run 42367039900).
     - **M2b-3b-2** HarfBuzz-shaped glyph writer with `/ActualText` per cluster. Split:
       - **M2b-3b-2a** feasibility spike, 1 case (`किताब`), host-side HarfBuzz. **Done Session 12:** qpdf ok, visual PASS, pdftotext exact; control without `/ActualText` loses the i-matra (D-029, run 42373414737).
-      - **M2b-3b-2b** (next, owner go needed): the 3 PoC cases (incl. Latin/digits in a second font), font subsetting (hb-subset, retain-gids), a second extractor/viewer check. Still host-side.
+      - **M2b-3b-2b** 3 cases + 2 fonts + hb-subset + 4 extractors. **Done Session 13 (D-030, run 42381200825):** Poppler and MuPDF exact 3/3 (full and subset), subsets −93…97 %, PDFium exact with word-level spans, PDF.js fails (ignores /ActualText).
+      - **M2b-3b-2c** (next, owner go needed): interactive viewer check (Chrome/PDFium, Firefox/PDF.js, Acrobat Reader, Android viewer) of the artifact PDFs by the owner or a scripted viewer; decide the PDF.js strategy; X03 ZWJ + one composite-glyph case; still host-side.
       - Later: HarfBuzz on device (Android NDK per ABI, iOS xcframework, Dart FFI), then all 13 cases.
   - **M2b-3c** comparison table X01–X10, decision record; owner visual check on Android + iOS.
 - **Dependencies:** V1-FNT-02 license check for the bundled font.
