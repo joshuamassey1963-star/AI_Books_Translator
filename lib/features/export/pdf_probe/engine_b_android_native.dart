@@ -45,8 +45,7 @@ class AndroidNativePdfEngine implements PdfExportProbe {
   }
 
   /// App-specific external directory for probe output (no permission).
-  Future<String?> outputDir() =>
-      channel.invokeMethod<String>('probeOutputDir');
+  Future<String?> outputDir() => channel.invokeMethod<String>('probeOutputDir');
 
   Future<Map<Object?, Object?>?> deviceInfo() =>
       channel.invokeMethod<Map<Object?, Object?>>('deviceInfo');
