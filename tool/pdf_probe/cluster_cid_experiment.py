@@ -26,7 +26,9 @@ def utf16(s):
     return 'FEFF' + s.encode('utf-16-be').hex().upper()
 
 
-def build(fx, font_bytes, actual_text=True, per_occurrence=True, size=28, x0=20.0, base=50.0, page=(360, 100)):
+def build(fx, font_bytes, actual_text=True, per_occurrence=True, size=28, x0=20.0, base=50.0, page=(360, 100),
+          tu_override=None, word_split=None):
+    # tu_override / word_split: M2b-3b-2c-3 controls only (default None = unchanged S14 output).
     text = fx['text']
     glyphs = fx['glyphs']
     fonts = {f['index']: f for f in fx['fonts']}
@@ -105,6 +107,8 @@ def build(fx, font_bytes, actual_text=True, per_occurrence=True, size=28, x0=20.
         for cid, gid in cid_gid[fi].items():
             gidmap[2 * cid:2 * cid + 2] = gid.to_bytes(2, 'big')
         W = ' '.join(f'{c} [{w}]' for c, w in sorted(cid_w[fi].items()))
+        if tu_override is not None:
+            cid_uni[fi] = dict(tu_override.get(fi, {}))
         bf = [f"<{c:04X}> <{u.encode('utf-16-be').hex().upper()}>" for c, u in sorted(cid_uni[fi].items()) if u is not None]
         cmap = ('/CIDInit /ProcSet findresource begin\n12 dict begin\nbegincmap\n'
                 '/CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def\n'

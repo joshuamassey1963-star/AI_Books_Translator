@@ -178,6 +178,22 @@ jobs:
         run: flutter test test/pdf_probe/engine_c_spike_test.dart --reporter expanded
       - name: Engine C – EXPERIMENT cluster-CID ToUnicode PDFs (probe only, M2b-3b-2c-1)
         run: python3 tool/pdf_probe/cluster_cid_experiment.py build/hb build/pdf_probe_c
+      - name: Engine C – CANDIDATE word-1:1 ToUnicode PDFs (probe only, M2b-3b-2c-3, D-033)
+        run: |
+          python3 tool/pdf_probe/tounicode_candidate.py build/hb build/pdf_probe_c
+          echo "-- mapping rule self-check: only fully 1:1 words get ToUnicode"
+          python3 - <<'PY'
+          import json, sys
+          sys.path.insert(0, 'tool/pdf_probe')
+          from tounicode_candidate import candidate_map
+          m = {c: candidate_map(json.load(open(f'build/hb/{c}.hb.json')))[0] for c in
+               ('c01_kitab', 'c02_kshetra', 'c03_rashtra_mixed', 'c04_zwj', 'c05_zwnj', 'c06_composite')}
+          assert not m['c01_kitab'] and not m['c02_kshetra'] and not m['c04_zwj'] and not m['c05_zwnj'], m
+          assert m['c06_composite'] == {0: {6: '\u0906', 64: '\u091c'}}, m['c06_composite']
+          assert 0x0900 > max(ord(t) for t in m['c03_rashtra_mixed'][1].values()), 'Latin run only'
+          assert set(m['c03_rashtra_mixed'][0].values()) == {' '}, 'no Hindi glyph mapped in C03'
+          print('mapping self-check: PASS', m)
+          PY
       - name: Engine C – PDFium text extraction (pdfrx, chromium/8125)
         env:
           PDF_PROBE_C_OUT_DIR: ${{ github.workspace }}/build/pdf_probe_c
@@ -204,8 +220,10 @@ jobs:
         run: |
           python3 tool/pdf_probe/verify.py build/pdf_probe_c "$RUNNER_TEMP/probe-fonts" --print-png-base64
           python3 tool/pdf_probe/extract_compare.py build/pdf_probe_c build/hb
+          python3 tool/pdf_probe/candidate_verdict.py build/pdf_probe_c
+          cat build/pdf_probe_c/candidate_verdict.md >> "$GITHUB_STEP_SUMMARY"
           mkdir -p build/pdf_probe_c/fonts-report/subset-fonts-not-committed && cp build/hb/fonts/*.ttf build/pdf_probe_c/fonts-report/subset-fonts-not-committed/
-          mkdir -p build/pdf_probe_c/viewer && (cd build/pdf_probe_c && find pdf png compare expected extracted viewer -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS)
+          mkdir -p build/pdf_probe_c/viewer && (cd build/pdf_probe_c && find pdf png compare expected extracted viewer -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS && sha256sum candidate_plan.json candidate_verdict.json candidate_verdict.md report.json >> SHA256SUMS)
           cat build/pdf_probe_c/report.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         with:
