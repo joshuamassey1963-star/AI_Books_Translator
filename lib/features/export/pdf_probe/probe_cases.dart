@@ -158,3 +158,26 @@ final List<ProbeCase> probeCases = List.unmodifiable(<ProbeCase>[
     blocks: [ProbeBlock.p('בְּרֵאשִׁית בָּרָא אֱלֹהִים')],
   ),
 ]);
+
+/// M2b-3b-1: three representative cases for the shaped-engine proof of
+/// concept. Code points are pinned by unit tests.
+final List<ProbeCase> shapingPocCases = List.unmodifiable(<ProbeCase>[
+  const ProbeCase(
+    id: 's01_kitab',
+    title: 'Short i-matra reordering (किताब)',
+    tCases: ['T01', 'T02'],
+    blocks: [ProbeBlock.p('किताब')],
+  ),
+  const ProbeCase(
+    id: 's02_kshetra',
+    title: 'Conjunct + halant + rakar (क्षेत्र)',
+    tCases: ['T03', 'T04', 'T05'],
+    blocks: [ProbeBlock.p('क्षेत्र')],
+  ),
+  const ProbeCase(
+    id: 's03_rashtra_mixed',
+    title: 'Conjunct + rakar, reph, English and digits in one line',
+    tCases: ['T05', 'T08', 'T10'],
+    blocks: [ProbeBlock.p('राष्ट्र धर्म India 123')],
+  ),
+]);

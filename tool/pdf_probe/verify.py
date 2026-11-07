@@ -23,6 +23,13 @@ FONTS = {
     'latin': font_dir / 'NotoSerif-Regular.ttf',
     'hebrew': font_dir / 'NotoSerifHebrew-Regular.ttf',
 }
+# Engine B (Android native) uses the device's own fonts: CI pulls them from
+# the emulator and points the reference at the same files.
+if os.environ.get('PROBE_DEVA_FONT'):
+    FONTS['deva'] = Path(os.environ['PROBE_DEVA_FONT'])
+if os.environ.get('PROBE_LATIN_FONT'):
+    FONTS['latin'] = Path(os.environ['PROBE_LATIN_FONT'])
+LATIN_FIRST = os.environ.get('PROBE_LATIN_FIRST') == '1'
 CMAPS = {k: set(TTFont(str(v)).getBestCmap()) for k, v in FONTS.items()}
 ZW = {0x200C, 0x200D}
 
@@ -37,6 +44,8 @@ def norm_ws(s):
 
 def font_for(cp, rtl):
     order = ['hebrew', 'deva', 'latin'] if rtl else ['deva', 'latin', 'hebrew']
+    if LATIN_FIRST and cp < 0x0900 and cp in CMAPS['latin']:
+        return 'latin'
     for k in order:
         if cp in CMAPS[k]:
             return k
@@ -168,7 +177,8 @@ for r in results:
         r['visual'] = v['visual']
         r['visual_why'] = v['why']
 
-report = {'engine': cases['engine'], 'raqm': features.check('raqm'), 'cases': results,
+report = {'engine': cases['engine'], 'device': cases.get('device'),
+          'reference_fonts': {k: v.name for k, v in FONTS.items()}, 'raqm': features.check('raqm'), 'cases': results,
           'visual_review': review.get('reviewed_by'),
           'note': 'visual = NEEDS_REVIEW: generation success is not visual correctness.'}
 (out / 'report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
