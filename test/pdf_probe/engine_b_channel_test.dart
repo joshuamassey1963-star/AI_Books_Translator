@@ -6,8 +6,9 @@ import 'package:ai_book_translator/features/export/pdf_probe/probe_cases.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-String _cps(String s) =>
-    s.runes.map((r) => r.toRadixString(16).toUpperCase().padLeft(4, '0')).join(' ');
+String _cps(String s) => s.runes
+    .map((r) => r.toRadixString(16).toUpperCase().padLeft(4, '0'))
+    .join(' ');
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
