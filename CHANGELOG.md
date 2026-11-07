@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added (Session 16 / M2b-3b-2c-3, 2026-11-08, no app version change)
+- Probe-only PDF.js mitigation candidate (word-1:1 ToUnicode), control PDFs, MuPDF root-cause controls and a decision gate (D-033). App writer unchanged.
 ### Added (Session 15 / M2b-3b-2c-2, 2026-11-07, no app version change)
 - Engine C probe cases C04 (ZWJ), C05 (ZWNJ), C06 (composite glyph uni0906), default word+subset variant, composite subset checks and negative self-test (D-032). Not used by the app.
 ### Added (Session 14 / M2b-3b-2c-1, 2026-11-07, no app version change)
