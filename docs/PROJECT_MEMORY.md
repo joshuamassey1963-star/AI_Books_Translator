@@ -1,6 +1,6 @@
 # Project Memory: AI Books Translator
 
-**Snapshot:** 2026-11-07 (updated end of Session 13). **Repository:** https://github.com/joshuamassey1963-star/AI_Books_Translator
+**Snapshot:** 2026-11-07 (updated end of Session 14). **Repository:** https://github.com/joshuamassey1963-star/AI_Books_Translator
 **Purpose:** A durable, public, project-only knowledge base for a new AI coding agent, engineer, maintainer or reviewer. This is **not** a dump of any private AI/user memory. Cross-check all changeable facts with current GitHub state before acting.
 
 > Quick start: Read root [AGENTS.md](../AGENTS.md) first; then this file, [SESSION_LEDGER.md](SESSION_LEDGER.md), the existing [ROADMAP.md](ROADMAP.md), [FEATURE_MATRIX.md](FEATURE_MATRIX.md), [DECISIONS.md](DECISIONS.md), [HANDOVER.md](HANDOVER.md), and [REGRESSION_CASES.md](REGRESSION_CASES.md). The ledger is a historical snapshot, **not** live branch state.
@@ -34,15 +34,16 @@ Technical decisions, contracts, and architecture diagrams in existing docs take 
 
 | Item | Snapshot / evidence |
 | --- | --- |
-| Integration branch | `develop` = `478aa01` (merge of PR #11), after `5b07941` (PR #10), `19f3630` (PR #8), `74606e6` (PR #9); develop CI run 42379956758 succeeded |
+| Integration branch | `develop` = `96858c7` (merge of PR #12), after `478aa01` (PR #11), `5b07941` (PR #10); develop CI run 42383903169 succeeded |
 | Protected by owner instruction | `main` = `882ff87fa8fc9e8c5d8a6dbd594182a8dd22cdd0`; never merge without explicit permission |
 | PR #8 | M2b-3a Engine A probe merged as `19f3630` (head `527a3e7`) |
 | PR #9 | Project memory files merged as `74606e6` (head `e1637d6`) |
 | PR #10 | M2b-3b-1 Engine B PoC merged as `5b07941` (head `a309fd8`) |
 | PR #11 | M2b-3b-2a spike merged as `478aa01` (head `0683aee`) |
-| Open feature branch | `feature/m2b-3b-2b-engine-c-three-cases` (M2b-3b-2b), PR into `develop`, **not merged**; see HANDOVER Session 13 |
-| Feature Matrix | 187 IDs: 4 VERIFIED, 30 IN PROGRESS, 153 PLANNED (unchanged in S11–S13); not a completion percentage |
-| UI APK | Last meaningful debug feature build **0.1.1+2**, TXT picker; no APK published in S10–S13 |
+| PR #12 | M2b-3b-2b merged as `96858c7` (head `80c0e0d`) |
+| Open feature branch | `feature/m2b-3b-2c-1-pdfjs-viewers` (M2b-3b-2c-1), PR into `develop`, **not merged**; see HANDOVER Session 14 |
+| Feature Matrix | 187 IDs: 4 VERIFIED, 30 IN PROGRESS, 153 PLANNED (unchanged in S11–S14); not a completion percentage |
+| UI APK | Last meaningful debug feature build **0.1.1+2**, TXT picker; no APK published in S10–S14 |
 | Memory risk | New sessions must read current refs, review open PRs, and check current CI instead of assuming the rows here remain current |
 
 ### Critical engineering result (D-027)
@@ -57,8 +58,11 @@ Engine C spike = HarfBuzz-shaped glyph ids (host-side uharfbuzz 0.57.0 / HarfBuz
 ### Engineering result (D-030, M2b-3b-2b)
 Engine C passes C01–C03 (`किताब`, `क्षेत्र`, `राष्ट्र धर्म India 123`) with full and hb-subset fonts on Poppler and MuPDF (strict exact text, qpdf ok, agent visual PASS). Default for next work: word-level `/ActualText` + strict ToUnicode (PDFium then exact too). PDF.js ignores `/ActualText` → fails. Interactive viewer search not tested. Run 42381200825.
 
+### Interop result (D-031, M2b-3b-2c-1)
+PDF.js (4.10.38, 6.5.438) and the Firefox viewer ignore `/ActualText` → Hindi copy/search fail for Engine C; upstream PR mozilla/pdf.js#22315 open. Chrome viewer, Acrobat, Android viewers not tested (manual checklist `docs/PDF_VIEWER_MANUAL_TEST.md`). Owner decision on accepting the PDF.js limitation is pending.
+
 ### Open risks and blocked tasks
-1. **Next engineering work is conditional:** review the M2b-3b-2b PR; then, only on owner go, **M2b-3b-2c**: interactive viewer search/copy check, PDF.js decision, ZWJ + composite case. No production Hindi PDF engine exists yet (A fails shaping, B fails copy/search, C is a 3-case host spike; device HarfBuzz/FFI not started). iOS not evaluated.
+1. **Next engineering work is conditional:** review the M2b-3b-2c-1 PR; then, only on owner go, **M2b-3b-2c-2**: ZWJ + composite case, PDF.js decision, owner manual viewer results. No production Hindi PDF engine exists yet (A fails shaping, B fails copy/search, C is a 3-case host spike; device HarfBuzz/FFI not started). iOS not evaluated.
 2. **Chanakya / Walkman-Chanakya905 mapping (M2b-2b)** deferred pending verified owner-provided samples and legal mapping provenance. Never commit private sample books/fonts or invent mappings.
 3. **M2b-2c** mixed-font confidence / span-specific application remains pending. PDF font info is currently mostly page-level, not reliable per run; do not auto-convert entire page.
 4. **Issue [#7](https://github.com/joshuamassey1963-star/AI_Books_Translator/issues/7)**: `file_selector` reads accepted TXT file into memory. A 200 MB nominal limit does not bound peak memory. Track bounded/streaming read solution before claiming large-file readiness.

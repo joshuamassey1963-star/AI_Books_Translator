@@ -1,18 +1,87 @@
 {
   "engine": "engine_c_hb_actualtext",
-  "reviewed_by": "Hark (agent), comparing pdftoppm renders with HarfBuzz/raqm references (same fonts: NotoSerifDevanagari-Regular sha256 e272d11d..., NotoSerif-Regular sha256 19e72cd8...), CI run 42380725570 (commit 97f1841). Owner visual check still pending.",
+  "reviewed_by": "Hark (agent), comparing pdftoppm renders with HarfBuzz/raqm references (same fonts: NotoSerifDevanagari-Regular sha256 e272d11d..., NotoSerif-Regular sha256 19e72cd8...), CI run 42380725570 (commit 97f1841). Owner visual check still pending. Experiment variants reviewed in CI run 42384778543 (commit 1334cfe).",
   "rule": "Visual only. overall_c = qpdf ok + visual PASS + Poppler and MuPDF exact (extract_compare.py). The _word variants draw the same glyphs as the full-font PDFs (only /ActualText grouping differs).",
   "cases": {
-    "c01_kitab": {"visual": "PASS", "why": "i-matra glyph (uni093F.04) before क; ता, ब as reference"},
-    "c01_kitab_subset": {"visual": "PASS", "why": "render pixel-identical to full-font PDF (run 42380725570)"},
-    "c01_kitab_word": {"visual": "PASS", "why": "same glyph drawing as c01_kitab"},
-    "c01_kitab_control_no_actualtext": {"visual": "PASS", "why": "same glyphs; control for extraction only"},
-    "c02_kshetra": {"visual": "PASS", "why": "क्ष ligature + e-matra placed over it, त्र ligature, as reference"},
-    "c02_kshetra_subset": {"visual": "PASS", "why": "render pixel-identical to full-font PDF (run 42380725570)"},
-    "c02_kshetra_word": {"visual": "PASS", "why": "same glyph drawing as c02_kshetra"},
-    "c02_kshetra_control_cmapall": {"visual": "PASS", "why": "same glyphs; control for extraction only"},
-    "c03_rashtra_mixed": {"visual": "PASS", "why": "रा, ष्ट्र conjunct with rakar, ध, reph on म, Latin India 123 in Noto Serif, spaces and order as reference"},
-    "c03_rashtra_mixed_subset": {"visual": "PASS", "why": "render pixel-identical to full-font PDF (run 42380725570)"},
-    "c03_rashtra_mixed_word": {"visual": "PASS", "why": "same glyph drawing as c03_rashtra_mixed"}
+    "c01_kitab": {
+      "visual": "PASS",
+      "why": "i-matra glyph (uni093F.04) before क; ता, ब as reference"
+    },
+    "c01_kitab_subset": {
+      "visual": "PASS",
+      "why": "render pixel-identical to full-font PDF (run 42380725570)"
+    },
+    "c01_kitab_word": {
+      "visual": "PASS",
+      "why": "same glyph drawing as c01_kitab"
+    },
+    "c01_kitab_control_no_actualtext": {
+      "visual": "PASS",
+      "why": "same glyphs; control for extraction only"
+    },
+    "c02_kshetra": {
+      "visual": "PASS",
+      "why": "क्ष ligature + e-matra placed over it, त्र ligature, as reference"
+    },
+    "c02_kshetra_subset": {
+      "visual": "PASS",
+      "why": "render pixel-identical to full-font PDF (run 42380725570)"
+    },
+    "c02_kshetra_word": {
+      "visual": "PASS",
+      "why": "same glyph drawing as c02_kshetra"
+    },
+    "c02_kshetra_control_cmapall": {
+      "visual": "PASS",
+      "why": "same glyphs; control for extraction only"
+    },
+    "c03_rashtra_mixed": {
+      "visual": "PASS",
+      "why": "रा, ष्ट्र conjunct with rakar, ध, reph on म, Latin India 123 in Noto Serif, spaces and order as reference"
+    },
+    "c03_rashtra_mixed_subset": {
+      "visual": "PASS",
+      "why": "render pixel-identical to full-font PDF (run 42380725570)"
+    },
+    "c03_rashtra_mixed_word": {
+      "visual": "PASS",
+      "why": "same glyph drawing as c03_rashtra_mixed"
+    },
+    "c01_kitab_cidmap": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions, only CID numbering differs; matches reference (run 42384778543)"
+    },
+    "c01_kitab_cidmap_noat": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions; matches reference (run 42384778543)"
+    },
+    "c01_kitab_word_clustertu": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions; matches reference (run 42384778543)"
+    },
+    "c02_kshetra_cidmap": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions, only CID numbering differs; matches reference (run 42384778543)"
+    },
+    "c02_kshetra_cidmap_noat": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions; matches reference (run 42384778543)"
+    },
+    "c02_kshetra_word_clustertu": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions; matches reference (run 42384778543)"
+    },
+    "c03_rashtra_mixed_cidmap": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions, only CID numbering differs; matches reference (run 42384778543)"
+    },
+    "c03_rashtra_mixed_cidmap_noat": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions; matches reference (run 42384778543)"
+    },
+    "c03_rashtra_mixed_word_clustertu": {
+      "visual": "PASS",
+      "why": "EXPERIMENT: same glyphs and positions; matches reference (run 42384778543)"
+    }
   }
 }
