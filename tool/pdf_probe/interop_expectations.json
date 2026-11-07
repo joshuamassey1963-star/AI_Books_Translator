@@ -1,0 +1,68 @@
+{
+  "note": "M2b-3b-2c-1 interop regression gate (extract_compare.py). EXACT entries must stay EXACT (CI fails otherwise). KNOWN_DIFF entries are documented limitations; if one becomes EXACT the report says IMPROVED and this file should be updated after review.",
+  "cases": {
+    "c01_kitab": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "KNOWN_DIFF"
+    },
+    "c01_kitab_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "KNOWN_DIFF"
+    },
+    "c01_kitab_word": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "EXACT"
+    },
+    "c02_kshetra": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "EXACT"
+    },
+    "c02_kshetra_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "EXACT"
+    },
+    "c02_kshetra_word": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "EXACT"
+    },
+    "c03_rashtra_mixed": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "KNOWN_DIFF"
+    },
+    "c03_rashtra_mixed_subset": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "KNOWN_DIFF"
+    },
+    "c03_rashtra_mixed_word": {
+      "poppler": "EXACT",
+      "mupdf": "EXACT",
+      "pdfjs4": "KNOWN_DIFF",
+      "pdfjs6": "KNOWN_DIFF",
+      "pdfium": "EXACT"
+    }
+  }
+}

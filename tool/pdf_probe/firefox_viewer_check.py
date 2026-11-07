@@ -114,5 +114,20 @@ for pdf in sorted((out / 'pdf').glob('*.pdf')):
     result['cases'][cid] = r
     print(cid, json.dumps({k: r.get(k) for k in ('opened', 'copy_exact', 'copy_codepoints', 'find', 'error')}, ensure_ascii=False))
 drv.quit()
+# Small screenshots in the job log so the run can be reviewed without the
+# artifact (agent review; owner check still pending).
+import base64, io
+try:
+    from PIL import Image
+    for cid in ('c01_kitab_word', 'c02_kshetra_word', 'c03_rashtra_mixed_word'):
+        p = vdir / f'firefox-{cid}.png'
+        if p.exists():
+            im = Image.open(p).convert('RGB')
+            im.thumbnail((900, 600))
+            buf = io.BytesIO()
+            im.save(buf, 'PNG', optimize=True)
+            print(f'FFPNGB64 {cid} {base64.b64encode(buf.getvalue()).decode()}')
+except Exception as e:  # noqa: BLE001
+    print('screenshot log skipped', e)
 (vdir / 'firefox.json').write_text(json.dumps(result, ensure_ascii=False, indent=2))
 print('firefox', result.get('firefox'), 'pdf.js in firefox', result.get('pdfjs_in_firefox'))

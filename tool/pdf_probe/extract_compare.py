@@ -204,3 +204,20 @@ for f in fonts:
 md += ['', '## Tools', ''] + [f'- {k}: {v}' for k, v in report['tools'].items()] + ['', report['note_c']]
 (out / 'report.md').write_text('\n'.join(md) + '\n')
 print('\n'.join(md))
+
+# Regression gate (M2b-3b-2c-1): EXACT must stay EXACT.
+gate = json.loads((Path(__file__).with_name('interop_expectations.json')).read_text())
+regressions, improved = [], []
+for r in report['cases']:
+    for name, want in gate['cases'].get(r['id'], {}).items():
+        got = r['extractors'].get(name, {}).get('result')
+        if want == 'EXACT' and got != 'EXACT':
+            regressions.append(f"{r['id']}/{name}: expected EXACT, got {got}")
+        if want == 'KNOWN_DIFF' and got == 'EXACT':
+            improved.append(f"{r['id']}/{name}: IMPROVED (was KNOWN_DIFF)")
+for line in improved:
+    print('IMPROVED', line)
+if regressions:
+    print('INTEROP REGRESSION:\n  ' + '\n  '.join(regressions))
+    sys.exit(1)
+print('interop gate: no regression;', len(improved), 'improvement(s)')

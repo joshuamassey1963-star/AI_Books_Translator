@@ -26,7 +26,7 @@ def utf16(s):
     return 'FEFF' + s.encode('utf-16-be').hex().upper()
 
 
-def build(fx, font_bytes, actual_text=True, size=28, x0=20.0, base=50.0, page=(360, 100)):
+def build(fx, font_bytes, actual_text=True, per_occurrence=True, size=28, x0=20.0, base=50.0, page=(360, 100)):
     text = fx['text']
     glyphs = fx['glyphs']
     fonts = {f['index']: f for f in fx['fonts']}
@@ -59,10 +59,24 @@ def build(fx, font_bytes, actual_text=True, size=28, x0=20.0, base=50.0, page=(3
         for c in w:
             for k, g in enumerate(c['glyphs']):
                 fi = g['font']
-                cid = next_cid[fi]
-                next_cid[fi] += 1
-                cid_gid[fi][cid] = g['gid']
-                cid_uni[fi][cid] = c['text'] if k == 0 else ''
+                if per_occurrence:
+                    cid = next_cid[fi]
+                    next_cid[fi] += 1
+                    cid_gid[fi][cid] = g['gid']
+                    cid_uni[fi][cid] = c['text'] if k == 0 else ''
+                else:
+                    # Identity CIDs; ToUnicode only for 1-glyph/1-code-point
+                    # clusters, decided per CLUSTER (not per span) - 'cluster
+                    # strict' with word spans.
+                    cid = g['gid']
+                    next_cid[fi] = max(next_cid[fi], cid + 1)
+                    cid_gid[fi][cid] = cid
+                    one = len(c['glyphs']) == 1 and len(c['text']) == 1
+                    prev = cid_uni[fi].get(cid)
+                    if not one or (prev is not None and prev != c['text']):
+                        cid_uni[fi][cid] = None
+                    elif prev is None and cid not in cid_uni[fi]:
+                        cid_uni[fi][cid] = c['text']
                 upem = fonts[fi]['upem']
                 cid_w[fi][cid] = round(g['ax'] * 1000 / upem)
                 if fi != cur:
@@ -91,7 +105,7 @@ def build(fx, font_bytes, actual_text=True, size=28, x0=20.0, base=50.0, page=(3
         for cid, gid in cid_gid[fi].items():
             gidmap[2 * cid:2 * cid + 2] = gid.to_bytes(2, 'big')
         W = ' '.join(f'{c} [{w}]' for c, w in sorted(cid_w[fi].items()))
-        bf = [f"<{c:04X}> <{u.encode('utf-16-be').hex().upper()}>" for c, u in sorted(cid_uni[fi].items())]
+        bf = [f"<{c:04X}> <{u.encode('utf-16-be').hex().upper()}>" for c, u in sorted(cid_uni[fi].items()) if u is not None]
         cmap = ('/CIDInit /ProcSet findresource begin\n12 dict begin\nbegincmap\n'
                 '/CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def\n'
                 '/CMapName /Adobe-Identity-UCS def\n/CMapType 2 def\n1 begincodespacerange\n<0000> <FFFF>\n'
@@ -134,9 +148,10 @@ def main():
         fonts = {f['index']: f for f in fx['fonts']}
         def fb(i):
             return (hb_dir / fonts[i]['subset']['file']).read_bytes()
-        for at, suffix, label in ((True, '_cidmap', 'cluster-CID ToUnicode + word /ActualText'),
-                                  (False, '_cidmap_noat', 'cluster-CID ToUnicode only, no /ActualText')):
-            pdf = build(fx, fb, actual_text=at)
+        for at, po, suffix, label in ((True, True, '_cidmap', 'cluster-CID ToUnicode + word /ActualText'),
+                                      (False, True, '_cidmap_noat', 'cluster-CID ToUnicode only, no /ActualText'),
+                                      (True, False, '_word_clustertu', 'word /ActualText + Identity CIDs, ToUnicode for 1:1 clusters')):
+            pdf = build(fx, fb, actual_text=at, per_occurrence=po)
             cid = f"{fx['id']}{suffix}"
             (out / 'pdf' / f'{cid}.pdf').write_bytes(pdf)
             (out / 'expected' / f'{cid}.txt').write_text(fx['text'], encoding='utf-8')
